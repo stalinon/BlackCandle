@@ -26,4 +26,8 @@
       <ProjectReference Include="..\BlackCandle.Infrastructure\BlackCandle.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
+
 </Project>

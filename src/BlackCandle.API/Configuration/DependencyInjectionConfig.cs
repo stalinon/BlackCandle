@@ -14,7 +14,7 @@ public static class DependencyInjectionConfig
     /// </summary>
     public static IServiceCollection AddProjectServices(this IServiceCollection services)
     {
-        services.AddScoped<IDataStorage, InMemoryDataStorage>();
+        services.AddScoped<IDataStorageContext, InMemoryDataStorageContext>();
         services.AddScoped<IPortfolioService, PortfolioService>();
 
         return services;

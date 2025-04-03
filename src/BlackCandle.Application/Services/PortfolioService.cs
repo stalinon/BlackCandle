@@ -7,10 +7,10 @@ namespace BlackCandle.Application.Services;
 /// <inheritdoc cref="IPortfolioService" />
 public class PortfolioService : IPortfolioService
 {
-    private readonly IDataStorage _dataStorage;
+    private readonly IDataStorageContext _dataStorage;
 
     /// <inheritdoc cref="PortfolioService" />
-    public PortfolioService(IDataStorage dataStorage)
+    public PortfolioService(IDataStorageContext dataStorage)
     {
         _dataStorage = dataStorage;
     }
@@ -18,7 +18,7 @@ public class PortfolioService : IPortfolioService
     /// <inheritdoc />
     public async Task<List<PortfolioAsset>> GetCurrentPortfolioAsync()
     {
-        var assets = await _dataStorage.GetPortfolioAsync();
+        var assets = await _dataStorage.PortfolioAssets.GetAllAsync();
         if (assets.Count == 0)
         {
             throw new EmptyPortfolioException();
@@ -30,12 +30,12 @@ public class PortfolioService : IPortfolioService
     /// <inheritdoc />
     public Task AddAssetAsync(PortfolioAsset asset)
     {
-        return _dataStorage.AddAssetAsync(asset);
+        return _dataStorage.PortfolioAssets.AddAsync(asset);
     }
 
     /// <inheritdoc />
     public Task RemoveAssetAsync(string tickerSymbol)
     {
-        return _dataStorage.RemoveAssetAsync(tickerSymbol);
+        return _dataStorage.PortfolioAssets.RemoveAsync(tickerSymbol);
     }
 }

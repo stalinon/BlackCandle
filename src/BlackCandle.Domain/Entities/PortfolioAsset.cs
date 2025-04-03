@@ -1,10 +1,15 @@
+using BlackCandle.Domain.Interfaces;
+
 namespace BlackCandle.Domain.Entities;
 
 /// <summary>
 ///     Инструмент в портфеле
 /// </summary>
-public class PortfolioAsset
+public class PortfolioAsset : IEntity
 {
+    /// <inheritdoc />
+    public string Id { get; set; }
+    
     /// <summary>
     ///     Тикер
     /// </summary>
