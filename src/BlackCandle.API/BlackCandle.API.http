@@ -1,6 +1,0 @@
-@BlackCandle.API_HostAddress = http://localhost:5292
-
-GET {{BlackCandle.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

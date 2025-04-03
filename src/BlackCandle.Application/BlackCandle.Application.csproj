@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
