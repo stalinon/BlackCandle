@@ -13,4 +13,5 @@
 /dataSources.local.xml
 appsettings.Development.json
 */*/obj/
+*/*/bin/
 */.idea/
