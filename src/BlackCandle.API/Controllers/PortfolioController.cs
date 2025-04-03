@@ -32,7 +32,6 @@ public class PortfolioController : BaseController
         var result = assets.Select(a => new PortfolioViewModel
         {
             Symbol = a.Ticker.Symbol,
-            Exchange = a.Ticker.Exchange,
             Quantity = a.Quantity,
             PurchasePrice = a.PurchasePrice,
             PurchaseDate = a.PurchaseDate
@@ -51,8 +50,7 @@ public class PortfolioController : BaseController
         {
             Ticker = new Ticker
             {
-                Symbol = request.Symbol,
-                Exchange = request.Exchange
+                Symbol = request.Symbol
             },
             Quantity = request.Quantity,
             PurchasePrice = request.PurchasePrice,

@@ -1,17 +1,22 @@
 namespace BlackCandle.Domain.Entities;
 
 /// <summary>
-///     Тикер
+///     Тикер (инструмент)
 /// </summary>
 public class Ticker
 {
     /// <summary>
-    ///     Символ тикера
+    ///     Символ
     /// </summary>
     public string Symbol { get; set; } = string.Empty;
-    
+
     /// <summary>
-    ///     Биржа
+    ///     Валюта
     /// </summary>
-    public string Exchange { get; set; } = string.Empty;
+    public string Currency { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Отрасль
+    /// </summary>
+    public string Sector { get; set; } = string.Empty;
 }

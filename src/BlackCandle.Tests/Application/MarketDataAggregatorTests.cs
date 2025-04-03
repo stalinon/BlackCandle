@@ -18,7 +18,7 @@ public class MarketDataAggregatorTests
         // Arrange
         var fakeClient = new FakeTinkoffClient();
         var aggregator = new MarketDataAggregator(fakeClient);
-        var ticker = new Ticker { Symbol = "SBER", Exchange = "MOEX" };
+        var ticker = new Ticker { Symbol = "SBER" };
         var from = DateTime.Today.AddDays(-10);
         var to = DateTime.Today;
 
@@ -40,7 +40,7 @@ public class MarketDataAggregatorTests
     {
         var fakeClient = new FakeTinkoffClient();
         var aggregator = new MarketDataAggregator(fakeClient);
-        var ticker = new Ticker { Symbol = "GAZP", Exchange = "MOEX" };
+        var ticker = new Ticker { Symbol = "GAZP" };
         var from = new DateTime(2023, 01, 01);
         var to = new DateTime(2023, 12, 31);
 
