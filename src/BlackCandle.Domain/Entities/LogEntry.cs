@@ -1,10 +1,15 @@
+using BlackCandle.Domain.Interfaces;
+
 namespace BlackCandle.Domain.Entities;
 
 /// <summary>
 ///     Лог записи
 /// </summary>
-public class LogEntry
+public class LogEntry : IEntity
 {
+    /// <inheritdoc />
+    public string Id => $"{Timestamp:yyyyMMddHHmmssfff}";
+    
     /// <summary>
     ///     Момент времени
     /// </summary>
