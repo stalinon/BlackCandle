@@ -31,11 +31,11 @@
 
 **Этапы:**
 
-1. [🔲] ValueObject: `PriceHistoryPoint`
-2. [🔲] Интерфейсы: `ITinkoffClient`, `IMoexClient`
-3. [🔲] Инфраструктура: `TinkoffClient`, `MoexClient`
-4. [🔲] Компонент: `MarketDataAggregator.FetchHistoricalData()`
-5. [🔲] Тесты на клиентов с моками
+1. [✅] ValueObject: `PriceHistoryPoint`
+2. [✅] Интерфейсы: `ITinkoffClient`, `IMoexClient`
+3. [✅] Инфраструктура: `TinkoffClient`, `MoexClient`
+4. [✅] Компонент: `MarketDataAggregator.FetchHistoricalData()`
+5. [✅] Тесты на клиентов с моками
 
 ---
 
