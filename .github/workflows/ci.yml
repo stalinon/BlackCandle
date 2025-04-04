@@ -62,7 +62,7 @@ jobs:
           targetdir: 'coveragereport'
           reporttypes: 'Html;Cobertura;Badges'
           classfilters: '-Tinkoff.*'
-          filefilters: '-*thirdparty/*
+          filefilters: '-*thirdparty/*'
 
       - name: 📡 Upload to Coveralls
         uses: coverallsapp/github-action@v2
