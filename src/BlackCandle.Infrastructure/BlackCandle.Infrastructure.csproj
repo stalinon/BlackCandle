@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj" />
       <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj" />
       <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj" />
+      <ProjectReference Include="..\..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.API", "BlackCandle.API\BlackCandle.API.csproj", "{A4D3FF1A-30F3-4527-9DCE-1E04E3232935}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Application", "BlackCandle.Application\BlackCandle.Application.csproj", "{96E11BDF-F4FC-4CC6-B996-3DD50F094286}"
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Scheduler", "Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Tests", "BlackCandle.Tests\BlackCandle.Tests.csproj", "{F45BC608-3D10-4976-8CE9-C2C49D62E73B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tinkoff.InvestApi", "..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj", "{F29A3CBE-1438-4B71-BEEB-5D3FD673F028}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tinkoff.InvestApi", "..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj", "{3B07B711-77F4-4D27-ADDF-193FCEAC5EDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +51,9 @@ Global
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F29A3CBE-1438-4B71-BEEB-5D3FD673F028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F29A3CBE-1438-4B71-BEEB-5D3FD673F028}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F29A3CBE-1438-4B71-BEEB-5D3FD673F028}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F29A3CBE-1438-4B71-BEEB-5D3FD673F028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B07B711-77F4-4D27-ADDF-193FCEAC5EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B07B711-77F4-4D27-ADDF-193FCEAC5EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B07B711-77F4-4D27-ADDF-193FCEAC5EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B07B711-77F4-4D27-ADDF-193FCEAC5EDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
