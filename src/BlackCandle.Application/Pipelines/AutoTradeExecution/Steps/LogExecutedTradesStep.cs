@@ -1,4 +1,5 @@
 using System.Text;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 
@@ -7,7 +8,7 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 /// <summary>
 ///     Шаг для логирования совершенных сделок
 /// </summary>
-internal sealed class LogExecutedTradesStep : PipelineStep<AutoTradeExecutionContext>
+internal sealed class LogExecutedTradesStep(ITelegramService telegram) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
     public override string StepName => "Логирование";
@@ -28,7 +29,8 @@ internal sealed class LogExecutedTradesStep : PipelineStep<AutoTradeExecutionCon
             return;
         }
 
-        throw new NotImplementedException();
+        var report = BuildTelegramReport(success, failed);
+        await telegram.SendMessageAsync(report);
     }
 
     private static string BuildTelegramReport(List<ExecutedTrade> success, List<ExecutedTrade> failed)

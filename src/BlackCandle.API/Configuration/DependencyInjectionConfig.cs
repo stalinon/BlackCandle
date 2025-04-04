@@ -1,8 +1,8 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Infrastructure;
 using BlackCandle.Infrastructure.Persistence.InMemory;
+using BlackCandle.Telegram;
 
 namespace BlackCandle.API.Configuration;
 
@@ -19,6 +19,7 @@ public static class DependencyInjectionConfig
         services.AddSingleton<IDataStorageContext, InMemoryDataStorageContext>();
         services.RegisterPipelines();
         services.AddInfrastructure(configuration);
+        services.AddTelegram(configuration);
 
         return services;
     }

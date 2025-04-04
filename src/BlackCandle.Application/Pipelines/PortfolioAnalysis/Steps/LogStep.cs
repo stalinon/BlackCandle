@@ -1,4 +1,5 @@
 using System.Text;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -8,15 +9,19 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Логирование
 /// </summary>
-internal sealed class LogStep : PipelineStep<PortfolioAnalysisContext>
+internal sealed class LogStep(ITelegramService telegram, IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
     public override string StepName => "Логирование";
 
     /// <inheritdoc />
-    public override Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var signals = await dataStorage.TradeSignals.GetAllAsync(s => s.Date.Date == DateTime.Now.Date);
+        var date = context.AnalysisTime;
+
+        var report = BuildTelegramReport(signals, date);
+        await telegram.SendMessageAsync(report);
     }
     
     private static string BuildTelegramReport(List<TradeSignal> signals, DateTime date)
