@@ -1,4 +1,5 @@
-# Требования к проекту **BlackCandle**
+[![CI](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg)](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main)](https://coveralls.io/github/stalinon/BlackCandle?branch=main)
 
 ## Общая цель
 
