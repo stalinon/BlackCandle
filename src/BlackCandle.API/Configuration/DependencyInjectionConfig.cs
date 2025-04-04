@@ -1,6 +1,7 @@
 using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Services;
 using BlackCandle.Infrastructure.Persistence;
+using BlackCandle.Infrastructure.Persistence.InMemory;
 
 namespace BlackCandle.API.Configuration;
 

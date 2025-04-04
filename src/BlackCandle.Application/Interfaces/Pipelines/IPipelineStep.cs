@@ -1,3 +1,5 @@
+using BlackCandle.Domain.Enums;
+
 namespace BlackCandle.Application.Interfaces.Pipelines;
 
 /// <summary>
@@ -5,6 +7,11 @@ namespace BlackCandle.Application.Interfaces.Pipelines;
 /// </summary>
 public interface IPipelineStep<TContext>
 {
+    /// <summary>
+    ///     Статус
+    /// </summary>
+    PipelineStepStatus Status { get; set; }
+    
     /// <summary>
     ///     Название шага
     /// </summary>

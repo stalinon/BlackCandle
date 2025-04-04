@@ -7,6 +7,11 @@ namespace BlackCandle.Application.Interfaces;
 public interface ILoggerService
 {
     /// <summary>
+    ///     Добавить префикс
+    /// </summary>
+    void AddPrefix(string prefix);
+    
+    /// <summary>
     ///     Записывает информационное сообщение.
     /// </summary>
     void LogInfo(string message);

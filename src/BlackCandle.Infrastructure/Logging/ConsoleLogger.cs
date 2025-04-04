@@ -7,11 +7,26 @@ namespace BlackCandle.Infrastructure.Logging;
 /// </summary>
 public class ConsoleLogger : ILoggerService
 {
+    private string Preffix => string.Join(" ", _prefixes.Select(x => $"[{x}]"));
+    
+    private readonly List<string> _prefixes = new();
+    
+    /// <inheritdoc />
+    public void AddPrefix(string prefix)
+    {
+        if (_prefixes.Contains(prefix))
+        {
+            return;
+        }
+        
+        _prefixes.Add(prefix);
+    }
+
     /// <inheritdoc />
     public void LogInfo(string message)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine($"[INFO] {DateTime.Now}: {message}");
+        Console.WriteLine($"[INFO] {Preffix} {DateTime.Now}: {message}");
         Console.ResetColor();
     }
 
@@ -19,7 +34,7 @@ public class ConsoleLogger : ILoggerService
     public void LogWarning(string message)
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"[WARN] {DateTime.Now}: {message}");
+        Console.WriteLine($"[WARN] {Preffix} {DateTime.Now}: {message}");
         Console.ResetColor();
     }
 
@@ -27,7 +42,7 @@ public class ConsoleLogger : ILoggerService
     public void LogError(string message, Exception? ex = null)
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"[ERROR] {DateTime.Now}: {message}");
+        Console.WriteLine($"[ERROR] {Preffix} {DateTime.Now}: {message}");
         Console.WriteLine($"        {message}");
         if (ex != null)
         {

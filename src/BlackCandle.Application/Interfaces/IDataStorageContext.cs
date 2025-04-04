@@ -41,4 +41,9 @@ public interface IDataStorageContext
     ///     Репозиторий настроек бота
     /// </summary>
     IRepository<BotSettings> BotSettings { get; }
+    
+    /// <summary>
+    ///     Репозиторий исторических данных
+    /// </summary>
+    IRepository<PriceHistoryPoint> Marketdata { get; }
 }

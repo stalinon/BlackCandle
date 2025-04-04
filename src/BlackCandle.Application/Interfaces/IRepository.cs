@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace BlackCandle.Application.Interfaces;
 
 /// <summary>
@@ -9,7 +11,7 @@ public interface IRepository<T>
     /// <summary>
     ///     Получить все сущности
     /// </summary>
-    Task<List<T>> GetAllAsync();
+    Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null);
 
     /// <summary>
     ///     Получить сущность по идентификатору

@@ -1,11 +1,9 @@
 using System.Collections.Concurrent;
-using BlackCandle.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Domain.Interfaces;
 
-namespace BlackCandle.Infrastructure.Persistence;
+namespace BlackCandle.Infrastructure.Persistence.InMemory;
 
 /// <summary>
 /// Хранилище сущностей в оперативной памяти
@@ -16,7 +14,11 @@ public class InMemoryRepository<T> : IRepository<T> where T : IEntity
     private readonly ConcurrentDictionary<string, T> _storage = new();
 
     /// <inheritdoc />
-    public Task<List<T>> GetAllAsync() => Task.FromResult(_storage.Values.ToList());
+    public Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
+    {
+        var result = predicate is null ? _storage.Values : _storage.Values.Where(predicate.Compile());
+        return Task.FromResult(result.ToList());
+    }
 
     /// <inheritdoc />
     public Task<T?> GetByIdAsync(string id)

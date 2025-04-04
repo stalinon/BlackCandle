@@ -14,7 +14,7 @@ public class TradeSignal : IEntity
     /// <summary>
     ///     Символ
     /// </summary>
-    public string Ticker { get; set; } = string.Empty;
+    public Ticker Ticker { get; set; }
 
     /// <summary>
     ///     Действие
@@ -35,4 +35,9 @@ public class TradeSignal : IEntity
     ///     Дата генерации
     /// </summary>
     public DateTime Date { get; set; }
+
+    /// <summary>
+    ///     Результативный балл сигнала (по фундаменталке)
+    /// </summary>
+    public int Score { get; set; }
 }

@@ -14,7 +14,7 @@ public class IndicatorResult : IEntity
     /// <summary>
     ///     Символ тикера
     /// </summary>
-    public string Ticker { get; set; } = string.Empty;
+    public Ticker Ticker { get; set; }
 
     /// <summary>
     ///     Тип индикатора

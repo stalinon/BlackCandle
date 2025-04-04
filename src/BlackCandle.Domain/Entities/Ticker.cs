@@ -26,6 +26,12 @@ public class Ticker : IEquatable<Ticker>
     public string Figi { get; set; } = string.Empty;
 
     /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"{Symbol} - {Currency} - {Sector} - {Figi}";
+    }
+
+    /// <inheritdoc />
     public bool Equals(Ticker? other)
     {
         if (other is null) return false;

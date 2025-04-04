@@ -1,7 +1,7 @@
 using BlackCandle.Application.Interfaces;
 using BlackCandle.Domain.Entities;
 
-namespace BlackCandle.Infrastructure.Persistence;
+namespace BlackCandle.Infrastructure.Persistence.InMemory;
 
 /// <summary>
 ///     Контекст хранилища на основе памяти (in-memory)
@@ -28,4 +28,7 @@ public class InMemoryDataStorageContext : IDataStorageContext
 
     /// <inheritdoc />
     public IRepository<BotSettings> BotSettings { get; } = new InMemoryRepository<BotSettings>();
+
+    /// <inheritdoc />
+    public IRepository<PriceHistoryPoint> Marketdata { get; } = new InMemoryRepository<PriceHistoryPoint>();
 }

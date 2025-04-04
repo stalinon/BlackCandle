@@ -1,6 +1,7 @@
 using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Pipelines;
+using BlackCandle.Domain.Enums;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 
@@ -9,6 +10,9 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// </summary>
 internal sealed class GenerateSignalsStep(IInvestApiFacade investApi, IDataStorageContext dataStorage) : IPipelineStep<PortfolioAnalysisContext>
 {
+    /// <inheritdoc />
+    public PipelineStepStatus Status { get; set; }
+
     /// <inheritdoc />
     public string StepName => "Генерация сигналов";
 

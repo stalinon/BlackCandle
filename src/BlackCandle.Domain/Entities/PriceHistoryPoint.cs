@@ -1,10 +1,15 @@
+using BlackCandle.Domain.Interfaces;
+
 namespace BlackCandle.Domain.Entities;
 
 /// <summary>
 ///     Точка исторических данных (OHLCV)
 /// </summary>
-public class PriceHistoryPoint
+public class PriceHistoryPoint : IEntity
 {
+    /// <inheritdoc />
+    public string Id => $"{Ticker}_{Date:yyyyMMddHHmmss}";
+    
     /// <summary>
     ///     Тикер
     /// </summary>

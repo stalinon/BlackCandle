@@ -14,7 +14,7 @@ public class ExecutedTrade : IEntity
     /// <summary>
     ///     Символ
     /// </summary>
-    public string Ticker { get; set; } = string.Empty;
+    public Ticker Ticker { get; set; }
 
     /// <summary>
     ///     Сторона
