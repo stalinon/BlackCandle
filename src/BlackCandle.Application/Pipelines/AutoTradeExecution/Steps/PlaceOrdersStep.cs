@@ -1,4 +1,3 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Enums;
 
