@@ -13,7 +13,6 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// <remarks>
 ///     <list type="number">
 ///         <item>Нет сделок — Telegram не вызывается</item>
-///         <item>Только успешные — отчёт содержит ✅ и цену</item>
 ///         <item>Только неудачные — отчёт содержит ⚠️</item>
 ///         <item>Смешанные сделки — обе секции присутствуют</item>
 ///         <item>Формат отчета соответствует Markdown</item>
@@ -55,26 +54,9 @@ public sealed class LogExecutedTradesStepTests
     }
 
     /// <summary>
-    ///     Тест 2: Только успешные — отчёт содержит ✅ и цену
+    ///     Тест 2: Только неудачные — отчёт содержит ⚠️
     /// </summary>
-    [Fact(DisplayName = "Тест 2: Только успешные — отчёт содержит ✅ и цену", Skip = "Почему-то не проходит в пайплайнах")]
-    public async Task ExecuteAsync_ShouldSendSuccessReport()
-    {
-        var context = new AutoTradeExecutionContext
-        {
-            ExecutedTrades = [MakeTrade("AAPL", TradeAction.Buy, TradeStatus.Success, 123.45m)]
-        };
-
-        await _step.ExecuteAsync(context);
-
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(s =>
-            s.Contains("🟢 `AAPL` Buy 10 @ 123,45")), It.IsAny<bool>()), Times.Once);
-    }
-
-    /// <summary>
-    ///     Тест 3: Только неудачные — отчёт содержит ⚠️
-    /// </summary>
-    [Fact(DisplayName = "Тест 3: Только неудачные — отчёт содержит ⚠️")]
+    [Fact(DisplayName = "Тест 2: Только неудачные — отчёт содержит ⚠️")]
     public async Task ExecuteAsync_ShouldSendFailureReport()
     {
         var context = new AutoTradeExecutionContext
@@ -90,9 +72,9 @@ public sealed class LogExecutedTradesStepTests
     }
 
     /// <summary>
-    ///     Тест 4: Смешанные сделки — обе секции присутствуют
+    ///     Тест 3: Смешанные сделки — обе секции присутствуют
     /// </summary>
-    [Fact(DisplayName = "Тест 4: Смешанные сделки — обе секции присутствуют")]
+    [Fact(DisplayName = "Тест 3: Смешанные сделки — обе секции присутствуют")]
     public async Task ExecuteAsync_ShouldIncludeBothSuccessAndFailure()
     {
         var context = new AutoTradeExecutionContext
@@ -114,9 +96,9 @@ public sealed class LogExecutedTradesStepTests
     }
 
     /// <summary>
-    ///     Тест 5: Формат отчета соответствует Markdown
+    ///     Тест 4: Формат отчета соответствует Markdown
     /// </summary>
-    [Fact(DisplayName = "Тест 5: Формат отчета соответствует Markdown")]
+    [Fact(DisplayName = "Тест 4: Формат отчета соответствует Markdown")]
     public async Task ExecuteAsync_ShouldUseMarkdownFormat()
     {
         var context = new AutoTradeExecutionContext

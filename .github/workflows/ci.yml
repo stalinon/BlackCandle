@@ -47,8 +47,7 @@ jobs:
             --no-build \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
-            --logger trx \
-            --settings coveragerunsettings.runsettings
+            --logger trx
 
       - name: 🧼 Convert coverage to lcov
         uses: danielpalme/ReportGenerator-GitHub-Action@5
