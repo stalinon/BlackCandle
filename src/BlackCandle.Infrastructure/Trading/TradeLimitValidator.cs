@@ -42,6 +42,6 @@ internal sealed class TradeLimitValidator(
         var futureValue = currentValue + price.Value;
         var sharePercent = futureValue / (totalValue + price.Value) * 100m;
 
-        return sharePercent <= _config.MaxPositionSharePercent;
+        return sharePercent < _config.MaxPositionSharePercent;
     }
 }

@@ -18,5 +18,11 @@
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0-preview.2.25163.2" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.0-preview.2.25163.2" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>BlackCandle.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
 </Project>

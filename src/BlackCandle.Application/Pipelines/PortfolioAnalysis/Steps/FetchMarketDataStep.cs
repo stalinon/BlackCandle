@@ -1,8 +1,5 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
-using BlackCandle.Application.Interfaces.Pipelines;
-using BlackCandle.Domain.Enums;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 

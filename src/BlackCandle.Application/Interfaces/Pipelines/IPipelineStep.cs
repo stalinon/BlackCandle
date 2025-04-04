@@ -16,7 +16,7 @@ public interface IPipelineStep<TContext>
     /// <summary>
     ///     Ранний выход из пайплайна
     /// </summary>
-    Action<TContext, Exception> EarlyExitAction { set; }
+    Action<TContext, Exception, IPipelineStep<TContext>> EarlyExitAction { internal get; set; }
     
     /// <summary>
     ///     Статус

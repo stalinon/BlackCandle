@@ -93,7 +93,7 @@ internal sealed class SmartLabFundamentalClient : IFundamentalDataClient
         }
     }
 
-    private static decimal? ParseDecimal(string input)
+    internal static decimal? ParseDecimal(string input)
     {
         input = input.Replace("%", "").Replace("−", "-").Replace(" ", "").Trim();
 

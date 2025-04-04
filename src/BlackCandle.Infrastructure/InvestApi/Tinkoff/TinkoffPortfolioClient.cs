@@ -21,14 +21,13 @@ internal sealed class TinkoffPortfolioClient : IPortfolioClient
     private readonly ILoggerService _logger;
 
     /// <inheritdoc cref="TinkoffPortfolioClient" />
-    public TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger)
+    public TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, InvestApiClient investApiClient)
     {
         _config = config.Value;
         _logger = logger;
 
-        var client = InvestApiClientFactory.Create(_config.ApiKey);
-        _client = client.Operations;
-        _instrumentsClient = client.Instruments;
+        _client = investApiClient.Operations;
+        _instrumentsClient = investApiClient.Instruments;
     }
 
     /// <inheritdoc />

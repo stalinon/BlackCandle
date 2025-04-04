@@ -1,11 +1,9 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
 using BlackCandle.Infrastructure.InvestApi.Tinkoff.Extensions;
 using Google.Protobuf.WellKnownTypes;
-using Microsoft.Extensions.Options;
 using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
@@ -20,10 +18,10 @@ internal sealed class TinkoffMarketDataClient : IMarketDataClient
     private readonly MarketDataService.MarketDataServiceClient _client;
     
     /// <inheritdoc cref="TinkoffMarketDataClient" />
-    public TinkoffMarketDataClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger)
+    public TinkoffMarketDataClient(ILoggerService logger, InvestApiClient investApiClient)
     {
         _logger = logger;
-        _client = InvestApiClientFactory.Create(config.Value.ApiKey).MarketData;
+        _client = investApiClient.MarketData;
     }
     
     /// <inheritdoc />

@@ -15,7 +15,7 @@ internal abstract class PipelineStep<TContext> : IPipelineStep<TContext>
     public ILoggerService Logger { protected get; set; }
 
     /// <inheritdoc />
-    public Action<TContext, Exception> EarlyExitAction { get; set; } = (ctx, ex) => { };
+    public Action<TContext, Exception, IPipelineStep<TContext>> EarlyExitAction { get; set; } = (ctx, ex, step) => { };
 
     /// <inheritdoc />
     public PipelineStepStatus Status { get; set; } = PipelineStepStatus.NotStarted;

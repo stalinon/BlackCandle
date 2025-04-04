@@ -1,6 +1,7 @@
 using BlackCandle.Application.Interfaces.InvestApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Tinkoff.InvestApi;
 
 namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 
@@ -20,6 +21,8 @@ internal static class TinkoffInvestApiRegistration
             o.ApiKey = options.ApiKey;
             o.AccountId = options.ApiKey;
         });
+
+        services.AddInvestApiClient((_, settings) => settings.AccessToken = options.ApiKey);
         
         services.AddSingleton<IMarketDataClient, TinkoffMarketDataClient>();
         services.AddSingleton<IPortfolioClient, TinkoffPortfolioClient>();

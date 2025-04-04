@@ -20,13 +20,12 @@ internal sealed class TinkoffTradingClient : ITradingClient
     private readonly ILoggerService _logger;
 
     /// <inheritdoc cref="TinkoffTradingClient"/>
-    public TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger)
+    public TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, InvestApiClient investApiClient)
     {
         _config = config.Value;
         _logger = logger;
 
-        var client = InvestApiClientFactory.Create(_config.ApiKey);
-        _ordersClient = client.Orders;
+        _ordersClient = investApiClient.Orders;
     }
 
     /// <inheritdoc />

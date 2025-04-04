@@ -1,4 +1,3 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Exceptions;
 
@@ -20,7 +19,7 @@ internal sealed class CheckAutoTradePermissionStep(IDataStorageContext dataStora
         if (!settings.EnableAutoTrading)
         {
             var exception = new AutoTradeNotEnabledException();
-            EarlyExitAction.Invoke(context, exception);
+            EarlyExitAction.Invoke(context, exception, this);
         }
     }
 }

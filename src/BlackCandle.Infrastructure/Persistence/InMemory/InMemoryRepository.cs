@@ -10,7 +10,7 @@ namespace BlackCandle.Infrastructure.Persistence.InMemory;
 /// Хранилище сущностей в оперативной памяти
 /// </summary>
 /// <typeparam name="T">Тип сущности</typeparam>
-public class InMemoryRepository<T> : IRepository<T> where T : IEntity
+internal sealed class InMemoryRepository<T> : IRepository<T> where T : IEntity
 {
     private readonly ConcurrentDictionary<string, T> _storage = new();
 

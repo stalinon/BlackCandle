@@ -21,7 +21,7 @@ public abstract class Pipeline<TContext> where TContext : new()
     /// <summary>
     ///     Реакция на смену статуса шага
     /// </summary>
-    event PipelineStepStatusChangedHandler<TContext>? OnStepStatusChanged;
+    public event PipelineStepStatusChangedHandler<TContext>? OnStepStatusChanged;
     
     /// <summary>
     ///     Реакция на смену статуса
@@ -93,8 +93,9 @@ public abstract class Pipeline<TContext> where TContext : new()
     /// <summary>
     ///     Ранний выход из пайплайна
     /// </summary>
-    private void EarlyExit(TContext context, Exception exception)
+    private void EarlyExit(TContext context, Exception exception, IPipelineStep<TContext> step)
     {
+        UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
         UpdatePipelineStatus(PipelineStatus.NotStarted, context, exception);
     }
     
