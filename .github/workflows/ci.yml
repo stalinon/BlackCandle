@@ -47,7 +47,8 @@ jobs:
             --no-build \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
-            --logger trx
+            --logger trx \
+            --settings coveragerunsettings.runsettings
 
       - name: 🧼 Convert coverage to lcov
         uses: danielpalme/ReportGenerator-GitHub-Action@5
@@ -57,6 +58,12 @@ jobs:
           reporttypes: 'Html;Cobertura;Badges'
           filefilters: '+src/*'
           classfilters: '-*Tests'
+
+      - name: 🐛 Dump coverage output
+        run: |
+          find . -type f -name "coverage.cobertura.xml"
+          find . -type f -name "Cobertura.xml"
+          cat coveragereport/Cobertura.xml || echo "⛔ Cobertura.xml NOT FOUND"
 
       - name: 📡 Upload to Coveralls
         uses: coverallsapp/github-action@v2
