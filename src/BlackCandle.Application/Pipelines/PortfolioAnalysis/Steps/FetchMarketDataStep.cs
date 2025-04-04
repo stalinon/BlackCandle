@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Enums;
@@ -8,16 +9,13 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Получение рыночных данных
 /// </summary>
-internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStorageContext dataStorage) : IPipelineStep<PortfolioAnalysisContext>
+internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public PipelineStepStatus Status { get; set; }
-    
-    /// <inheritdoc />
-    public string StepName => "Получение рыночных данных";
+    public override string StepName => "Получение рыночных данных";
 
     /// <inheritdoc />
-    public async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         var weekAgo = now.AddDays(-7);

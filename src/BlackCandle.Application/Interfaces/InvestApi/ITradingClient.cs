@@ -11,5 +11,5 @@ public interface ITradingClient
     /// <summary>
     ///     Поставить заявку
     /// </summary>
-    Task<string> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side);
+    Task<decimal> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side);
 }

@@ -1,6 +1,6 @@
 using BlackCandle.Domain.Entities;
 
-namespace BlackCandle.Application.Interfaces;
+namespace BlackCandle.Application.Interfaces.Infrastructure;
 
 /// <summary>
 ///     Контекст хранилища данных, агрегирующий все репозитории

@@ -8,16 +8,13 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Логирование
 /// </summary>
-internal sealed class LogStep : IPipelineStep<PortfolioAnalysisContext>
+internal sealed class LogStep : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public PipelineStepStatus Status { get; set; }
+    public override string StepName => "Логирование";
 
     /// <inheritdoc />
-    public string StepName => "Логирование";
-
-    /// <inheritdoc />
-    public Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

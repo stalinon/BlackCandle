@@ -1,6 +1,7 @@
 using System.Globalization;
 using AngleSharp.Html.Parser;
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;

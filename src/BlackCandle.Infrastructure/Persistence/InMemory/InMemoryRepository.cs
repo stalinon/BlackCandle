@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Interfaces;
 
 namespace BlackCandle.Infrastructure.Persistence.InMemory;

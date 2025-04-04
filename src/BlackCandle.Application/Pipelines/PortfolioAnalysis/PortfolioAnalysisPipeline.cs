@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis;

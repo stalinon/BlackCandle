@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Enums;
 
@@ -11,6 +12,11 @@ public abstract class Pipeline<TContext> where TContext : new()
 {
     private readonly IEnumerable<IPipelineStep<TContext>> _steps;
     private readonly ILoggerService _logger;
+
+    /// <summary>
+    ///     Контекст пайплайна
+    /// </summary>
+    public TContext Context { get; } = new();
     
     /// <summary>
     ///     Реакция на смену статуса шага
@@ -27,53 +33,69 @@ public abstract class Pipeline<TContext> where TContext : new()
     /// </summary>
     public PipelineStatus Status { get; private set; } = PipelineStatus.NotStarted;
 
-    /// <inheritdoc cref="Pipeline{TContext}" />
-    protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
-    {
-        _steps = steps;
-        foreach (var pipelineStep in _steps)
-        {
-            pipelineStep.Status = PipelineStepStatus.NotStarted;
-        }
-        
-        _logger = logger;
-    }
-
     /// <summary>
     ///     Название пайплайна
     /// </summary>
     protected abstract string Name { get; }
+
+    /// <inheritdoc cref="Pipeline{TContext}" />
+    protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
+    {
+        _steps = steps;
+        _logger = logger;
+        
+        // ReSharper disable once VirtualMemberCallInConstructor
+        _logger.AddPrefix(Name);
+        
+        foreach (var pipelineStep in _steps)
+        {
+            pipelineStep.Status = PipelineStepStatus.NotStarted;
+            pipelineStep.EarlyExitAction = EarlyExit;
+            pipelineStep.Logger = _logger;
+        }
+    }
     
     /// <summary>
     ///     Запуск пайплайна
     /// </summary>
     public async Task RunAsync(CancellationToken cancellationToken = default)
     {
-        _logger.AddPrefix(Name);
-        
-        var context = new TContext();
-        UpdatePipelineStatus(PipelineStatus.Running, context);
+        UpdatePipelineStatus(PipelineStatus.Running, Context);
 
         foreach (var step in _steps)
         {
             try
             {
-                UpdatePipelineStepStatus(PipelineStepStatus.Running, step, context);
+                UpdatePipelineStepStatus(PipelineStepStatus.Running, step, Context);
                 _logger.LogInfo($"Начинается шаг: {step.StepName}");
-                await step.ExecuteAsync(context, cancellationToken);
+                await step.ExecuteAsync(Context, cancellationToken);
                 _logger.LogInfo($"Шаг завершен: {step.StepName}");
-                UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, context);
+
+                if (Status != PipelineStatus.Running)
+                {
+                    return;
+                }
+                
+                UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Ошибка на шаге {step.StepName}", ex);
-                UpdatePipelineStepStatus(PipelineStepStatus.Failed, step, context);
-                UpdatePipelineStatus(PipelineStatus.Failed, context, ex);
+                UpdatePipelineStepStatus(PipelineStepStatus.Failed, step, Context);
+                UpdatePipelineStatus(PipelineStatus.Failed, Context, ex);
                 throw;
             }
         }
         
-        UpdatePipelineStatus(PipelineStatus.Completed, context);
+        UpdatePipelineStatus(PipelineStatus.Completed, Context);
+    }
+
+    /// <summary>
+    ///     Ранний выход из пайплайна
+    /// </summary>
+    private void EarlyExit(TContext context, Exception exception)
+    {
+        UpdatePipelineStatus(PipelineStatus.NotStarted, context, exception);
     }
     
     private void UpdatePipelineStepStatus(PipelineStepStatus newStatus, IPipelineStep<TContext> step, TContext context, Exception? ex = null)

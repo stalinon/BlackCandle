@@ -1,5 +1,5 @@
 using BlackCandle.Application.Interfaces;
-using BlackCandle.Application.Interfaces.InvestApi;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Enums;
 
@@ -8,16 +8,13 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Фундаментальный скоринг
 /// </summary>
-internal sealed class ScoreFundamentalsStep(IInvestApiFacade investApi, IDataStorageContext dataStorage) : IPipelineStep<PortfolioAnalysisContext>
+internal sealed class ScoreFundamentalsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public PipelineStepStatus Status { get; set; }
+    public override string StepName => "Фундаментальный скоринг";
 
     /// <inheritdoc />
-    public string StepName => "Фундаментальный скоринг";
-
-    /// <inheritdoc />
-    public async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
     {
         var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
         foreach (var asset in portfolio)

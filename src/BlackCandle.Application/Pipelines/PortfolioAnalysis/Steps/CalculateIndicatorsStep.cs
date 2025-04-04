@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -9,16 +10,13 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Расчет технических индикаторов
 /// </summary>
-internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) : IPipelineStep<PortfolioAnalysisContext>
+internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public PipelineStepStatus Status { get; set; }
+    public override string StepName => "Расчет тех. индикаторов";
 
     /// <inheritdoc />
-    public string StepName => "Расчет тех. индикаторов";
-
-    /// <inheritdoc />
-    public async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
 

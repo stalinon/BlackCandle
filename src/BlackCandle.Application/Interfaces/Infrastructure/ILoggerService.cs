@@ -1,4 +1,4 @@
-namespace BlackCandle.Application.Interfaces;
+namespace BlackCandle.Application.Interfaces.Infrastructure;
 
 /// <summary>
 ///     Универсальный логгер для всего пайплайна: от API до бэкенда.

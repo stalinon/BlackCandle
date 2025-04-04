@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 
 namespace BlackCandle.Infrastructure.Persistence.InMemory;

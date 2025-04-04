@@ -1,6 +1,9 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Infrastructure.InvestApi;
-using Microsoft.Extensions.Configuration;
+using BlackCandle.Infrastructure.Logging;
+using BlackCandle.Infrastructure.Trading;
 using Microsoft.Extensions.DependencyInjection;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace BlackCandle.Infrastructure;
 
@@ -14,7 +17,12 @@ public static class InfrastructureRegistration
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<ILoggerService, ConsoleLogger>();
+        
         services.AddInvestApiServices(configuration);
+
+        services.AddTradingServices(configuration);
+        
         return services;
     }
 }

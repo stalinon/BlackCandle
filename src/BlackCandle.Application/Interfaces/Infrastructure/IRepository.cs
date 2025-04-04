@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace BlackCandle.Application.Interfaces;
+namespace BlackCandle.Application.Interfaces.Infrastructure;
 
 /// <summary>
 ///     Универсальный репозиторий для работы с сущностями

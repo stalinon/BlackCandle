@@ -39,5 +39,5 @@ public class ExecutedTrade : IEntity
     /// <summary>
     ///     Статус
     /// </summary>
-    public string Status { get; set; } = string.Empty;
+    public TradeStatus Status { get; set; }
 }

@@ -1,3 +1,4 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Enums;
 
 namespace BlackCandle.Application.Interfaces.Pipelines;
@@ -7,6 +8,16 @@ namespace BlackCandle.Application.Interfaces.Pipelines;
 /// </summary>
 public interface IPipelineStep<TContext>
 {
+    /// <summary>
+    ///     Логгер
+    /// </summary>
+    ILoggerService Logger { set; }
+    
+    /// <summary>
+    ///     Ранний выход из пайплайна
+    /// </summary>
+    Action<TContext, Exception> EarlyExitAction { set; }
+    
     /// <summary>
     ///     Статус
     /// </summary>

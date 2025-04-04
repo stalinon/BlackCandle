@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
@@ -65,13 +66,12 @@ internal sealed class TinkoffPortfolioClient : IPortfolioClient
                 };
 
                 var quantity = position.Quantity.Units + position.Quantity.Nano / 1_000_000_000M;
-                var buyPrice = position.CurrentPrice.ToDecimal() * quantity;
 
                 var asset = new PortfolioAsset
                 {
                     Ticker = ticker,
                     Quantity = quantity,
-                    CurrentValue = buyPrice
+                    CurrentValue = position.CurrentPrice.ToDecimal()
                 };
 
                 assets.Add(asset);

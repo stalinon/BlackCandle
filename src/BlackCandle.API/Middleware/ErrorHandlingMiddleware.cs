@@ -2,6 +2,7 @@ using BlackCandle.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.API.Middleware;

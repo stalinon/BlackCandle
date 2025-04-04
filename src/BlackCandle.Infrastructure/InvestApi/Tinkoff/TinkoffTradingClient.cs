@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -29,7 +30,7 @@ internal sealed class TinkoffTradingClient : ITradingClient
     }
 
     /// <inheritdoc />
-    public async Task<string> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side)
+    public async Task<decimal> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side)
     {
         try
         {
@@ -50,7 +51,7 @@ internal sealed class TinkoffTradingClient : ITradingClient
             };
 
             var result = await _ordersClient.PostOrderAsync(orderRequest);
-            return result.OrderId;
+            return result.ExecutedOrderPrice;
         }
         catch (ArgumentOutOfRangeException)
         {

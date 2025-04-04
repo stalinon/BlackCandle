@@ -1,11 +1,11 @@
-using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Interfaces.Infrastructure;
 
 namespace BlackCandle.Infrastructure.Logging;
 
 /// <summary>
 ///     Простейший логгер. Только для ранней разработки и дебага.
 /// </summary>
-public class ConsoleLogger : ILoggerService
+internal sealed class ConsoleLogger : ILoggerService
 {
     private string Preffix => string.Join(" ", _prefixes.Select(x => $"[{x}]"));
     
