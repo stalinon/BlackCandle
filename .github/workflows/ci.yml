@@ -29,7 +29,7 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      
+
       - name: 🔄 Init submodules
         run: |
           git submodule init
@@ -43,26 +43,32 @@ jobs:
 
       - name: 🧪 Run tests with coverage
         run: |
-          dotnet test ./src \
+          dotnet test ./src/BlackCandle.Tests \
             --no-build \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
-            --logger trx
+            --logger trx \
+            --settings coveragerunsettings.runsettings
 
-      - name: 🧼 Convert coverage to lcov
+      - name: 🗂 Move coverage to known location
+        run: |
+          mkdir -p coverage
+          find ./src/BlackCandle.Tests -type f -name "coverage.cobertura.xml" -exec cp {} coverage/coverage.cobertura.xml \;
+
+      - name: 🧼 Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5
         with:
-          reports: '**/coverage.cobertura.xml'
+          reports: 'coverage/coverage.cobertura.xml'
           targetdir: 'coveragereport'
           reporttypes: 'Html;Cobertura;Badges'
-          filefilters: '+src/*'
           classfilters: '-*Tests'
 
       - name: 🐛 Dump coverage output
         run: |
-          find . -type f -name "coverage.cobertura.xml"
-          find . -type f -name "Cobertura.xml"
-          cat coveragereport/Cobertura.xml || echo "⛔ Cobertura.xml NOT FOUND"
+          echo "🧾 coverage.cobertura.xml:"
+          cat coverage/coverage.cobertura.xml || echo "⛔ Not found"
+          echo "📄 Cobertura.xml:"
+          cat coveragereport/Cobertura.xml || echo "⛔ Not found"
 
       - name: 📡 Upload to Coveralls
         uses: coverallsapp/github-action@v2
@@ -79,4 +85,3 @@ jobs:
           path: |
             **/TestResults/*.trx
             coveragereport
-
