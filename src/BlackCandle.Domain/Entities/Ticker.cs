@@ -19,4 +19,9 @@ public class Ticker
     ///     Отрасль
     /// </summary>
     public string Sector { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Уникальный код тикера
+    /// </summary>
+    public string Figi { get; set; } = string.Empty;
 }

@@ -8,7 +8,7 @@ namespace BlackCandle.Domain.Entities;
 public class PortfolioAsset : IEntity
 {
     /// <inheritdoc />
-    public string Id => $"{Ticker.Symbol}_{PurchaseDate:yyyyMMdd}";
+    public string Id => $"{Ticker.Symbol}";
 
     /// <summary>
     ///     Тикер бумаги
@@ -21,12 +21,7 @@ public class PortfolioAsset : IEntity
     public decimal Quantity { get; set; }
 
     /// <summary>
-    ///     Цена покупки
+    ///     Цена
     /// </summary>
-    public decimal PurchasePrice { get; set; }
-
-    /// <summary>
-    ///     Дата покупки
-    /// </summary>
-    public DateTime PurchaseDate { get; set; }
+    public decimal CurrentValue { get; set; }
 }

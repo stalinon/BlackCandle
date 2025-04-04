@@ -33,8 +33,7 @@ public class PortfolioController : BaseController
         {
             Symbol = a.Ticker.Symbol,
             Quantity = a.Quantity,
-            PurchasePrice = a.PurchasePrice,
-            PurchaseDate = a.PurchaseDate
+            PurchasePrice = a.CurrentValue
         }).ToList();
 
         return Success(result);
@@ -53,8 +52,7 @@ public class PortfolioController : BaseController
                 Symbol = request.Symbol
             },
             Quantity = request.Quantity,
-            PurchasePrice = request.PurchasePrice,
-            PurchaseDate = request.PurchaseDate
+            CurrentValue = request.PurchasePrice
         };
 
         await _portfolioService.AddAssetAsync(asset);
