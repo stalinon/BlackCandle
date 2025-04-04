@@ -6,6 +6,11 @@ namespace BlackCandle.Domain.Entities;
 public class PriceHistoryPoint
 {
     /// <summary>
+    ///     Тикер
+    /// </summary>
+    public Ticker Ticker { get; set; }
+    
+    /// <summary>
     ///     Дата
     /// </summary>
     public DateTime Date { get; set; }

@@ -40,6 +40,7 @@ internal sealed class TinkoffMarketDataClient : IMarketDataClient
 
             return response.Candles.Select(c => new PriceHistoryPoint
             {
+                Ticker = ticker,
                 Date = c.Time.ToDateTime(),
                 Open = c.Open.ToDecimal(),
                 High = c.High.ToDecimal(),

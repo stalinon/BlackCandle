@@ -25,4 +25,14 @@ public interface IRepository<T>
     ///     Удалить сущность по идентификатору
     /// </summary>
     Task RemoveAsync(string id);
+    
+    /// <summary>
+    ///     Добавить скопом
+    /// </summary>
+    Task AddRangeAsync(IEnumerable<T> entities);
+
+    /// <summary>
+    ///     Очистить хранилище
+    /// </summary>
+    Task TruncateAsync();
 }

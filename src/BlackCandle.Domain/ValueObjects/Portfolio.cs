@@ -9,6 +9,14 @@ public class Portfolio
 {
     private List<PortfolioAsset> Assets { get; } = new();
 
+    public Portfolio()
+    { }
+
+    public Portfolio(List<PortfolioAsset> assets)
+    {
+        Assets = assets;
+    }
+
     /// <summary>
     ///     Добавить
     /// </summary>

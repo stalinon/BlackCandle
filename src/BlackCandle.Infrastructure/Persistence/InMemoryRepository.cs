@@ -35,4 +35,22 @@ public class InMemoryRepository<T> : IRepository<T> where T : IEntity
         _storage.Remove(id, out _);
         return Task.CompletedTask;
     }
+
+    /// <inheritdoc />
+    public Task AddRangeAsync(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            _storage[entity.Id] = entity;
+        }
+        
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task TruncateAsync()
+    {
+        _storage.Clear();
+        return Task.CompletedTask;
+    }
 }
