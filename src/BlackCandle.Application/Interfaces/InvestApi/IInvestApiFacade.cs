@@ -13,4 +13,7 @@ public interface IInvestApiFacade
     
     /// <inheritdoc cref="ITradingClient" />
     public ITradingClient Trading { get; }
+    
+    /// <inheritdoc cref="IFundamentalDataClient" />
+    public IFundamentalDataClient Fundamentals { get; }
 }

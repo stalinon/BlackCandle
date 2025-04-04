@@ -13,15 +13,20 @@ internal sealed class InvestApiFacade : IInvestApiFacade
     
     /// <inheritdoc />
     public ITradingClient Trading { get; }
+    
+    /// <inheritdoc />
+    public IFundamentalDataClient Fundamentals { get; }
 
     /// <inheritdoc cref="InvestApiFacade" />
     public InvestApiFacade(
         IMarketDataClient marketdata,
         IPortfolioClient portfolio,
-        ITradingClient trading)
+        ITradingClient trading,
+        IFundamentalDataClient fundamentals)
     {
         Marketdata = marketdata;
         Portfolio = portfolio;
         Trading = trading;
+        Fundamentals = fundamentals;
     }
 }
