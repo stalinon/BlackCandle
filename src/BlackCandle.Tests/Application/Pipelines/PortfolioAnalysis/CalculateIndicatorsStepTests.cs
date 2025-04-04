@@ -12,10 +12,10 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Игнорируются тикеры с количеством свечей меньше 50</description></item>
-///         <item><description>Рассчитываются SMA, EMA, RSI, MACD, ADX</description></item>
-///         <item><description>Null-значения в индикаторах отфильтровываются</description></item>
-///         <item><description>Группировка индикаторов по дате сохраняется</description></item>
+///         <item>Игнорируются тикеры с количеством свечей меньше 50</item>
+///         <item>Рассчитываются SMA, EMA, RSI, MACD, ADX</item>
+///         <item>Null-значения в индикаторах отфильтровываются</item>
+///         <item>Группировка индикаторов по дате сохраняется</item>
 ///     </list>
 /// </remarks>
 public sealed class CalculateIndicatorsStepTests

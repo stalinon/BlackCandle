@@ -12,13 +12,13 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Игнорируется актив без фундаменталки</description></item>
-///         <item><description>+1 за PERatio меньше 15</description></item>
-///         <item><description>+1 за PBRatio меньше 3</description></item>
-///         <item><description>+1 за DividendYield > 4</description></item>
-///         <item><description>+1 за ROE > 10</description></item>
-///         <item><description>+1 за MarketCap > 100_000</description></item>
-///         <item><description>Полный скор = 5 при всех выполненных условиях</description></item>
+///         <item>Игнорируется актив без фундаменталки</item>
+///         <item>+1 за PERatio меньше 15</item>
+///         <item>+1 за PBRatio меньше 3</item>
+///         <item>+1 за DividendYield > 4</item>
+///         <item>+1 за ROE > 10</item>
+///         <item>+1 за MarketCap > 100_000</item>
+///         <item>Полный скор = 5 при всех выполненных условиях</item>
 ///     </list>
 /// </remarks>
 public sealed class ScoreFundamentalsStepTests

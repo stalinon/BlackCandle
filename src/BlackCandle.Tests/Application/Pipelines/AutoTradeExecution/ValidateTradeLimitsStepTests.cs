@@ -14,10 +14,10 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Валидный сигнал — остаётся в списке</description></item>
-///         <item><description>Невалидный сигнал — отфильтровывается</description></item>
-///         <item><description>Все сигналы отклонены — список пуст</description></item>
-///         <item><description>Портфель получается из хранилища</description></item>
+///         <item>Валидный сигнал — остаётся в списке</item>
+///         <item>Невалидный сигнал — отфильтровывается</item>
+///         <item>Все сигналы отклонены — список пуст</item>
+///         <item>Портфель получается из хранилища</item>
 ///     </list>
 /// </remarks>
 public sealed class ValidateTradeLimitsStepTests

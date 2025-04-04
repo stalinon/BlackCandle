@@ -14,11 +14,11 @@ namespace BlackCandle.Tests.Infrastructure.Trading;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Сигнал Hold всегда даёт объём 0</description></item>
-///         <item><description>Нулевая или отрицательная цена — объём 0</description></item>
-///         <item><description>Слишком маленький бюджет — объём 0</description></item>
-///         <item><description>Ограничение по MaxLotsPerTrade</description></item>
-///         <item><description>Корректный сигнал даёт правильный объём</description></item>
+///         <item>Сигнал Hold всегда даёт объём 0</item>
+///         <item>Нулевая или отрицательная цена — объём 0</item>
+///         <item>Слишком маленький бюджет — объём 0</item>
+///         <item>Ограничение по MaxLotsPerTrade</item>
+///         <item>Корректный сигнал даёт правильный объём</item>
 ///     </list>
 /// </remarks>
 public sealed class TradeExecutionServiceTests

@@ -13,10 +13,10 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Нет сигналов — сообщение содержит фразу "Нет торговых сигналов"</description></item>
-///         <item><description>Формируется Markdown-отчёт с эмодзи и деталями</description></item>
-///         <item><description>Вызывается Telegram-сервис</description></item>
-///         <item><description>Сигналы фильтруются по дате</description></item>
+///         <item>Нет сигналов — сообщение содержит фразу "Нет торговых сигналов"</item>
+///         <item>Формируется Markdown-отчёт с эмодзи и деталями</item>
+///         <item>Вызывается Telegram-сервис</item>
+///         <item>Сигналы фильтруются по дате</item>
 ///     </list>
 /// </remarks>
 public sealed class LogStepTests

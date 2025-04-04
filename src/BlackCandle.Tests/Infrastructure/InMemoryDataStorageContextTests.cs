@@ -8,8 +8,8 @@ namespace BlackCandle.Tests.Infrastructure;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Проверка, что все репозитории не null</description></item>
-///         <item><description>Проверка, что каждый репозиторий реализован через InMemoryRepository</description></item>
+///         <item>Проверка, что все репозитории не null</item>
+///         <item>Проверка, что каждый репозиторий реализован через InMemoryRepository</item>
 ///     </list>
 /// </remarks>
 public sealed class InMemoryDataStorageContextTests

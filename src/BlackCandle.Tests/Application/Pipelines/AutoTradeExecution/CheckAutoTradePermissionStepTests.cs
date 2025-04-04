@@ -13,9 +13,9 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Проверка разрешения: true — шаг выполняется</description></item>
-///         <item><description>Проверка разрешения: false — вызывается EarlyExit</description></item>
-///         <item><description>Ошибка, если в настройках больше одного элемента или ни одного</description></item>
+///         <item>Проверка разрешения: true — шаг выполняется</item>
+///         <item>Проверка разрешения: false — вызывается EarlyExit</item>
+///         <item>Ошибка, если в настройках больше одного элемента или ни одного</item>
 ///     </list>
 /// </remarks>
 public sealed class CheckAutoTradePermissionStepTests

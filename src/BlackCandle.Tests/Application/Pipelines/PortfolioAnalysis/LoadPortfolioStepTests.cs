@@ -12,9 +12,9 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Получение портфеля из InvestAPI</description></item>
-///         <item><description>Очистка старых активов</description></item>
-///         <item><description>Сохранение новых активов</description></item>
+///         <item>Получение портфеля из InvestAPI</item>
+///         <item>Очистка старых активов</item>
+///         <item>Сохранение новых активов</item>
 ///     </list>
 /// </remarks>
 public sealed class LoadPortfolioStepTests

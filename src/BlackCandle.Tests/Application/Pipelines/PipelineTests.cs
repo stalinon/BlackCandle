@@ -11,10 +11,10 @@ namespace BlackCandle.Tests.Application.Pipelines;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Пайплайн проходит все шаги при успехе</description></item>
-///         <item><description>Пайплайн прерывается при исключении</description></item>
-///         <item><description>EarlyExit прерывает пайплайн</description></item>
-///         <item><description>События статусов шага и пайплайна вызываются корректно</description></item>
+///         <item>Пайплайн проходит все шаги при успехе</item>
+///         <item>Пайплайн прерывается при исключении</item>
+///         <item>EarlyExit прерывает пайплайн</item>
+///         <item>События статусов шага и пайплайна вызываются корректно</item>
 ///     </list>
 /// </remarks>
 public sealed class PipelineTests

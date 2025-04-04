@@ -13,11 +13,11 @@ namespace BlackCandle.Tests.Infrastructure.Trading;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Игнорируется не-Buy сигнал</description></item>
-///         <item><description>Отклонение при нулевой/отрицательной цене</description></item>
-///         <item><description>Отклонение при цене ниже минимальной</description></item>
-///         <item><description>Отклонение при превышении доли в портфеле</description></item>
-///         <item><description>Успешная валидация корректного сигнала</description></item>
+///         <item>Игнорируется не-Buy сигнал</item>
+///         <item>Отклонение при нулевой/отрицательной цене</item>
+///         <item>Отклонение при цене ниже минимальной</item>
+///         <item>Отклонение при превышении доли в портфеле</item>
+///         <item>Успешная валидация корректного сигнала</item>
 ///     </list>
 /// </remarks>
 public sealed class TradeLimitValidatorTests

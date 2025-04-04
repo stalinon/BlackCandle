@@ -9,7 +9,7 @@ namespace BlackCandle.Tests.Infrastructure.InvestApi;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Проверка, что все сервисы передаются и возвращаются корректно</description></item>
+///         <item>Проверка, что все сервисы передаются и возвращаются корректно</item>
 ///     </list>
 /// </remarks>
 public sealed class InvestApiFacadeTests

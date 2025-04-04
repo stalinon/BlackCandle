@@ -10,9 +10,9 @@ namespace BlackCandle.Tests.Infrastructure.InvestApi;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Тест на кэширование: если данные уже актуальны, не загружать заново.</description></item>
-///         <item><description>Тест на исключение при парсинге данных.</description></item>
-///         <item><description>Тест на корректную обработку парсинга данных (в том числе знаков и пробелов).</description></item>
+///         <item>Тест на кэширование: если данные уже актуальны, не загружать заново.</item>
+///         <item>Тест на исключение при парсинге данных.</item>
+///         <item>Тест на корректную обработку парсинга данных (в том числе знаков и пробелов).</item>
 ///     </list>
 /// </remarks>
 public class SmartLabFundamentalClientTests

@@ -13,10 +13,10 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Заявка размещена успешно</description></item>
-///         <item><description>Заявка не прошла — ошибка</description></item>
-///         <item><description>Логируется и успех, и ошибка</description></item>
-///         <item><description>Обрабатываются все заявки</description></item>
+///         <item>Заявка размещена успешно</item>
+///         <item>Заявка не прошла — ошибка</item>
+///         <item>Логируется и успех, и ошибка</item>
+///         <item>Обрабатываются все заявки</item>
 ///     </list>
 /// </remarks>
 public sealed class PlaceOrdersStepTests

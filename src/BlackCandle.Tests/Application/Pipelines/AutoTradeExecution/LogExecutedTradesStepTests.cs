@@ -12,11 +12,11 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Нет сделок — Telegram не вызывается</description></item>
-///         <item><description>Только успешные — отчёт содержит ✅ и цену</description></item>
-///         <item><description>Только неудачные — отчёт содержит ⚠️</description></item>
-///         <item><description>Смешанные сделки — обе секции присутствуют</description></item>
-///         <item><description>Формат отчета соответствует Markdown</description></item>
+///         <item>Нет сделок — Telegram не вызывается</item>
+///         <item>Только успешные — отчёт содержит ✅ и цену</item>
+///         <item>Только неудачные — отчёт содержит ⚠️</item>
+///         <item>Смешанные сделки — обе секции присутствуют</item>
+///         <item>Формат отчета соответствует Markdown</item>
 ///     </list>
 /// </remarks>
 public sealed class LogExecutedTradesStepTests

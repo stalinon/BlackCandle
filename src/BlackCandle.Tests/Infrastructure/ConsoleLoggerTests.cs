@@ -1,7 +1,5 @@
 using System.Text;
-using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Infrastructure.Logging;
-using Xunit;
 
 namespace BlackCandle.Tests.Infrastructure;
 
@@ -10,12 +8,12 @@ namespace BlackCandle.Tests.Infrastructure;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Добавление префикса</description></item>
-///         <item><description>Игнорирование дубликатных префиксов</description></item>
-///         <item><description>Логирование информации</description></item>
-///         <item><description>Логирование предупреждений</description></item>
-///         <item><description>Логирование ошибок без исключения</description></item>
-///         <item><description>Логирование ошибок с исключением</description></item>
+///         <item>Добавление префикса</item>
+///         <item>Игнорирование дубликатных префиксов</item>
+///         <item>Логирование информации</item>
+///         <item>Логирование предупреждений</item>
+///         <item>Логирование ошибок без исключения</item>
+///         <item>Логирование ошибок с исключением</item>
 ///     </list>
 /// </remarks>
 public sealed class ConsoleLoggerTests

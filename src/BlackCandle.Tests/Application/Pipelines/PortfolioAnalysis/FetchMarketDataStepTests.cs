@@ -13,11 +13,11 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>MarketData запрашивается для каждого актива</description></item>
-///         <item><description>MarketData очищается перед добавлением</description></item>
-///         <item><description>MarketData сохраняется</description></item>
-///         <item><description>Фундаменталка сохраняется, если она есть</description></item>
-///         <item><description>Null-фундаменталка не сохраняется</description></item>
+///         <item>MarketData запрашивается для каждого актива</item>
+///         <item>MarketData очищается перед добавлением</item>
+///         <item>MarketData сохраняется</item>
+///         <item>Фундаменталка сохраняется, если она есть</item>
+///         <item>Null-фундаменталка не сохраняется</item>
 ///     </list>
 /// </remarks>
 public sealed class FetchMarketDataStepTests

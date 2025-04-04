@@ -13,9 +13,9 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Загружаются только сигналы Buy/Sell</description></item>
-///         <item><description>Фильтрация по сегодняшней дате</description></item>
-///         <item><description>Сигналы попадают в контекст</description></item>
+///         <item>Загружаются только сигналы Buy/Sell</item>
+///         <item>Фильтрация по сегодняшней дате</item>
+///         <item>Сигналы попадают в контекст</item>
 ///     </list>
 /// </remarks>
 public sealed class LoadSignalsStepTests

@@ -14,13 +14,13 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Не генерируется сигнал без RSI</description></item>
-///         <item><description>Buy (Low) при RSI меньше 30 без подтверждений</description></item>
-///         <item><description>Buy (Medium) при RSI меньше 30 и слабом score</description></item>
-///         <item><description>Buy (High) при RSI меньше 30 и сильном score</description></item>
-///         <item><description>Sell (Medium) при RSI > 70 без подтверждений</description></item>
-///         <item><description>Sell (High) при RSI > 70 и подтверждении</description></item>
-///         <item><description>Hold при RSI в пределах нормы</description></item>
+///         <item>Не генерируется сигнал без RSI</item>
+///         <item>Buy (Low) при RSI меньше 30 без подтверждений</item>
+///         <item>Buy (Medium) при RSI меньше 30 и слабом score</item>
+///         <item>Buy (High) при RSI меньше 30 и сильном score</item>
+///         <item>Sell (Medium) при RSI > 70 без подтверждений</item>
+///         <item>Sell (High) при RSI > 70 и подтверждении</item>
+///         <item>Hold при RSI в пределах нормы</item>
 ///     </list>
 /// </remarks>
 public sealed class GenerateSignalsStepTests

@@ -13,12 +13,12 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Нет успешных сделок — ничего не происходит</description></item>
-///         <item><description>Buy создаёт новый актив</description></item>
-///         <item><description>Buy обновляет текущий актив</description></item>
-///         <item><description>Sell уменьшает количество</description></item>
-///         <item><description>Sell обнуляет актив — он удаляется</description></item>
-///         <item><description>ExecutedTrades сохраняются</description></item>
+///         <item>Нет успешных сделок — ничего не происходит</item>
+///         <item>Buy создаёт новый актив</item>
+///         <item>Buy обновляет текущий актив</item>
+///         <item>Sell уменьшает количество</item>
+///         <item>Sell обнуляет актив — он удаляется</item>
+///         <item>ExecutedTrades сохраняются</item>
 ///     </list>
 /// </remarks>
 public sealed class UpdatePortfolioStepTests

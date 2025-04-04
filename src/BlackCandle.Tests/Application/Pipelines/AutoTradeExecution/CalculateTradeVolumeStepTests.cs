@@ -12,10 +12,10 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item><description>Объём 0 — трейд не создается</description></item>
-///         <item><description>Объём > 0 — трейд создается</description></item>
-///         <item><description>Создаются только валидные трейды</description></item>
-///         <item><description>У всех трейдов статус Pending</description></item>
+///         <item>Объём 0 — трейд не создается</item>
+///         <item>Объём > 0 — трейд создается</item>
+///         <item>Создаются только валидные трейды</item>
+///         <item>У всех трейдов статус Pending</item>
 ///     </list>
 /// </remarks>
 public sealed class CalculateTradeVolumeStepTests
