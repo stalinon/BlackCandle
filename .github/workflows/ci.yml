@@ -63,13 +63,6 @@ jobs:
           reporttypes: 'Html;Cobertura;Badges'
           classfilters: '-*Tests'
 
-      - name: 🐛 Dump coverage output
-        run: |
-          echo "🧾 coverage.cobertura.xml:"
-          cat coverage/coverage.cobertura.xml || echo "⛔ Not found"
-          echo "📄 Cobertura.xml:"
-          cat coveragereport/Cobertura.xml || echo "⛔ Not found"
-
       - name: 📡 Upload to Coveralls
         uses: coverallsapp/github-action@v2
         with:
