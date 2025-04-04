@@ -61,7 +61,8 @@ jobs:
           reports: 'coverage/coverage.cobertura.xml'
           targetdir: 'coveragereport'
           reporttypes: 'Html;Cobertura;Badges'
-          classfilters: '-*Tests'
+          classfilters: '-Tinkoff.*'
+          filefilters: '-*thirdparty/*
 
       - name: 📡 Upload to Coveralls
         uses: coverallsapp/github-action@v2
