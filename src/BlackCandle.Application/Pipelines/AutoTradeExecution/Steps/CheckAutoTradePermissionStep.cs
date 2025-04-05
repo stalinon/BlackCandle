@@ -10,7 +10,7 @@ internal sealed class CheckAutoTradePermissionStep(IDataStorageContext dataStora
     : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Проверка разрешения";
+    public override string Name => "Проверка разрешения";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

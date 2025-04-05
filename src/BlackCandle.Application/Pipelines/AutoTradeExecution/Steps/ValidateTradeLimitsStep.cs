@@ -12,7 +12,7 @@ internal sealed class ValidateTradeLimitsStep(
     ITradeLimitValidator validator) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Валидация сигналов";
+    public override string Name => "Валидация сигналов";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

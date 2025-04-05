@@ -11,7 +11,7 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 internal sealed class ScoreFundamentalsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Фундаментальный скоринг";
+    public override string Name => "Фундаментальный скоринг";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

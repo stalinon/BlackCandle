@@ -11,7 +11,7 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 internal sealed class UpdatePortfolioStep(IDataStorageContext dataStorage) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Обновление портфеля";
+    public override string Name => "Обновление портфеля";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

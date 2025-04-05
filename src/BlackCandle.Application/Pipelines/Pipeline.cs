@@ -10,7 +10,7 @@ namespace BlackCandle.Application.Pipelines;
 public abstract class Pipeline<TContext>
     where TContext : new()
 {
-    private readonly IEnumerable<IPipelineStep<TContext>> _steps = null!;
+    private readonly List<IPipelineStep<TContext>> _steps = new();
     private readonly ILoggerService _logger = null!;
 
     /// <inheritdoc cref="Pipeline{TContext}" />
@@ -20,7 +20,7 @@ public abstract class Pipeline<TContext>
     /// <inheritdoc cref="Pipeline{TContext}" />
     protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
     {
-        _steps = steps;
+        _steps = steps.ToList();
         _logger = logger;
 
         // ReSharper disable once VirtualMemberCallInConstructor
@@ -57,7 +57,7 @@ public abstract class Pipeline<TContext>
     /// <summary>
     ///     Название пайплайна
     /// </summary>
-    protected abstract string Name { get; }
+    public abstract string Name { get; }
 
     /// <summary>
     ///     Запуск пайплайна
@@ -71,9 +71,9 @@ public abstract class Pipeline<TContext>
             try
             {
                 UpdatePipelineStepStatus(PipelineStepStatus.Running, step, Context);
-                _logger.LogInfo($"Начинается шаг: {step.StepName}");
+                _logger.LogInfo($"Начинается шаг: {step.Name}");
                 await step.ExecuteAsync(Context, cancellationToken);
-                _logger.LogInfo($"Шаг завершен: {step.StepName}");
+                _logger.LogInfo($"Шаг завершен: {step.Name}");
 
                 if (Status != PipelineStatus.Running)
                 {
@@ -84,8 +84,8 @@ public abstract class Pipeline<TContext>
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Ошибка на шаге {step.StepName}", ex);
-                UpdatePipelineStepStatus(PipelineStepStatus.Failed, step, Context);
+                _logger.LogError($"Ошибка на шаге {step.Name}", ex);
+                UpdatePipelineStepStatus(PipelineStepStatus.Failed, step, Context, ex);
                 UpdatePipelineStatus(PipelineStatus.Failed, Context, ex);
                 throw;
             }
@@ -95,23 +95,31 @@ public abstract class Pipeline<TContext>
     }
 
     /// <summary>
-    ///     Ранний выход из пайплайна
+    ///     Добавить шаг в пайплайн
     /// </summary>
-    private void EarlyExit(TContext context, Exception exception, IPipelineStep<TContext> step)
+    internal void AddStep(IPipelineStep<TContext> step)
     {
-        UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
-        UpdatePipelineStatus(PipelineStatus.NotStarted, context, exception);
+        _steps.Add(step);
     }
 
     private void UpdatePipelineStepStatus(PipelineStepStatus newStatus, IPipelineStep<TContext> step, TContext context, Exception? ex = null)
     {
         step.Status = newStatus;
-        OnStepStatusChanged?.Invoke(step.Status, step.StepName, context, ex);
+        OnStepStatusChanged?.Invoke(step.Status, step.Name, context, ex);
     }
 
     private void UpdatePipelineStatus(PipelineStatus newStatus, TContext context, Exception? ex = null)
     {
         Status = newStatus;
         OnStatusChanged?.Invoke(newStatus, context, ex);
+    }
+
+    /// <summary>
+    ///     Ранний выход из пайплайна
+    /// </summary>
+    private void EarlyExit(TContext context, Exception exception, IPipelineStep<TContext> step)
+    {
+        UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
+        UpdatePipelineStatus(PipelineStatus.NotStarted, context, exception);
     }
 }

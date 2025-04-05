@@ -46,4 +46,9 @@ public interface IDataStorageContext
     ///     Репозиторий исторических данных
     /// </summary>
     IRepository<PriceHistoryPoint> Marketdata { get; }
+
+    /// <summary>
+    ///     Репозиторий запусков пайплайнов
+    /// </summary>
+    IRepository<PipelineExecutionRecord> PipelineRuns { get; }
 }

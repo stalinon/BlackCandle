@@ -11,5 +11,5 @@ public sealed class PortfolioAnalysisPipeline(
     ILoggerService logger) : Pipeline<PortfolioAnalysisContext>(steps, logger)
 {
     /// <inheritdoc />
-    protected override string Name => "Анализ портфеля";
+    public override string Name => "Анализ портфеля";
 }

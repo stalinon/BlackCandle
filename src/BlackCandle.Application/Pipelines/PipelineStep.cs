@@ -21,7 +21,7 @@ internal abstract class PipelineStep<TContext> : IPipelineStep<TContext>
     public PipelineStepStatus Status { get; set; } = PipelineStepStatus.NotStarted;
 
     /// <inheritdoc />
-    public abstract string StepName { get; }
+    public abstract string Name { get; }
 
     /// <inheritdoc />
     public abstract Task ExecuteAsync(TContext context, CancellationToken cancellationToken = default);

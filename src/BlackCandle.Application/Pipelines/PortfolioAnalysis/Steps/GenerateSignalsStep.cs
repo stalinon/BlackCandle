@@ -11,7 +11,7 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Генерация сигналов";
+    public override string Name => "Генерация сигналов";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

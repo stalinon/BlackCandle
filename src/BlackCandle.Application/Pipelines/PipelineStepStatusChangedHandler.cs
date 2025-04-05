@@ -7,6 +7,6 @@ namespace BlackCandle.Application.Pipelines;
 /// </summary>
 public delegate void PipelineStepStatusChangedHandler<TContext>(
     PipelineStepStatus newStatus,
-    string? stepName,
+    string stepName,
     TContext context,
     Exception? exception = null);
