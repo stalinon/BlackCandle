@@ -11,7 +11,7 @@ internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionS
     : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Вычисление объемов сделок";
+    public override string Name => "Вычисление объемов сделок";
 
     /// <inheritdoc />
     public override Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)

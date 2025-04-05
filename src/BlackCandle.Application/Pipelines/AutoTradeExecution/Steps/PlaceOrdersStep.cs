@@ -10,7 +10,7 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 internal sealed class PlaceOrdersStep(IInvestApiFacade investApi) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Размещение заявок";
+    public override string Name => "Размещение заявок";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

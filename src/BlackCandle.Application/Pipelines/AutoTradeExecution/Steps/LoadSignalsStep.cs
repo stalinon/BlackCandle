@@ -10,7 +10,7 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 internal sealed class LoadSignalsStep(IDataStorageContext dataStorage) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Загрузка сигналов";
+    public override string Name => "Загрузка сигналов";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

@@ -13,7 +13,7 @@ internal sealed class LogStep(ITelegramService telegram, IDataStorageContext dat
     : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Логирование";
+    public override string Name => "Логирование";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

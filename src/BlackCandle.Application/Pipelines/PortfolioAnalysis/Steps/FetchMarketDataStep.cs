@@ -10,7 +10,7 @@ internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStora
     : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Получение рыночных данных";
+    public override string Name => "Получение рыночных данных";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

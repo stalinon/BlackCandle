@@ -121,7 +121,7 @@ public sealed class PipelineTests
     {
         return new TestStepPipeline
         {
-            StepName = name,
+            Name = name,
             Throws = throws,
         };
     }
@@ -131,7 +131,7 @@ public sealed class PipelineTests
     private sealed class TestPipeline(IEnumerable<IPipelineStep<TestContext>> steps, ILoggerService logger)
         : Pipeline<TestContext>(steps, logger)
     {
-        protected override string Name => "TestPipeline";
+        public override string Name => "TestPipeline";
     }
 
     private sealed class TestStepPipeline : IPipelineStep<TestContext>
@@ -145,9 +145,6 @@ public sealed class PipelineTests
         /// <inheritdoc />
         public PipelineStepStatus Status { get; set; }
 
-        /// <inheritdoc />
-        public string StepName { get; set; } = null!;
-
         /// <summary>
         ///     Выбрасывает исключение
         /// </summary>
@@ -157,6 +154,11 @@ public sealed class PipelineTests
         ///     Выполнить действие
         /// </summary>
         public Action? Action { get; set; }
+
+        /// <summary>
+        ///     Название
+        /// </summary>
+        public string Name { get; set; } = null!;
 
         /// <inheritdoc />
         public async Task ExecuteAsync(TestContext context, CancellationToken cancellationToken = default)

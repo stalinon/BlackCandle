@@ -10,7 +10,7 @@ internal sealed class LoadPortfolioStep(IInvestApiFacade investApi, IDataStorage
     : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Загрузка портфолио";
+    public override string Name => "Загрузка портфолио";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

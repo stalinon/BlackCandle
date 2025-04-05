@@ -32,4 +32,7 @@ public sealed class InMemoryDataStorageContext : IDataStorageContext
 
     /// <inheritdoc />
     public IRepository<PriceHistoryPoint> Marketdata { get; } = new InMemoryRepository<PriceHistoryPoint>();
+
+    /// <inheritdoc cref="IDataStorageContext.PipelineRuns"/>
+    public IRepository<PipelineExecutionRecord> PipelineRuns { get; } = new InMemoryRepository<PipelineExecutionRecord>();
 }

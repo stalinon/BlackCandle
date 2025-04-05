@@ -11,7 +11,7 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Расчет тех. индикаторов";
+    public override string Name => "Расчет тех. индикаторов";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

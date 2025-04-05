@@ -17,9 +17,8 @@ public class AutoTradeExecutionPipeline : Pipeline<AutoTradeExecutionContext>
 
     /// <inheritdoc cref="AutoTradeExecutionPipeline" />
     public AutoTradeExecutionPipeline()
-        : base()
     { }
 
     /// <inheritdoc />
-    protected override string Name => "Автотрейдинг";
+    public override string Name => "Автотрейдинг";
 }

@@ -12,7 +12,7 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 internal sealed class LogExecutedTradesStep(ITelegramService telegram) : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
-    public override string StepName => "Логирование";
+    public override string Name => "Логирование";
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(

@@ -26,7 +26,7 @@ public interface IPipelineStep<TContext>
     /// <summary>
     ///     Название шага
     /// </summary>
-    string StepName { get; }
+    string Name { get; }
 
     /// <summary>
     ///     Выполнить
