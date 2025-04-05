@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.InvestApi;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Infrastructure.InvestApi.SmartLab;

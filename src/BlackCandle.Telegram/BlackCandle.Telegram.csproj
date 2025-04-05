@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj" />
-      <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj" />
-      <ProjectReference Include="..\BlackCandle.Infrastructure\BlackCandle.Infrastructure.csproj" />
+        <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj"/>
+        <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj"/>
+        <ProjectReference Include="..\BlackCandle.Infrastructure\BlackCandle.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Telegram.Bot" Version="22.5.0-dev.24" />
+        <PackageReference Include="Telegram.Bot" Version="22.5.0-dev.24"/>
     </ItemGroup>
 
 </Project>

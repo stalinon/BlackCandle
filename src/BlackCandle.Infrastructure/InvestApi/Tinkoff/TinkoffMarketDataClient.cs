@@ -3,7 +3,9 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
 using BlackCandle.Infrastructure.InvestApi.Tinkoff.Extensions;
+
 using Google.Protobuf.WellKnownTypes;
+
 using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
@@ -12,18 +14,12 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 /// <summary>
 ///     Реализация <see cref="IMarketDataClient" /> для Tinkoff API
 /// </summary>
-internal sealed class TinkoffMarketDataClient : IMarketDataClient
+/// <inheritdoc cref="TinkoffMarketDataClient" />
+internal sealed class TinkoffMarketDataClient(ILoggerService logger, InvestApiClient investApiClient) : IMarketDataClient
 {
-    private readonly ILoggerService _logger;
-    private readonly MarketDataService.MarketDataServiceClient _client;
-    
-    /// <inheritdoc cref="TinkoffMarketDataClient" />
-    public TinkoffMarketDataClient(ILoggerService logger, InvestApiClient investApiClient)
-    {
-        _logger = logger;
-        _client = investApiClient.MarketData;
-    }
-    
+    private readonly ILoggerService _logger = logger;
+    private readonly MarketDataService.MarketDataServiceClient _client = investApiClient.MarketData;
+
     /// <inheritdoc />
     public async Task<List<PriceHistoryPoint>> GetHistoricalDataAsync(Ticker ticker, DateTime from, DateTime to)
     {
@@ -34,7 +30,7 @@ internal sealed class TinkoffMarketDataClient : IMarketDataClient
                 Interval = CandleInterval.Day,
                 From = Timestamp.FromDateTime(from.ToUniversalTime()),
                 To = Timestamp.FromDateTime(to.ToUniversalTime()),
-                InstrumentId = ticker.Figi
+                InstrumentId = ticker.Figi,
             });
 
             return response.Candles.Select(c => new PriceHistoryPoint
@@ -45,7 +41,7 @@ internal sealed class TinkoffMarketDataClient : IMarketDataClient
                 High = c.High.ToDecimal(),
                 Low = c.Low.ToDecimal(),
                 Close = c.Close.ToDecimal(),
-                Volume = c.Volume
+                Volume = c.Volume,
             }).ToList();
         }
         catch (Exception ex)

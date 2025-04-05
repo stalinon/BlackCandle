@@ -39,7 +39,7 @@ public class FundamentalData : IEntity
     ///     Рентабельность капитала
     /// </summary>
     public decimal? ROE { get; set; }
-    
+
     /// <summary>
     ///     Последнее обновление
     /// </summary>

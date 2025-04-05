@@ -7,11 +7,12 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 /// <summary>
 ///     Шаг для вычисления объемов сделки
 /// </summary>
-internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionService) : PipelineStep<AutoTradeExecutionContext>
+internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionService)
+    : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
     public override string StepName => "Вычисление объемов сделок";
-    
+
     /// <inheritdoc />
     public override Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
     {
@@ -32,7 +33,7 @@ internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionS
                 Quantity = qty,
                 Price = 0m,
                 ExecutedAt = DateTime.UtcNow,
-                Status = TradeStatus.Pending
+                Status = TradeStatus.Pending,
             };
 
             trades.Add(trade);

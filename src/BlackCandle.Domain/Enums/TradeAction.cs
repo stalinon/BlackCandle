@@ -9,12 +9,14 @@ public enum TradeAction
     ///     Покупать
     /// </summary>
     Buy,
+
     /// <summary>
     ///     Продавать
     /// </summary>
     Sell,
+
     /// <summary>
     ///     Удерживать
     /// </summary>
-    Hold
+    Hold,
 }

@@ -4,7 +4,9 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
 using BlackCandle.Infrastructure.InvestApi.Tinkoff.Extensions;
+
 using Microsoft.Extensions.Options;
+
 using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
@@ -13,22 +15,14 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 /// <summary>
 ///     Реализация <see cref="IPortfolioClient" /> через Tinkoff Invest API
 /// </summary>
-internal sealed class TinkoffPortfolioClient : IPortfolioClient
+/// <inheritdoc cref="TinkoffPortfolioClient" />
+internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger,
+    InvestApiClient investApiClient) : IPortfolioClient
 {
-    private readonly OperationsService.OperationsServiceClient _client;
-    private readonly InstrumentsService.InstrumentsServiceClient _instrumentsClient;
-    private readonly TinkoffClientConfiguration _config;
-    private readonly ILoggerService _logger;
-
-    /// <inheritdoc cref="TinkoffPortfolioClient" />
-    public TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, InvestApiClient investApiClient)
-    {
-        _config = config.Value;
-        _logger = logger;
-
-        _client = investApiClient.Operations;
-        _instrumentsClient = investApiClient.Instruments;
-    }
+    private readonly OperationsService.OperationsServiceClient _client = investApiClient.Operations;
+    private readonly InstrumentsService.InstrumentsServiceClient _instrumentsClient = investApiClient.Instruments;
+    private readonly TinkoffClientConfiguration _config = config.Value;
+    private readonly ILoggerService _logger = logger;
 
     /// <inheritdoc />
     public async Task<List<PortfolioAsset>> GetPortfolioAsync()
@@ -37,7 +31,7 @@ internal sealed class TinkoffPortfolioClient : IPortfolioClient
         {
             var positions = await _client.GetPortfolioAsync(new PortfolioRequest()
             {
-                AccountId = _config.AccountId
+                AccountId = _config.AccountId,
             });
 
             var assets = new List<PortfolioAsset>();
@@ -50,10 +44,10 @@ internal sealed class TinkoffPortfolioClient : IPortfolioClient
                 }
 
                 var figi = position.Figi;
-                var instrument = _instrumentsClient.ShareBy(new()
+                var instrument = _instrumentsClient.ShareBy(new InstrumentRequest
                 {
                     Id = figi,
-                    IdType = InstrumentIdType.Figi
+                    IdType = InstrumentIdType.Figi,
                 });
 
                 var ticker = new Ticker
@@ -61,16 +55,16 @@ internal sealed class TinkoffPortfolioClient : IPortfolioClient
                     Symbol = instrument.Instrument.Ticker,
                     Currency = instrument.Instrument.Currency,
                     Sector = instrument.Instrument.Sector,
-                    Figi = figi
+                    Figi = figi,
                 };
 
-                var quantity = position.Quantity.Units + position.Quantity.Nano / 1_000_000_000M;
+                var quantity = position.Quantity.Units + (position.Quantity.Nano / 1_000_000_000M);
 
                 var asset = new PortfolioAsset
                 {
                     Ticker = ticker,
                     Quantity = quantity,
-                    CurrentValue = position.CurrentPrice.ToDecimal()
+                    CurrentValue = position.CurrentPrice.ToDecimal(),
                 };
 
                 assets.Add(asset);

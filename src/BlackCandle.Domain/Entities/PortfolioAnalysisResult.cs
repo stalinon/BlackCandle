@@ -18,12 +18,12 @@ public class PortfolioAnalysisResult : IEntity
     /// <summary>
     ///     Портфель на момент анализа
     /// </summary>
-    public List<PortfolioAsset> Portfolio { get; set; } = new();
+    public List<PortfolioAsset> Portfolio { get; set; } = [];
 
     /// <summary>
     ///     Сигналы
     /// </summary>
-    public List<TradeSignal> Signals { get; set; } = new();
+    public List<TradeSignal> Signals { get; set; } = [];
 
     /// <summary>
     ///     Использовались ли фундаментальные данные

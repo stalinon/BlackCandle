@@ -2,6 +2,7 @@ using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines;
@@ -19,65 +20,6 @@ namespace BlackCandle.Tests.Application.Pipelines;
 /// </remarks>
 public sealed class PipelineTests
 {
-    private class TestContext;
-
-    private sealed class TestPipeline(IEnumerable<IPipelineStep<TestContext>> steps, ILoggerService logger)
-        : Pipeline<TestContext>(steps, logger)
-    {
-        protected override string Name => "TestPipeline";
-    }
-
-    private sealed class TestStepPipeline : IPipelineStep<TestContext>
-    {
-        /// <inheritdoc />
-        public ILoggerService Logger { get; set; } = null!;
-
-        /// <inheritdoc />
-        public Action<TestContext, Exception, IPipelineStep<TestContext>> EarlyExitAction { get; set; } = null!;
-
-        /// <inheritdoc />
-        public PipelineStepStatus Status { get; set; }
-
-        /// <inheritdoc />
-        public string StepName { get; set; } = null!;
-
-        /// <summary>
-        ///     Выбрасывает исключение
-        /// </summary>
-        public bool Throws { get; set; }
-
-        /// <summary>
-        ///     Выполнить действие
-        /// </summary>
-        public Action? Action { get; set; }
-
-        /// <inheritdoc />
-        public async Task ExecuteAsync(TestContext context, CancellationToken cancellationToken = default)
-        {
-            if (Action != null)
-            {
-                Action();
-                return;
-            }
-            
-            if (Throws)
-            {
-                throw new InvalidOperationException("Step error");
-            }
-
-            await Task.CompletedTask;
-        }
-    }
-
-    private static TestStepPipeline CreateStep(string name, bool throws = false)
-    {
-        return new TestStepPipeline
-        {
-            StepName = name,
-            Throws = throws
-        };
-    }
-
     /// <summary>
     ///     Тест 1: Пайплайн проходит все шаги при успехе
     /// </summary>
@@ -89,7 +31,7 @@ public sealed class PipelineTests
         var steps = new[]
         {
             CreateStep("Step1"),
-            CreateStep("Step2")
+            CreateStep("Step2"),
         };
 
         var pipeline = new TestPipeline(steps.Select(x => x), logger.Object);
@@ -114,7 +56,7 @@ public sealed class PipelineTests
         // Arrange
         var logger = new Mock<ILoggerService>();
         var step1 = CreateStep("Step1");
-        var step2 = CreateStep("Step2", throws: true);
+        var step2 = CreateStep("Step2", true);
         var pipeline = new TestPipeline(new[] { step1, step2 }, logger.Object);
 
         // Act & Assert
@@ -173,5 +115,64 @@ public sealed class PipelineTests
         // Assert
         Assert.Equal(new[] { PipelineStatus.Running, PipelineStatus.Completed }, pipelineEvents);
         Assert.Contains(PipelineStepStatus.Completed, stepEvents);
+    }
+
+    private static TestStepPipeline CreateStep(string name, bool throws = false)
+    {
+        return new TestStepPipeline
+        {
+            StepName = name,
+            Throws = throws,
+        };
+    }
+
+    private class TestContext;
+
+    private sealed class TestPipeline(IEnumerable<IPipelineStep<TestContext>> steps, ILoggerService logger)
+        : Pipeline<TestContext>(steps, logger)
+    {
+        protected override string Name => "TestPipeline";
+    }
+
+    private sealed class TestStepPipeline : IPipelineStep<TestContext>
+    {
+        /// <inheritdoc />
+        public ILoggerService Logger { get; set; } = null!;
+
+        /// <inheritdoc />
+        public Action<TestContext, Exception, IPipelineStep<TestContext>> EarlyExitAction { get; set; } = null!;
+
+        /// <inheritdoc />
+        public PipelineStepStatus Status { get; set; }
+
+        /// <inheritdoc />
+        public string StepName { get; set; } = null!;
+
+        /// <summary>
+        ///     Выбрасывает исключение
+        /// </summary>
+        public bool Throws { get; set; }
+
+        /// <summary>
+        ///     Выполнить действие
+        /// </summary>
+        public Action? Action { get; set; }
+
+        /// <inheritdoc />
+        public async Task ExecuteAsync(TestContext context, CancellationToken cancellationToken = default)
+        {
+            if (Action != null)
+            {
+                Action();
+                return;
+            }
+
+            if (Throws)
+            {
+                throw new InvalidOperationException("Step error");
+            }
+
+            await Task.CompletedTask;
+        }
     }
 }

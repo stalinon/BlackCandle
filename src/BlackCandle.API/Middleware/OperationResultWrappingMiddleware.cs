@@ -5,15 +5,10 @@ namespace BlackCandle.API.Middleware;
 /// <summary>
 ///     Мидлварь для автоматического оборачивания ответов в общий ValueObject
 /// </summary>
-public class OperationResultWrappingMiddleware
+/// <inheritdoc cref="OperationResultWrappingMiddleware" />
+public class OperationResultWrappingMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    /// <inheritdoc cref="OperationResultWrappingMiddleware" />
-    public OperationResultWrappingMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
+    private readonly RequestDelegate _next = next;
 
     /// <inheritdoc cref="OperationResultWrappingMiddleware" />
     public async Task Invoke(HttpContext context)
@@ -25,7 +20,7 @@ public class OperationResultWrappingMiddleware
 
         await _next(context);
 
-        if (context.Response.StatusCode == 200 && 
+        if (context.Response.StatusCode == 200 &&
             context.Response.ContentType?.Contains("application/json") == true)
         {
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -34,7 +29,7 @@ public class OperationResultWrappingMiddleware
             var wrapped = JsonSerializer.Serialize(new
             {
                 isSuccess = true,
-                data = JsonSerializer.Deserialize<object>(responseBody)
+                data = JsonSerializer.Deserialize<object>(responseBody),
             });
 
             context.Response.Body = originalBody;

@@ -6,10 +6,14 @@ namespace BlackCandle.Domain.Exceptions;
 public sealed class TinkoffApiException : BlackCandleException
 {
     /// <inheritdoc cref="TinkoffApiException" />
-    public TinkoffApiException() : base("Ошибка при обращении в Tinkoff API")
-    { }
-    
+    public TinkoffApiException()
+        : base("Ошибка при обращении в Tinkoff API")
+    {
+    }
+
     /// <inheritdoc cref="TinkoffApiException" />
-    public TinkoffApiException(string message) : base(message)
-    { }
+    public TinkoffApiException(string message)
+        : base(message)
+    {
+    }
 }

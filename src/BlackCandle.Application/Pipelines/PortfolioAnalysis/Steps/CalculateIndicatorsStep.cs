@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.ValueObjects;
+
 using Skender.Stock.Indicators;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
@@ -13,7 +14,9 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
     public override string StepName => "Расчет тех. индикаторов";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        PortfolioAnalysisContext context,
+        CancellationToken cancellationToken = default)
     {
         var marketdata = await dataStorage.Marketdata.GetAllAsync();
         var groupedMarketdata = marketdata.GroupBy(m => m.Ticker)
@@ -32,7 +35,7 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
                 High = c.High,
                 Low = c.Low,
                 Close = c.Close,
-                Volume = c.Volume
+                Volume = c.Volume,
             }).ToList();
 
             var indicators = new List<TechnicalIndicator>();
@@ -43,7 +46,7 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
             {
                 Name = "SMA20",
                 Date = s.Timestamp,
-                Value = s.Sma
+                Value = s.Sma,
             }));
 
             // 2. EMA(12)
@@ -52,35 +55,35 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
             {
                 Name = "EMA12",
                 Date = e.Timestamp,
-                Value = e.Ema
+                Value = e.Ema,
             }));
 
             // 3. RSI(14)
-            var rsi = quotes.ToRsi(14);
+            var rsi = quotes.ToRsi();
             indicators.AddRange(rsi.Select(r => new TechnicalIndicator
             {
                 Name = "RSI14",
                 Date = r.Timestamp,
-                Value = r.Rsi
+                Value = r.Rsi,
             }));
 
             // 4. MACD(12/26/9)
-            var macd = quotes.ToMacd(12, 26, 9);
+            var macd = quotes.ToMacd();
             indicators.AddRange(macd.Select(m => new TechnicalIndicator
             {
                 Name = "MACD",
                 Date = m.Timestamp,
                 Value = m.Macd,
-                Meta = $"Signal={m.Signal}, Histogram={m.Histogram}"
+                Meta = $"Signal={m.Signal}, Histogram={m.Histogram}",
             }));
 
             // 5. ADX(14)
-            var adx = quotes.ToAdx(14);
+            var adx = quotes.ToAdx();
             indicators.AddRange(adx.Select(a => new TechnicalIndicator
             {
                 Name = "ADX14",
                 Date = a.Timestamp,
-                Value = a.Adx
+                Value = a.Adx,
             }));
 
             context.Indicators[ticker] = indicators

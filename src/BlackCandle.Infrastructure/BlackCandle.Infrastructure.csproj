@@ -7,18 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj" />
-      <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj" />
-      <ProjectReference Include="..\..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj" />
+        <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj"/>
+        <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj"/>
+        <ProjectReference Include="..\..\thirdparty\invest-api-csharp-sdk\Tinkoff.InvestApi\Tinkoff.InvestApi.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AngleSharp" Version="1.3.0-beta.470" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-preview.2.25163.2" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0-preview.2.25163.2" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.0-preview.2.25163.2" />
+        <PackageReference Include="AngleSharp" Version="1.3.0-beta.470"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-preview.2.25163.2"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0-preview.2.25163.2"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.0-preview.2.25163.2"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>BlackCandle.Tests</_Parameter1>

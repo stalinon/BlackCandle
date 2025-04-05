@@ -1,6 +1,7 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Infrastructure.InvestApi.SmartLab;
+
 using Moq;
 
 namespace BlackCandle.Tests.Infrastructure.InvestApi;
@@ -20,12 +21,15 @@ public class SmartLabFundamentalClientTests
     private readonly Mock<IRepository<FundamentalData>> _repositoryMock;
     private readonly SmartLabFundamentalClient _client;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SmartLabFundamentalClientTests"/> class.
+    /// </summary>
     public SmartLabFundamentalClientTests()
     {
         _repositoryMock = new Mock<IRepository<FundamentalData>>();
         var dataStorageMock = new Mock<IDataStorageContext>();
         dataStorageMock.Setup(x => x.Fundamentals).Returns(_repositoryMock.Object);
-        
+
         Mock<ILoggerService> loggerMock = new();
         _client = new SmartLabFundamentalClient(dataStorageMock.Object, loggerMock.Object);
     }

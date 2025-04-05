@@ -10,7 +10,7 @@ public interface ILoggerService
     ///     Добавить префикс
     /// </summary>
     void AddPrefix(string prefix);
-    
+
     /// <summary>
     ///     Записывает информационное сообщение.
     /// </summary>

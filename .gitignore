@@ -1,17 +1,126 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Rider ignored files
-/projectSettingsUpdater.xml
+##############
+# OS-specific
+##############
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+##############
+# IDEs & tools
+##############
+
+# Rider / IntelliJ
+.idea/
+*.iml
+*.iws
+.idea.BlackCandle.iml
 /contentModel.xml
+/projectSettingsUpdater.xml
 /modules.xml
-/.idea.BlackCandle.iml
-# Editor-based HTTP Client requests
+/shelf/
+workspace.xml
 /httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# VSCode
+.vscode/
+
+##############
+# Build output
+##############
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+*.log
+
+##############
+# Test output
+##############
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+CoverletSourceRootsMapping_*/
+
+##############
+# Configuration
+##############
 appsettings.Development.json
-*/*/obj/
-*/*/bin/
-*/.idea/
+appsettings.Local.json
+appsettings.*.json.user
+*.launchSettings.json
+
+##############
+# Tools and packages
+##############
+*.ncrunch*
+*.resharper
+_ReSharper*/
+*.ruleset
+*.vsmdi
+*.cache
+*.dbmdl
+*.bak
+*.orig
+*.snupkg
+
+##############
+# NuGet
+##############
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+##############
+# Git
+##############
+*.orig
+*.rej
+*.patch
+*.diff
+*.swp
+*.swo
+*.swn
+*.un~
+
+##############
+# Docker / misc
+##############
+docker-compose.override.yml
+.env
+.env.*
+.envrc
+
+##############
+# CI/CD
+##############
+coveragereport/
+*.code-workspace
+*.testsettings
+*.runsettings
+*.tlog
+*.xml.bak
+
+##############
+# Custom blacklists
+##############
+logs/
+logs/**/*
+*.log.*
+

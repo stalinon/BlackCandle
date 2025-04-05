@@ -10,9 +10,13 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// </summary>
 internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
 {
+    /// <inheritdoc />
     public override string StepName => "Генерация сигналов";
 
-    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public override async Task ExecuteAsync(
+        PortfolioAnalysisContext context,
+        CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
 
@@ -31,7 +35,7 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
             }
         }
     }
-    
+
     private static TradeSignal? GenerateSignal(Ticker ticker, List<TechnicalIndicator> indicators, int score, DateTime now)
     {
         var rsi = GetLatest(indicators, "RSI14");
@@ -54,7 +58,7 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
             $"EMA={ema.Value:F2}",
             $"SMA={sma.Value:F2}",
             $"ADX={adx.Value:F2}",
-            $"Score={score}"
+            $"Score={score}",
         };
 
         switch (rsi.Value)
@@ -71,7 +75,7 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
                 action = TradeAction.Buy;
                 confidence = ConfidenceLevel.Low;
                 break;
-            
+
             // SELL
             case > 70 when macd.Value < 0 && adx.Value > 20:
                 action = TradeAction.Sell;
@@ -90,13 +94,15 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
             Confidence = confidence,
             Reason = string.Join(" | ", reasons),
             Date = now,
-            Score = score
+            Score = score,
         };
     }
 
-    private static TechnicalIndicator? GetLatest(List<TechnicalIndicator> indicators, string name) =>
-        indicators
+    private static TechnicalIndicator? GetLatest(List<TechnicalIndicator> indicators, string name)
+    {
+        return indicators
             .Where(i => i.Name == name && i.Value.HasValue)
             .OrderByDescending(i => i.Date)
             .FirstOrDefault();
+    }
 }

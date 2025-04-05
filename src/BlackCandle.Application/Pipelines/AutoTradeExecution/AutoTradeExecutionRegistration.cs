@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.Pipelines.AutoTradeExecution;

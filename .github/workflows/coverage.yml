@@ -1,0 +1,41 @@
+name: 📊 Coverage
+
+on:
+  workflow_run:
+    workflows: ["🧪 Test"]
+    types:
+      - completed
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Prepare coverage
+        run: |
+          mkdir -p coverage
+          find ./src/BlackCandle.Tests -type f -name "coverage.cobertura.xml" -exec cp {} coverage/coverage.cobertura.xml \;
+
+      - name: Generate coverage report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5
+        with:
+          reports: 'coverage/coverage.cobertura.xml'
+          targetdir: 'coveragereport'
+          reporttypes: 'Html;Cobertura;Badges'
+          classfilters: '-Tinkoff.*'
+          filefilters: '-*thirdparty/*'
+
+      - name: Upload to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coveragereport/Cobertura.xml
+          flag-name: coverage

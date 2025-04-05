@@ -1,5 +1,18 @@
-[![CI](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg)](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg)](https://coveralls.io/github/stalinon/BlackCandle)
+## 🚦 CI & Статусы качества репы
+
+| Проверка         | Статус |
+|------------------|--------|
+| 💅 Code Style     | ![Style](https://github.com/stalinon/BlackCandle/actions/workflows/build.yml/badge.svg?branch=main&label=Style) |
+| 🏗 Build          | ![Build](https://github.com/stalinon/BlackCandle/actions/workflows/build.yml/badge.svg?branch=main&label=Build) |
+| 🧪 Tests          | ![Tests](https://github.com/stalinon/BlackCandle/actions/workflows/test.yml/badge.svg?branch=main&label=Tests) |
+| 📊 Coverage       | ![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main) |
+
+---
+
+![Maintainability](https://img.shields.io/badge/code--quality-strict-critical?color=black)
+![Last Commit](https://img.shields.io/github/last-commit/stalinon/BlackCandle)
+![Open Issues](https://img.shields.io/github/issues/stalinon/BlackCandle)
+![Repo Size](https://img.shields.io/github/repo-size/stalinon/BlackCandle)
 
 ## Общая цель
 

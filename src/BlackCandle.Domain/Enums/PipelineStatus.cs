@@ -9,19 +9,19 @@ public enum PipelineStatus
     ///     Не запущен
     /// </summary>
     NotStarted,
-    
+
     /// <summary>
     ///     Запущен
     /// </summary>
     Running,
-    
+
     /// <summary>
     ///     Возникла ошибка
     /// </summary>
     Failed,
-    
+
     /// <summary>
     ///     Окончен
     /// </summary>
-    Completed
+    Completed,
 }

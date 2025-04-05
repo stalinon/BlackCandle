@@ -18,7 +18,8 @@ public sealed class InMemoryDataStorageContext : IDataStorageContext
     public IRepository<FundamentalData> Fundamentals { get; } = new InMemoryRepository<FundamentalData>();
 
     /// <inheritdoc />
-    public IRepository<PortfolioAnalysisResult> AnalysisResults { get; } = new InMemoryRepository<PortfolioAnalysisResult>();
+    public IRepository<PortfolioAnalysisResult> AnalysisResults { get; } =
+        new InMemoryRepository<PortfolioAnalysisResult>();
 
     /// <inheritdoc />
     public IRepository<ExecutedTrade> ExecutedTrades { get; } = new InMemoryRepository<ExecutedTrade>();

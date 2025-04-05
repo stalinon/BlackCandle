@@ -6,13 +6,16 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 /// <summary>
 ///     Шаг для проверки разрешения на исполнение автоматической торговли
 /// </summary>
-internal sealed class CheckAutoTradePermissionStep(IDataStorageContext dataStorage) : PipelineStep<AutoTradeExecutionContext>
+internal sealed class CheckAutoTradePermissionStep(IDataStorageContext dataStorage)
+    : PipelineStep<AutoTradeExecutionContext>
 {
     /// <inheritdoc />
     public override string StepName => "Проверка разрешения";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         var botSettings = await dataStorage.BotSettings.GetAllAsync();
         var settings = botSettings.Single();

@@ -9,12 +9,12 @@ public class PriceHistoryPoint : IEntity
 {
     /// <inheritdoc />
     public string Id => $"{Ticker}_{Date:yyyyMMddHHmmss}";
-    
+
     /// <summary>
     ///     Тикер
     /// </summary>
-    public Ticker Ticker { get; set; }
-    
+    public Ticker Ticker { get; set; } = default!;
+
     /// <summary>
     ///     Дата
     /// </summary>

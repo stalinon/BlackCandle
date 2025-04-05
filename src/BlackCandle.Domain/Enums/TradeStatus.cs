@@ -9,14 +9,14 @@ public enum TradeStatus
     ///     Пока не исполнена
     /// </summary>
     Pending,
-    
+
     /// <summary>
     ///     Исполнена
     /// </summary>
     Success,
-    
+
     /// <summary>
     ///     Ошибка
     /// </summary>
-    Error
+    Error,
 }

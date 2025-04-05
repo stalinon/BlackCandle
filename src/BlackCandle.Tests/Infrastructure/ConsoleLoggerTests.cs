@@ -1,4 +1,5 @@
 using System.Text;
+
 using BlackCandle.Infrastructure.Logging;
 
 namespace BlackCandle.Tests.Infrastructure;
@@ -18,11 +19,6 @@ namespace BlackCandle.Tests.Infrastructure;
 /// </remarks>
 public sealed class ConsoleLoggerTests
 {
-    private ConsoleLogger CreateLogger()
-    {
-        return new ConsoleLogger();
-    }
-
     /// <summary>
     ///     Тест 1: Добавление префикса
     /// </summary>
@@ -135,5 +131,10 @@ public sealed class ConsoleLoggerTests
         Assert.Contains("[ERROR]", log);
         Assert.Contains("Ошибка при логировании", log);
         Assert.Contains("Ошибка обработки", log);
+    }
+
+    private static ConsoleLogger CreateLogger()
+    {
+        return new ConsoleLogger();
     }
 }

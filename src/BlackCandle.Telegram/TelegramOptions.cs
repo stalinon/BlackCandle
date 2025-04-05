@@ -9,7 +9,7 @@ public class TelegramOptions
     ///     Токен бота
     /// </summary>
     public string BotToken { get; set; } = string.Empty;
-    
+
     /// <summary>
     ///     Идентификатор чата
     /// </summary>

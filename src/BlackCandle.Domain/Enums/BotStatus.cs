@@ -5,7 +5,18 @@ namespace BlackCandle.Domain.Enums;
 /// </summary>
 public enum BotStatus
 {
+    /// <summary>
+    ///     Включен
+    /// </summary>
     Enabled,
+
+    /// <summary>
+    ///     Выключен
+    /// </summary>
     Disabled,
-    Maintenance
+
+    /// <summary>
+    ///     Техническое обслуживание
+    /// </summary>
+    Maintenance,
 }

@@ -19,7 +19,7 @@ public static class SwaggerSetup
             {
                 Title = "BlackCandle API",
                 Version = "v1",
-                Description = "Финансовый движок тьмы."
+                Description = "Финансовый движок тьмы.",
             });
         });
 
@@ -32,10 +32,7 @@ public static class SwaggerSetup
     public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
     {
         app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlackCandle API V1");
-        });
+        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlackCandle API V1"); });
 
         return app;
     }

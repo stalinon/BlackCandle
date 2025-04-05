@@ -1,9 +1,11 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -25,6 +27,9 @@ public sealed class CheckAutoTradePermissionStepTests
 
     private readonly CheckAutoTradePermissionStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CheckAutoTradePermissionStepTests"/> class.
+    /// </summary>
     public CheckAutoTradePermissionStepTests()
     {
         _storage.Setup(x => x.BotSettings).Returns(_settingsRepo.Object);

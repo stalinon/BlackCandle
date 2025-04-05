@@ -12,7 +12,9 @@ internal sealed class PlaceOrdersStep(IInvestApiFacade investApi) : PipelineStep
     public override string StepName => "Размещение заявок";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         foreach (var trade in context.ExecutedTrades)
         {

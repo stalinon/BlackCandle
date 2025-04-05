@@ -4,7 +4,9 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Exceptions;
+
 using Microsoft.Extensions.Options;
+
 using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
@@ -13,20 +15,13 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 /// <summary>
 ///     Реализация <see cref="ITradingClient"/> через Tinkoff Invest API
 /// </summary>
-internal sealed class TinkoffTradingClient : ITradingClient
+/// <inheritdoc cref="TinkoffTradingClient"/>
+internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger,
+    InvestApiClient investApiClient) : ITradingClient
 {
-    private readonly OrdersService.OrdersServiceClient _ordersClient;
-    private readonly TinkoffClientConfiguration _config;
-    private readonly ILoggerService _logger;
-
-    /// <inheritdoc cref="TinkoffTradingClient"/>
-    public TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, InvestApiClient investApiClient)
-    {
-        _config = config.Value;
-        _logger = logger;
-
-        _ordersClient = investApiClient.Orders;
-    }
+    private readonly OrdersService.OrdersServiceClient _ordersClient = investApiClient.Orders;
+    private readonly TinkoffClientConfiguration _config = config.Value;
+    private readonly ILoggerService _logger = logger;
 
     /// <inheritdoc />
     public async Task<decimal> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side)
@@ -41,12 +36,12 @@ internal sealed class TinkoffTradingClient : ITradingClient
                 {
                     TradeAction.Buy => OrderDirection.Buy,
                     TradeAction.Sell => OrderDirection.Sell,
-                    _ => throw new ArgumentOutOfRangeException(nameof(side), "Неверное направление сделки")
+                    _ => throw new ArgumentOutOfRangeException(nameof(side), "Неверное направление сделки"),
                 },
                 AccountId = _config.AccountId,
                 OrderType = OrderType.Market,
                 InstrumentId = ticker.Figi,
-                OrderId = Guid.NewGuid().ToString()
+                OrderId = Guid.NewGuid().ToString(),
             };
 
             var result = await _ordersClient.PostOrderAsync(orderRequest);

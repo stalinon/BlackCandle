@@ -14,7 +14,9 @@ internal sealed class UpdatePortfolioStep(IDataStorageContext dataStorage) : Pip
     public override string StepName => "Обновление портфеля";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         var successfulTrades = context.ExecutedTrades
             .Where(t => t.Status == TradeStatus.Success)
@@ -57,7 +59,7 @@ internal sealed class UpdatePortfolioStep(IDataStorageContext dataStorage) : Pip
             {
                 Ticker = trade.Ticker,
                 Quantity = trade.Quantity,
-                CurrentValue = trade.Price
+                CurrentValue = trade.Price,
             }
             : null;
     }
@@ -68,7 +70,7 @@ internal sealed class UpdatePortfolioStep(IDataStorageContext dataStorage) : Pip
         {
             case TradeAction.Buy:
                 var total = asset.Quantity + trade.Quantity;
-                asset.CurrentValue = (asset.CurrentValue * asset.Quantity + trade.Price * trade.Quantity) / total;
+                asset.CurrentValue = ((asset.CurrentValue * asset.Quantity) + (trade.Price * trade.Quantity)) / total;
                 asset.Quantity = total;
                 break;
 

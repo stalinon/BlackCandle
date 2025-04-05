@@ -5,7 +5,7 @@ namespace BlackCandle.Domain.Exceptions;
 /// </summary>
 public sealed class AutoTradeNotEnabledException : BlackCandleException
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="AutoTradeNotEnabledException" />
     public AutoTradeNotEnabledException()
         : base("Режим автоматической торговли отключен настройками бота.")
     {

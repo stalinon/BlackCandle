@@ -14,7 +14,7 @@ public class TradeSignal : IEntity
     /// <summary>
     ///     Символ
     /// </summary>
-    public Ticker Ticker { get; set; }
+    public Ticker Ticker { get; set; } = null!;
 
     /// <summary>
     ///     Действие
@@ -24,7 +24,7 @@ public class TradeSignal : IEntity
     /// <summary>
     ///     Причина сигнала
     /// </summary>
-    public string Reason { get; set; }
+    public string Reason { get; set; } = default!;
 
     /// <summary>
     ///     Уверенность

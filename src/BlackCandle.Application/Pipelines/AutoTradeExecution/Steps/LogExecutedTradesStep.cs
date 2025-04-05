@@ -1,4 +1,5 @@
 using System.Text;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -14,7 +15,9 @@ internal sealed class LogExecutedTradesStep(ITelegramService telegram) : Pipelin
     public override string StepName => "Логирование";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         var success = context.ExecutedTrades
             .Where(x => x.Status == TradeStatus.Success)

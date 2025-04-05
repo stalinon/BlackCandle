@@ -1,9 +1,11 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -29,6 +31,9 @@ public sealed class UpdatePortfolioStepTests
 
     private readonly UpdatePortfolioStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdatePortfolioStepTests"/> class.
+    /// </summary>
     public UpdatePortfolioStepTests()
     {
         _storage.Setup(x => x.PortfolioAssets).Returns(_portfolioRepo.Object);
@@ -45,7 +50,7 @@ public sealed class UpdatePortfolioStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [new() { Status = TradeStatus.Error }]
+            ExecutedTrades = [new ExecutedTrade { Status = TradeStatus.Error }],
         };
 
         await _step.ExecuteAsync(context);
@@ -68,16 +73,18 @@ public sealed class UpdatePortfolioStepTests
             Side = TradeAction.Buy,
             Quantity = 10,
             Price = 100,
-            Status = TradeStatus.Success
+            Status = TradeStatus.Success,
         };
 
-        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>())).ReturnsAsync(new List<PortfolioAsset>());
+        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
+            .ReturnsAsync([]);
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = [trade] };
 
         await _step.ExecuteAsync(context);
 
-        _portfolioRepo.Verify(x => x.AddAsync(It.Is<PortfolioAsset>(a =>
+        _portfolioRepo.Verify(
+            x => x.AddAsync(It.Is<PortfolioAsset>(a =>
             a.Ticker.Symbol == "AAPL" && a.Quantity == 10 && a.CurrentValue == 100)), Times.Once);
     }
 
@@ -93,7 +100,7 @@ public sealed class UpdatePortfolioStepTests
         {
             Ticker = ticker,
             Quantity = 10,
-            CurrentValue = 100
+            CurrentValue = 100,
         };
 
         var trade = new ExecutedTrade
@@ -102,19 +109,21 @@ public sealed class UpdatePortfolioStepTests
             Side = TradeAction.Buy,
             Quantity = 10,
             Price = 200,
-            Status = TradeStatus.Success
+            Status = TradeStatus.Success,
         };
 
-        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>())).ReturnsAsync([existing]);
+        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
+            .ReturnsAsync([existing]);
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = [trade] };
 
         await _step.ExecuteAsync(context);
 
-        _portfolioRepo.Verify(x => x.AddAsync(It.Is<PortfolioAsset>(a =>
-            a.Quantity == 20 &&
-            a.CurrentValue == 150 // (100*10 + 200*10) / 20
-        )), Times.Once);
+        _portfolioRepo.Verify(
+            x => x.AddAsync(It.Is<PortfolioAsset>(a =>
+                a.Quantity == 20 &&
+                a.CurrentValue == 150)), // (100*10 + 200*10) / 20
+            Times.Once);
     }
 
     /// <summary>
@@ -129,7 +138,7 @@ public sealed class UpdatePortfolioStepTests
         {
             Ticker = ticker,
             Quantity = 10,
-            CurrentValue = 100
+            CurrentValue = 100,
         };
 
         var trade = new ExecutedTrade
@@ -138,10 +147,11 @@ public sealed class UpdatePortfolioStepTests
             Side = TradeAction.Sell,
             Quantity = 4,
             Price = 0,
-            Status = TradeStatus.Success
+            Status = TradeStatus.Success,
         };
 
-        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>())).ReturnsAsync([existing]);
+        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
+            .ReturnsAsync([existing]);
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = [trade] };
 
@@ -162,7 +172,7 @@ public sealed class UpdatePortfolioStepTests
         {
             Ticker = ticker,
             Quantity = 5,
-            CurrentValue = 100
+            CurrentValue = 100,
         };
 
         var trade = new ExecutedTrade
@@ -171,10 +181,11 @@ public sealed class UpdatePortfolioStepTests
             Side = TradeAction.Sell,
             Quantity = 5,
             Price = 0,
-            Status = TradeStatus.Success
+            Status = TradeStatus.Success,
         };
 
-        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>())).ReturnsAsync([existing]);
+        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
+            .ReturnsAsync([existing]);
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = [trade] };
 
@@ -195,7 +206,7 @@ public sealed class UpdatePortfolioStepTests
             Side = TradeAction.Buy,
             Quantity = 1,
             Price = 100,
-            Status = TradeStatus.Success
+            Status = TradeStatus.Success,
         };
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = [trade] };
@@ -204,6 +215,8 @@ public sealed class UpdatePortfolioStepTests
 
         await _step.ExecuteAsync(context);
 
-        _executedRepo.Verify(x => x.AddRangeAsync(It.Is<IEnumerable<ExecutedTrade>>(col => col.Contains(trade))), Times.Once);
+        _executedRepo.Verify(
+            x => x.AddRangeAsync(It.Is<IEnumerable<ExecutedTrade>>(col => col.Contains(trade))),
+            Times.Once);
     }
 }

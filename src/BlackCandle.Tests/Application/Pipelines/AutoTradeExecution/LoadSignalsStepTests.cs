@@ -1,9 +1,11 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -25,6 +27,9 @@ public sealed class LoadSignalsStepTests
 
     private readonly LoadSignalsStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LoadSignalsStepTests"/> class.
+    /// </summary>
     public LoadSignalsStepTests()
     {
         _storage.Setup(x => x.TradeSignals).Returns(_signalsRepo.Object);
@@ -98,7 +103,7 @@ public sealed class LoadSignalsStepTests
         var expected = new List<TradeSignal>
         {
             new() { Action = TradeAction.Buy, Date = today },
-            new() { Action = TradeAction.Sell, Date = today }
+            new() { Action = TradeAction.Sell, Date = today },
         };
 
         _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))

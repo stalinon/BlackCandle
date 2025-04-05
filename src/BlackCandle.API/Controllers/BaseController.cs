@@ -1,4 +1,5 @@
 using BlackCandle.Domain.ValueObjects;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlackCandle.API.Controllers;
@@ -13,11 +14,15 @@ public abstract class BaseController : ControllerBase
     ///     Успех
     /// </summary>
     protected ActionResult<OperationResult<T>> Success<T>(T data)
-        => Ok(OperationResult<T>.Success(data));
+    {
+        return Ok(OperationResult<T>.Success(data));
+    }
 
     /// <summary>
     ///     Ошибка
     /// </summary>
     protected ActionResult<OperationResult<T>> Fail<T>(string error)
-        => BadRequest(OperationResult<T>.Failure(error));
+    {
+        return BadRequest(OperationResult<T>.Failure(error));
+    }
 }

@@ -9,7 +9,7 @@ internal class TestEntity : IEntity
 {
     /// <inheritdoc />
     public required string Id { get; set; }
-    
+
     /// <summary>
     ///     Название
     /// </summary>

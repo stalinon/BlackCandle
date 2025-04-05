@@ -4,6 +4,7 @@ using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -27,22 +28,17 @@ public sealed class PlaceOrdersStepTests
 
     private readonly PlaceOrdersStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PlaceOrdersStepTests"/> class.
+    /// </summary>
     public PlaceOrdersStepTests()
     {
         _facade.Setup(x => x.Trading).Returns(_trading.Object);
         _step = new PlaceOrdersStep(_facade.Object)
         {
-            Logger = _logger.Object
+            Logger = _logger.Object,
         };
     }
-
-    private static ExecutedTrade MakeTrade(string ticker = "AAPL") => new()
-    {
-        Ticker = new Ticker { Symbol = ticker },
-        Quantity = 10,
-        Side = TradeAction.Buy,
-        Status = TradeStatus.Pending
-    };
 
     /// <summary>
     ///     Тест 1: Заявка размещена успешно
@@ -52,7 +48,7 @@ public sealed class PlaceOrdersStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [MakeTrade()]
+            ExecutedTrades = [MakeTrade()],
         };
 
         _trading.Setup(x =>
@@ -74,7 +70,7 @@ public sealed class PlaceOrdersStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [MakeTrade()]
+            ExecutedTrades = [MakeTrade()],
         };
 
         _trading.Setup(x =>
@@ -97,15 +93,15 @@ public sealed class PlaceOrdersStepTests
         var trades = new List<ExecutedTrade>
         {
             MakeTrade(),
-            MakeTrade("FAIL")
+            MakeTrade("FAIL"),
         };
 
         _trading.Setup(x => x.PlaceMarketOrderAsync(
-                It.Is< Ticker >(t => t.Symbol == "AAPL"), It.IsAny<decimal>(), It.IsAny<TradeAction>()))
+                It.Is<Ticker>(t => t.Symbol == "AAPL"), It.IsAny<decimal>(), It.IsAny<TradeAction>()))
             .ReturnsAsync(100);
 
         _trading.Setup(x => x.PlaceMarketOrderAsync(
-                It.Is< Ticker >(t => t.Symbol == "FAIL"), It.IsAny<decimal>(), It.IsAny<TradeAction>()))
+                It.Is<Ticker>(t => t.Symbol == "FAIL"), It.IsAny<decimal>(), It.IsAny<TradeAction>()))
             .ThrowsAsync(new Exception("fail"));
 
         var context = new AutoTradeExecutionContext { ExecutedTrades = trades };
@@ -124,11 +120,12 @@ public sealed class PlaceOrdersStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [
+            ExecutedTrades =
+            [
                 MakeTrade(),
                 MakeTrade("SBER"),
                 MakeTrade("YNDX")
-            ]
+            ],
         };
 
         _trading.Setup(c =>
@@ -142,5 +139,16 @@ public sealed class PlaceOrdersStepTests
             Assert.Equal(TradeStatus.Success, t.Status);
             Assert.Equal(100, t.Price);
         });
+    }
+
+    private static ExecutedTrade MakeTrade(string ticker = "AAPL")
+    {
+        return new ExecutedTrade
+        {
+            Ticker = new Ticker { Symbol = ticker },
+            Quantity = 10,
+            Side = TradeAction.Buy,
+            Status = TradeStatus.Pending,
+        };
     }
 }

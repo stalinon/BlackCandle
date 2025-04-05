@@ -5,11 +5,15 @@ namespace BlackCandle.Domain.Exceptions;
 /// </summary>
 public abstract class BlackCandleException : Exception
 {
-    /// <inheritdoc />
-    protected BlackCandleException(string message) : base(message)
-    { }
+    /// <inheritdoc cref="BlackCandleException" />
+    protected BlackCandleException(string message)
+        : base(message)
+    {
+    }
 
-    /// <inheritdoc />
-    protected BlackCandleException(string message, Exception innerException) : base(message, innerException)
-    { }
+    /// <inheritdoc cref="BlackCandleException" />
+    protected BlackCandleException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 }
