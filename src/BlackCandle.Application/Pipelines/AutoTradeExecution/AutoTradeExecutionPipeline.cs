@@ -6,11 +6,20 @@ namespace BlackCandle.Application.Pipelines.AutoTradeExecution;
 /// <summary>
 ///     Пайплайн автоматического исполнения сделок
 /// </summary>
-public sealed class AutoTradeExecutionPipeline(
-    IEnumerable<IPipelineStep<AutoTradeExecutionContext>> steps,
-    ILoggerService logger)
-    : Pipeline<AutoTradeExecutionContext>(steps, logger)
+public class AutoTradeExecutionPipeline : Pipeline<AutoTradeExecutionContext>
 {
+    /// <inheritdoc cref="AutoTradeExecutionPipeline" />
+    public AutoTradeExecutionPipeline(
+        IEnumerable<IPipelineStep<AutoTradeExecutionContext>> steps,
+        ILoggerService logger)
+        : base(steps, logger)
+    { }
+
+    /// <inheritdoc cref="AutoTradeExecutionPipeline" />
+    public AutoTradeExecutionPipeline()
+        : base()
+    { }
+
     /// <inheritdoc />
     protected override string Name => "Автотрейдинг";
 }

@@ -14,10 +14,17 @@ internal sealed class GetLastAnalysisResultUseCase(IDataStorageContext storage)
     /// <inheritdoc />
     public async Task<OperationResult<IReadOnlyCollection<TradeSignal>>> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        var signals = await storage.TradeSignals.GetAllAsync();
+        try
+        {
+            var signals = await storage.TradeSignals.GetAllAsync();
 
-        return signals.Any()
-            ? OperationResult<IReadOnlyCollection<TradeSignal>>.Success(signals)
-            : OperationResult<IReadOnlyCollection<TradeSignal>>.Failure("Нет сигналов анализа");
+            return signals.Any()
+                ? OperationResult<IReadOnlyCollection<TradeSignal>>.Success(signals)
+                : OperationResult<IReadOnlyCollection<TradeSignal>>.Failure("Нет сигналов анализа");
+        }
+        catch (Exception ex)
+        {
+            return OperationResult<IReadOnlyCollection<TradeSignal>>.Failure(ex.Message);
+        }
     }
 }

@@ -10,8 +10,12 @@ namespace BlackCandle.Application.Pipelines;
 public abstract class Pipeline<TContext>
     where TContext : new()
 {
-    private readonly IEnumerable<IPipelineStep<TContext>> _steps;
-    private readonly ILoggerService _logger;
+    private readonly IEnumerable<IPipelineStep<TContext>> _steps = null!;
+    private readonly ILoggerService _logger = null!;
+
+    /// <inheritdoc cref="Pipeline{TContext}" />
+    protected Pipeline()
+    { }
 
     /// <inheritdoc cref="Pipeline{TContext}" />
     protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
@@ -43,12 +47,12 @@ public abstract class Pipeline<TContext>
     /// <summary>
     ///     Контекст пайплайна
     /// </summary>
-    public TContext Context { get; } = new();
+    public virtual TContext Context { get; internal set; } = new();
 
     /// <summary>
     ///     Статус пайплайна
     /// </summary>
-    public PipelineStatus Status { get; private set; } = PipelineStatus.NotStarted;
+    public virtual PipelineStatus Status { get; private set; } = PipelineStatus.NotStarted;
 
     /// <summary>
     ///     Название пайплайна
@@ -58,7 +62,7 @@ public abstract class Pipeline<TContext>
     /// <summary>
     ///     Запуск пайплайна
     /// </summary>
-    public async Task RunAsync(CancellationToken cancellationToken = default)
+    public virtual async Task RunAsync(CancellationToken cancellationToken = default)
     {
         UpdatePipelineStatus(PipelineStatus.Running, Context);
 
