@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Trading;
+using BlackCandle.Domain.Configuration;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

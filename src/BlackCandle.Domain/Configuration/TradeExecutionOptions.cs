@@ -1,9 +1,9 @@
-namespace BlackCandle.Infrastructure.Trading;
+namespace BlackCandle.Domain.Configuration;
 
 /// <summary>
 ///     Конфигурация исполнения заявок
 /// </summary>
-internal sealed class TradeExecutionOptions
+public sealed class TradeExecutionOptions
 {
     /// <summary>
     ///     Максимальная цена сделки

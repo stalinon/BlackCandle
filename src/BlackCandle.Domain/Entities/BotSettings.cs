@@ -1,3 +1,4 @@
+using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Interfaces;
 
@@ -17,19 +18,19 @@ public class BotSettings : IEntity
     public bool EnableAutoTrading { get; set; }
 
     /// <summary>
-    ///     Максимальная доля одного тикера в портфеле (%)
+    ///     Лимиты сделок
     /// </summary>
-    public decimal MaxPositionPerTickerPercent { get; set; }
+    public TradeLimitOptions TradeLimit { get; set; } = new();
 
     /// <summary>
-    ///     Минимальная сумма сделки
+    ///    Исполнение заявок
     /// </summary>
-    public decimal MinTradeAmount { get; set; }
+    public TradeExecutionOptions TradeExecution { get; set; } = new();
 
     /// <summary>
     ///     Расписание
     /// </summary>
-    public CronSchedule Schedule { get; set; } = new();
+    public Dictionary<string, CronSchedule> Schedules { get; set; } = new();
 
     /// <summary>
     ///     Статус бота
