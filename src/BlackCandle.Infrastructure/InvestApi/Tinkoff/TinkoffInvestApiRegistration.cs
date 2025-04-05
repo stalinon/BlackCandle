@@ -3,8 +3,6 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Tinkoff.InvestApi;
-
 namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 
 /// <summary>

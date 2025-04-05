@@ -1,3 +1,0 @@
-[submodule "thirdparty/invest-api-csharp-sdk"]
-	path = thirdparty/invest-api-csharp-sdk
-	url = https://github.com/Tinkoff/invest-api-csharp-sdk.git
