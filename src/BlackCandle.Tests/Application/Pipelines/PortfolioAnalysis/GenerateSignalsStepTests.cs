@@ -1,10 +1,12 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.ValueObjects;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
@@ -31,24 +33,17 @@ public sealed class GenerateSignalsStepTests
 
     private readonly Ticker _ticker = new() { Symbol = "AAPL" };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenerateSignalsStepTests"/> class.
+    /// </summary>
     public GenerateSignalsStepTests()
     {
         _storage.Setup(x => x.TradeSignals).Returns(_signalRepo.Object);
         _storage.Setup(x => x.PortfolioAssets).Returns(_portfolioRepo.Object);
 
         _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
-            .ReturnsAsync([new() { Ticker = _ticker }]);
+            .ReturnsAsync([new PortfolioAsset { Ticker = _ticker }]);
     }
-
-    private static TechnicalIndicator Indicator(string name, double value, int offset = 0) => new()
-    {
-        Name = name,
-        Value = value,
-        Date = DateTime.UtcNow.AddMinutes(-offset)
-    };
-
-    private static List<TechnicalIndicator> BuildIndicators(params (string name, double value)[] values) =>
-        values.Select(v => Indicator(v.name, v.value)).ToList();
 
     /// <summary>
     ///     Тест 1: Не генерируется сигнал без RSI
@@ -58,8 +53,9 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 25)) },
-            FundamentalScores = new() { [_ticker] = 5 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            { [_ticker] = BuildIndicators(("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 25)) },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 5 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
@@ -77,15 +73,19 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 25), ("MACD", -1), ("EMA12", 5), ("SMA20", 6), ("ADX14", 10)) },
-            FundamentalScores = new() { [_ticker] = 2 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 25), ("MACD", -1), ("EMA12", 5), ("SMA20", 6), ("ADX14", 10)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 2 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.Low)), Times.Once);
     }
 
@@ -97,15 +97,19 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)) },
-            FundamentalScores = new() { [_ticker] = 3 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 3 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.Medium)), Times.Once);
     }
 
@@ -117,15 +121,19 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)) },
-            FundamentalScores = new() { [_ticker] = 5 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 5 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.High)), Times.Once);
     }
 
@@ -137,15 +145,19 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 75), ("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 10)) },
-            FundamentalScores = new() { [_ticker] = 2 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 75), ("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 10)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 2 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Sell && s.Confidence == ConfidenceLevel.Medium)), Times.Once);
     }
 
@@ -157,15 +169,19 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 75), ("MACD", -1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 30)) },
-            FundamentalScores = new() { [_ticker] = 4 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 75), ("MACD", -1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 30)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 4 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Sell && s.Confidence == ConfidenceLevel.High)), Times.Once);
     }
 
@@ -177,15 +193,34 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
-            Indicators = new() { [_ticker] = BuildIndicators(
-                ("RSI14", 50), ("MACD", 0), ("EMA12", 5), ("SMA20", 5), ("ADX14", 10)) },
-            FundamentalScores = new() { [_ticker] = 3 }
+            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
+            {
+                [_ticker] = BuildIndicators(
+                    ("RSI14", 50), ("MACD", 0), ("EMA12", 5), ("SMA20", 5), ("ADX14", 10)),
+            },
+            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 3 },
         };
 
         var step = new GenerateSignalsStep(_storage.Object);
         await step.ExecuteAsync(context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.Is<TradeSignal>(s =>
+        _signalRepo.Verify(
+            x => x.AddAsync(It.Is<TradeSignal>(s =>
             s.Action == TradeAction.Hold)), Times.Once);
+    }
+
+    private static TechnicalIndicator Indicator(string name, double value, int offset = 0)
+    {
+        return new TechnicalIndicator
+        {
+            Name = name,
+            Value = value,
+            Date = DateTime.UtcNow.AddMinutes(-offset),
+        };
+    }
+
+    private static List<TechnicalIndicator> BuildIndicators(params (string Name, double Value)[] values)
+    {
+        return values.Select(v => Indicator(v.Name, v.Value)).ToList();
     }
 }

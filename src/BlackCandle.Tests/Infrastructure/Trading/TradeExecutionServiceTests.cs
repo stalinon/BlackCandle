@@ -3,8 +3,11 @@ using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Infrastructure.Trading;
+
 using Microsoft.Extensions.Options;
+
 using Moq;
+
 using Xunit;
 
 namespace BlackCandle.Tests.Infrastructure.Trading;
@@ -28,6 +31,9 @@ public sealed class TradeExecutionServiceTests
 
     private readonly ITradeExecutionService _service;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TradeExecutionServiceTests"/> class.
+    /// </summary>
     public TradeExecutionServiceTests()
     {
         _facadeMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
@@ -35,7 +41,7 @@ public sealed class TradeExecutionServiceTests
         var config = Options.Create(new TradeExecutionOptions
         {
             MaxTradeAmountRub = 10000m,
-            MaxLotsPerTrade = 5
+            MaxLotsPerTrade = 5,
         });
 
         _service = new TradeExecutionService(_facadeMock.Object, config);

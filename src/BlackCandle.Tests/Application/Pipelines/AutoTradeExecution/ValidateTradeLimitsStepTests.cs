@@ -1,10 +1,12 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -28,24 +30,14 @@ public sealed class ValidateTradeLimitsStepTests
 
     private readonly ValidateTradeLimitsStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateTradeLimitsStepTests"/> class.
+    /// </summary>
     public ValidateTradeLimitsStepTests()
     {
         _storage.Setup(x => x.PortfolioAssets).Returns(_portfolioRepo.Object);
         _step = new ValidateTradeLimitsStep(_storage.Object, _validator.Object);
     }
-
-    private AutoTradeExecutionContext ContextWithSignals(params TradeSignal[] signals) =>
-        new() { Signals = signals.ToList() };
-
-    private static List<PortfolioAsset> MockPortfolio() => new()
-    {
-        new PortfolioAsset
-        {
-            Ticker = new Ticker { Symbol = "AAPL" },
-            Quantity = 5,
-            CurrentValue = 10000
-        }
-    };
 
     /// <summary>
     ///     Тест 1: Валидный сигнал — остаётся в списке
@@ -100,7 +92,7 @@ public sealed class ValidateTradeLimitsStepTests
         var signals = new[]
         {
             new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } },
-            new TradeSignal { Ticker = new Ticker { Symbol = "SBER" } }
+            new TradeSignal { Ticker = new Ticker { Symbol = "SBER" } },
         };
 
         var context = ContextWithSignals(signals);
@@ -134,5 +126,24 @@ public sealed class ValidateTradeLimitsStepTests
         await _step.ExecuteAsync(context);
 
         _portfolioRepo.Verify(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()), Times.Once);
+    }
+
+    private static List<PortfolioAsset> MockPortfolio()
+    {
+        return
+        [
+            new PortfolioAsset
+            {
+                Ticker = new Ticker { Symbol = "AAPL" },
+                Quantity = 5,
+                CurrentValue = 10000,
+            }
+
+        ];
+    }
+
+    private AutoTradeExecutionContext ContextWithSignals(params TradeSignal[] signals)
+    {
+        return new AutoTradeExecutionContext { Signals = [.. signals] };
     }
 }

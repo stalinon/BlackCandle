@@ -11,7 +11,7 @@ public interface IMarketDataClient
     ///     Получить исторические данные в интервале
     /// </summary>
     Task<List<PriceHistoryPoint>> GetHistoricalDataAsync(Ticker ticker, DateTime from, DateTime to);
-    
+
     /// <summary>
     ///     Получить текущую цену по тикеру
     /// </summary>

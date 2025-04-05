@@ -7,10 +7,10 @@ namespace BlackCandle.Infrastructure.Logging;
 /// </summary>
 internal sealed class ConsoleLogger : ILoggerService
 {
+    private readonly List<string> _prefixes = [];
+
     private string Preffix => string.Join(" ", _prefixes.Select(x => $"[{x}]"));
-    
-    private readonly List<string> _prefixes = new();
-    
+
     /// <inheritdoc />
     public void AddPrefix(string prefix)
     {
@@ -18,7 +18,7 @@ internal sealed class ConsoleLogger : ILoggerService
         {
             return;
         }
-        
+
         _prefixes.Add(prefix);
     }
 
@@ -49,6 +49,7 @@ internal sealed class ConsoleLogger : ILoggerService
             Console.WriteLine($"        {ex.Message}");
             Console.WriteLine($"        {ex.StackTrace}");
         }
+
         Console.ResetColor();
     }
 }

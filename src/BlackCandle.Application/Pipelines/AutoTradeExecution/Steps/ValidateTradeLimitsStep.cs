@@ -15,12 +15,14 @@ internal sealed class ValidateTradeLimitsStep(
     public override string StepName => "Валидация сигналов";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
 
         var validSignals = context.Signals.Where(signal => validator.Validate(signal, portfolio)).ToList();
-        
+
         context.Signals = validSignals;
     }
 }

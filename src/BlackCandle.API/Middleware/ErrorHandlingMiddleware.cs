@@ -1,8 +1,8 @@
-using BlackCandle.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
-using BlackCandle.Application.Interfaces;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Domain.Exceptions;
 using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.API.Middleware;
@@ -10,17 +10,11 @@ namespace BlackCandle.API.Middleware;
 /// <summary>
 ///     Глобальный middleware обработки исключений, не даёт приложению упасть.
 /// </summary>
-public class ErrorHandlingMiddleware
+/// <inheritdoc cref="ErrorHandlingMiddleware" />
+public class ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILoggerService _logger;
-
-    /// <inheritdoc cref="ErrorHandlingMiddleware" />
-    public ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly ILoggerService _logger = logger;
 
     /// <inheritdoc cref="ErrorHandlingMiddleware" />
     public async Task InvokeAsync(HttpContext context)

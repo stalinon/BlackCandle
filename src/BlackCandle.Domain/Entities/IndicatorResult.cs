@@ -14,7 +14,7 @@ public class IndicatorResult : IEntity
     /// <summary>
     ///     Символ тикера
     /// </summary>
-    public Ticker Ticker { get; set; }
+    public Ticker Ticker { get; set; } = default!;
 
     /// <summary>
     ///     Тип индикатора
@@ -34,5 +34,5 @@ public class IndicatorResult : IEntity
     /// <summary>
     ///     Дополнительные данные (если есть)
     /// </summary>
-    public Dictionary<string, decimal> ExtraData { get; set; } = new();
+    public Dictionary<string, decimal> ExtraData { get; set; } = [];
 }

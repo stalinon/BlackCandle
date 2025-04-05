@@ -15,10 +15,10 @@ public class AutoTradeExecutionContext
     /// <summary>
     ///     Сигналы
     /// </summary>
-    public List<TradeSignal> Signals { get; set; } = new();
-    
+    public List<TradeSignal> Signals { get; set; } = [];
+
     /// <summary>
     ///     Совершенные сделки
     /// </summary>
-    public List<ExecutedTrade> ExecutedTrades { get; set; } = new();
+    public List<ExecutedTrade> ExecutedTrades { get; set; } = [];
 }

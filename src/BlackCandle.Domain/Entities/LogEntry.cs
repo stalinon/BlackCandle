@@ -9,7 +9,7 @@ public class LogEntry : IEntity
 {
     /// <inheritdoc />
     public string Id => $"{Timestamp:yyyyMMddHHmmssfff}";
-    
+
     /// <summary>
     ///     Момент времени
     /// </summary>

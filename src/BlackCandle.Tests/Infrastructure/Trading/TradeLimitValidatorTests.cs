@@ -3,7 +3,9 @@ using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Infrastructure.Trading;
+
 using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace BlackCandle.Tests.Infrastructure.Trading;
@@ -26,6 +28,9 @@ public sealed class TradeLimitValidatorTests
     private readonly Mock<IMarketDataClient> _marketMock = new();
     private readonly ITradeLimitValidator _validator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TradeLimitValidatorTests"/> class.
+    /// </summary>
     public TradeLimitValidatorTests()
     {
         _apiMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
@@ -33,7 +38,7 @@ public sealed class TradeLimitValidatorTests
         var options = Options.Create(new TradeLimitOptions
         {
             MinTradeAmountRub = 1000m,
-            MaxPositionSharePercent = 50m
+            MaxPositionSharePercent = 50m,
         });
 
         _validator = new TradeLimitValidator(_apiMock.Object, options);
@@ -104,7 +109,7 @@ public sealed class TradeLimitValidatorTests
 
         var portfolio = new List<PortfolioAsset>
         {
-            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 1, CurrentValue = 10_000 }
+            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 1, CurrentValue = 10_000 },
         };
 
         // Act
@@ -126,7 +131,7 @@ public sealed class TradeLimitValidatorTests
 
         var portfolio = new List<PortfolioAsset>
         {
-            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 10, CurrentValue = 1_000 }
+            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 10, CurrentValue = 1_000 },
         };
 
         // Act

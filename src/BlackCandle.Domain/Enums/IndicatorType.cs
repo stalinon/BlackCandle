@@ -5,9 +5,28 @@ namespace BlackCandle.Domain.Enums;
 /// </summary>
 public enum IndicatorType
 {
+    /// <summary>
+    ///     RSI
+    /// </summary>
     RSI,
+
+    /// <summary>
+    ///     SMA
+    /// </summary>
     SMA,
+
+    /// <summary>
+    ///     EMA
+    /// </summary>
     EMA,
+
+    /// <summary>
+    ///     MACD
+    /// </summary>
     MACD,
-    ADX
+
+    /// <summary>
+    ///     ADX
+    /// </summary>
+    ADX,
 }

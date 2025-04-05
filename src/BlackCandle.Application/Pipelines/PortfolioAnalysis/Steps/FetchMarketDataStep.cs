@@ -6,17 +6,20 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 /// <summary>
 ///     Получение рыночных данных
 /// </summary>
-internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStorageContext dataStorage) : PipelineStep<PortfolioAnalysisContext>
+internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStorageContext dataStorage)
+    : PipelineStep<PortfolioAnalysisContext>
 {
     /// <inheritdoc />
     public override string StepName => "Получение рыночных данных";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        PortfolioAnalysisContext context,
+        CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         var weekAgo = now.AddDays(-7);
-        
+
         var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
         foreach (var asset in portfolio)
         {

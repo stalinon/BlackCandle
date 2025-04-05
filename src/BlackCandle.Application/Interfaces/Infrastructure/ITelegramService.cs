@@ -9,7 +9,7 @@ public interface ITelegramService
     ///     Отправить сообщение
     /// </summary>
     Task SendMessageAsync(string message, bool disableNotification = false);
-    
+
     /// <summary>
     ///     Отправить файл
     /// </summary>

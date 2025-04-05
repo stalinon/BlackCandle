@@ -3,6 +3,7 @@ using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -23,6 +24,9 @@ public sealed class CalculateTradeVolumeStepTests
     private readonly Mock<ITradeExecutionService> _exec = new();
     private readonly CalculateTradeVolumeStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CalculateTradeVolumeStepTests"/> class.
+    /// </summary>
     public CalculateTradeVolumeStepTests()
     {
         _step = new CalculateTradeVolumeStep(_exec.Object);
@@ -36,7 +40,7 @@ public sealed class CalculateTradeVolumeStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }]
+            Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }],
         };
 
         _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).Returns(0);
@@ -54,7 +58,7 @@ public sealed class CalculateTradeVolumeStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }]
+            Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }],
         };
 
         _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).Returns(10);
@@ -74,10 +78,11 @@ public sealed class CalculateTradeVolumeStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            Signals = [
+            Signals =
+            [
                 new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } },
                 new TradeSignal { Ticker = new Ticker { Symbol = "SBER" } }
-            ]
+            ],
         };
 
         _exec.Setup(x => x.CalculateVolume(It.Is<TradeSignal>(s => s.Ticker.Symbol == "AAPL"))).Returns(10);
@@ -97,10 +102,11 @@ public sealed class CalculateTradeVolumeStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            Signals = [
+            Signals =
+            [
                 new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } },
                 new TradeSignal { Ticker = new Ticker { Symbol = "SBER" } }
-            ]
+            ],
         };
 
         _exec.Setup(s => s.CalculateVolume(It.IsAny<TradeSignal>())).Returns(1);

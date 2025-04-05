@@ -2,6 +2,7 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Microsoft.Extensions.Options;
 
 namespace BlackCandle.Infrastructure.Trading;

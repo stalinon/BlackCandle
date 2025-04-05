@@ -1,9 +1,11 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
@@ -27,6 +29,9 @@ public sealed class LogStepTests
 
     private readonly LogStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogStepTests"/> class.
+    /// </summary>
     public LogStepTests()
     {
         _storage.Setup(x => x.TradeSignals).Returns(_signalsRepo.Object);
@@ -41,7 +46,7 @@ public sealed class LogStepTests
     {
         // Arrange
         _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
-            .ReturnsAsync(new List<TradeSignal>());
+            .ReturnsAsync([]);
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.Today.AddHours(10) };
 
@@ -49,7 +54,9 @@ public sealed class LogStepTests
         await _step.ExecuteAsync(context);
 
         // Assert
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(s => s.Contains("Нет торговых сигналов")), It.IsAny<bool>()), Times.Once);
+        _telegram.Verify(
+            x => x.SendMessageAsync(It.Is<string>(s => s.Contains("Нет торговых сигналов")), It.IsAny<bool>()),
+            Times.Once);
     }
 
     /// <summary>
@@ -61,8 +68,16 @@ public sealed class LogStepTests
         // Arrange
         var signals = new List<TradeSignal>
         {
-            new() { Ticker = new() { Symbol = "AAPL" }, Action = TradeAction.Buy, Confidence = ConfidenceLevel.High, Score = 5, Reason = "RSI < 30", Date = DateTime.Today },
-            new() { Ticker = new() { Symbol = "SBER" }, Action = TradeAction.Sell, Confidence = ConfidenceLevel.Medium, Score = 3, Reason = "ADX > 20", Date = DateTime.Today },
+            new()
+            {
+                Ticker = new Ticker { Symbol = "AAPL" }, Action = TradeAction.Buy, Confidence = ConfidenceLevel.High,
+                Score = 5, Reason = "RSI < 30", Date = DateTime.Today,
+            },
+            new()
+            {
+                Ticker = new Ticker { Symbol = "SBER" }, Action = TradeAction.Sell, Confidence = ConfidenceLevel.Medium,
+                Score = 3, Reason = "ADX > 20", Date = DateTime.Today,
+            },
         };
 
         _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
@@ -74,7 +89,9 @@ public sealed class LogStepTests
         await _step.ExecuteAsync(context);
 
         // Assert
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(msg => msg.Contains("Portfolio Analysis Report")), It.IsAny<bool>()), Times.Once);
+        _telegram.Verify(
+            x => x.SendMessageAsync(It.Is<string>(msg => msg.Contains("Portfolio Analysis Report")), It.IsAny<bool>()),
+            Times.Once);
     }
 
     /// <summary>
@@ -84,7 +101,7 @@ public sealed class LogStepTests
     public async Task ExecuteAsync_ShouldCallTelegramService_Once()
     {
         _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
-            .ReturnsAsync(new List<TradeSignal>());
+            .ReturnsAsync([]);
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.UtcNow };
         await _step.ExecuteAsync(context);
@@ -102,8 +119,8 @@ public sealed class LogStepTests
         var today = DateTime.Now.Date;
         var signals = new List<TradeSignal>
         {
-            new() { Ticker = new() { Symbol = "AAPL" }, Date = today },
-            new() { Ticker = new() { Symbol = "SBER" }, Date = today.AddDays(-1) } // не должен попасть
+            new() { Ticker = new Ticker { Symbol = "AAPL" }, Date = today },
+            new() { Ticker = new Ticker { Symbol = "SBER" }, Date = today.AddDays(-1) }, // не должен попасть
         };
 
         _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
@@ -115,6 +132,9 @@ public sealed class LogStepTests
         await _step.ExecuteAsync(context);
 
         // Assert
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(msg => msg.Contains("AAPL") && !msg.Contains("SBER")), It.IsAny<bool>()), Times.Once);
+        _telegram.Verify(
+            x => x.SendMessageAsync(
+                It.Is<string>(msg => msg.Contains("AAPL") && !msg.Contains("SBER")),
+                It.IsAny<bool>()), Times.Once);
     }
 }

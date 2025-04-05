@@ -17,11 +17,6 @@ namespace BlackCandle.Tests.Infrastructure;
 /// </remarks>
 public sealed class InMemoryRepositoryTests
 {
-    private InMemoryRepository<TestEntity> CreateRepository()
-    {
-        return new InMemoryRepository<TestEntity>();
-    }
-
     /// <summary>
     ///     Тест 1: Добавление одной сущности и получение по ID
     /// </summary>
@@ -115,5 +110,10 @@ public sealed class InMemoryRepositoryTests
 
         // Assert
         Assert.Null(result);
+    }
+
+    private static InMemoryRepository<TestEntity> CreateRepository()
+    {
+        return new InMemoryRepository<TestEntity>();
     }
 }

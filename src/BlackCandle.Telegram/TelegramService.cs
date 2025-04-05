@@ -1,5 +1,7 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+
 using Microsoft.Extensions.Options;
+
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -22,9 +24,9 @@ internal sealed class TelegramService(
         try
         {
             await _bot.SendMessage(
-                chatId: _chatId,
-                text: message,
-                parseMode: ParseMode.Markdown,
+                _chatId,
+                message,
+                ParseMode.Markdown,
                 disableNotification: disableNotification);
         }
         catch (Exception ex)
@@ -41,10 +43,10 @@ internal sealed class TelegramService(
             var input = new InputFileStream(fileStream, fileName);
 
             await _bot.SendDocument(
-                chatId: _chatId,
-                document: input,
-                caption: caption,
-                parseMode: ParseMode.Markdown);
+                _chatId,
+                input,
+                caption,
+                ParseMode.Markdown);
         }
         catch (Exception ex)
         {

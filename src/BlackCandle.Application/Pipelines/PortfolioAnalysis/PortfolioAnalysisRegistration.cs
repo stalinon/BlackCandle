@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis;

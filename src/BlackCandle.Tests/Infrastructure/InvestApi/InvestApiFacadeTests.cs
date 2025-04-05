@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Infrastructure.InvestApi;
+
 using Moq;
 
 namespace BlackCandle.Tests.Infrastructure.InvestApi;

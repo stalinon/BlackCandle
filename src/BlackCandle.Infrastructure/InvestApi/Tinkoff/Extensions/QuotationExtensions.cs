@@ -12,14 +12,14 @@ internal static class QuotationExtensions
     /// </summary>
     public static decimal ToDecimal(this Quotation q)
     {
-        return q.Units + q.Nano / 1_000_000_000M;
+        return q.Units + (q.Nano / 1_000_000_000M);
     }
-    
+
     /// <summary>
     ///     Привести к адекватному виду
     /// </summary>
     public static decimal ToDecimal(this MoneyValue q)
     {
-        return q.Units + q.Nano / 1_000_000_000M;
+        return q.Units + (q.Nano / 1_000_000_000M);
     }
 }

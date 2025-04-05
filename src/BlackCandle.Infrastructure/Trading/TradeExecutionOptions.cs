@@ -9,7 +9,7 @@ internal sealed class TradeExecutionOptions
     ///     Максимальная цена сделки
     /// </summary>
     public decimal MaxTradeAmountRub { get; set; } = 10_000m;
-    
+
     /// <summary>
     ///     Максимальное количество лотов в сделке
     /// </summary>

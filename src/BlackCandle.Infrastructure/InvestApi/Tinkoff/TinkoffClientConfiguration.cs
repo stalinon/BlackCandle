@@ -9,7 +9,7 @@ public class TinkoffClientConfiguration
     ///     Ключ API
     /// </summary>
     public string ApiKey { get; set; } = string.Empty;
-    
+
     /// <summary>
     ///     Идентификатор аккаунта
     /// </summary>

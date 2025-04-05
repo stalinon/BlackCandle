@@ -13,12 +13,14 @@ internal sealed class LoadSignalsStep(IDataStorageContext dataStorage) : Pipelin
     public override string StepName => "Загрузка сигналов";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        AutoTradeExecutionContext context,
+        CancellationToken cancellationToken = default)
     {
         var today = DateTime.UtcNow.Date;
         var allSignals = await dataStorage.TradeSignals.GetAllAsync(s =>
             s.Date.Date == today && (s.Action == TradeAction.Buy || s.Action == TradeAction.Sell));
-        
+
         context.Signals = allSignals;
     }
 }

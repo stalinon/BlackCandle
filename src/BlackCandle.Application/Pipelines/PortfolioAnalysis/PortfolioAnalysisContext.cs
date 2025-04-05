@@ -16,10 +16,10 @@ public class PortfolioAnalysisContext
     /// <summary>
     ///     Технические индикаторы
     /// </summary>
-    public Dictionary<Ticker, List<TechnicalIndicator>> Indicators { get; set; } = new();
-    
+    public Dictionary<Ticker, List<TechnicalIndicator>> Indicators { get; set; } = [];
+
     /// <summary>
     ///     Скоры по фундаментальным данным
     /// </summary>
-    public Dictionary<Ticker, int> FundamentalScores { get; set; } = new();
+    public Dictionary<Ticker, int> FundamentalScores { get; set; } = [];
 }

@@ -6,5 +6,8 @@ namespace BlackCandle.Domain.Exceptions;
 public class EmptyPortfolioException : BlackCandleException
 {
     /// <inheritdoc cref="EmptyPortfolioException" />
-    public EmptyPortfolioException() : base("Портфель пуст. Анализ невозможен.") { }
+    public EmptyPortfolioException()
+        : base("Портфель пуст. Анализ невозможен.")
+    {
+    }
 }

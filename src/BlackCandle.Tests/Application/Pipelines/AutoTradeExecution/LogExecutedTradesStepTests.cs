@@ -3,6 +3,7 @@ using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
@@ -23,21 +24,12 @@ public sealed class LogExecutedTradesStepTests
     private readonly Mock<ITelegramService> _telegram = new();
     private readonly LogExecutedTradesStep _step;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogExecutedTradesStepTests"/> class.
+    /// </summary>
     public LogExecutedTradesStepTests()
     {
         _step = new LogExecutedTradesStep(_telegram.Object);
-    }
-
-    private static ExecutedTrade MakeTrade(string ticker, TradeAction side, TradeStatus status, decimal price = 0)
-    {
-        return new ExecutedTrade
-        {
-            Ticker = new Ticker { Symbol = ticker },
-            Quantity = 10,
-            Side = side,
-            Status = status,
-            Price = price
-        };
     }
 
     /// <summary>
@@ -61,12 +53,14 @@ public sealed class LogExecutedTradesStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [MakeTrade("SBER", TradeAction.Sell, TradeStatus.Error)]
+            ExecutedTrades = [MakeTrade("SBER", TradeAction.Sell, TradeStatus.Error)],
         };
 
         await _step.ExecuteAsync(context);
 
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(s =>
+        _telegram.Verify(
+            x => x.SendMessageAsync(
+            It.Is<string>(s =>
             s.Contains("❌ *Ошибки исполнения:*") &&
             s.Contains("⚠️ `SBER`")), It.IsAny<bool>()), Times.Once);
     }
@@ -83,12 +77,14 @@ public sealed class LogExecutedTradesStepTests
             [
                 MakeTrade("AAPL", TradeAction.Buy, TradeStatus.Success, 200),
                 MakeTrade("YNDX", TradeAction.Sell, TradeStatus.Error)
-            ]
+            ],
         };
 
         await _step.ExecuteAsync(context);
 
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(s =>
+        _telegram.Verify(
+            x => x.SendMessageAsync(
+            It.Is<string>(s =>
             s.Contains("✅ *Успешные сделки:*") &&
             s.Contains("❌ *Ошибки исполнения:*") &&
             s.Contains("🟢 `AAPL`") &&
@@ -103,16 +99,30 @@ public sealed class LogExecutedTradesStepTests
     {
         var context = new AutoTradeExecutionContext
         {
-            ExecutedTrades = [MakeTrade("AAPL", TradeAction.Buy, TradeStatus.Success, 100)]
+            ExecutedTrades = [MakeTrade("AAPL", TradeAction.Buy, TradeStatus.Success, 100)],
         };
 
         await _step.ExecuteAsync(context);
 
-        _telegram.Verify(x => x.SendMessageAsync(It.Is<string>(s =>
-            s.StartsWith("📦 *Auto-Trade Execution Report*") &&
-            s.Contains("*Успешные сделки:*") &&
-            s.Contains("`AAPL`") &&
-            s.Contains("*") // markdown
-        ), It.IsAny<bool>()), Times.Once);
+        _telegram.Verify(
+            x => x.SendMessageAsync(
+            It.Is<string>(s =>
+                s.StartsWith("📦 *Auto-Trade Execution Report*") &&
+                s.Contains("*Успешные сделки:*") &&
+                s.Contains("`AAPL`") &&
+                s.Contains('*')), // markdown
+            It.IsAny<bool>()), Times.Once);
+    }
+
+    private static ExecutedTrade MakeTrade(string ticker, TradeAction side, TradeStatus status, decimal price = 0)
+    {
+        return new ExecutedTrade
+        {
+            Ticker = new Ticker { Symbol = ticker },
+            Quantity = 10,
+            Side = side,
+            Status = status,
+            Price = price,
+        };
     }
 }

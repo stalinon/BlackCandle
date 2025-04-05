@@ -5,7 +5,18 @@ namespace BlackCandle.Domain.Enums;
 /// </summary>
 public enum ConfidenceLevel
 {
+    /// <summary>
+    ///     Низкий
+    /// </summary>
     Low,
+
+    /// <summary>
+    ///     Средний
+    /// </summary>
     Medium,
-    High
+
+    /// <summary>
+    ///     Высокий
+    /// </summary>
+    High,
 }

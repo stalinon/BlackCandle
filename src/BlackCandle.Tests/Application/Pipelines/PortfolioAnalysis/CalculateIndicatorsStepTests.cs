@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
@@ -27,24 +29,13 @@ public sealed class CalculateIndicatorsStepTests
 
     private readonly Ticker _ticker = new() { Symbol = "AAPL" };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CalculateIndicatorsStepTests"/> class.
+    /// </summary>
     public CalculateIndicatorsStepTests()
     {
         _storageMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
         _step = new CalculateIndicatorsStep(_storageMock.Object);
-    }
-
-    private List<PriceHistoryPoint> GenerateCandles(int count)
-    {
-        return Enumerable.Range(0, count).Select(i => new PriceHistoryPoint
-        {
-            Ticker = _ticker,
-            Date = DateTime.UtcNow.AddDays(-count + i),
-            Open = 100,
-            High = 105,
-            Low = 95,
-            Close = 100 + i % 3,
-            Volume = 1_000 + i * 10
-        }).ToList();
     }
 
     /// <summary>
@@ -54,7 +45,8 @@ public sealed class CalculateIndicatorsStepTests
     public async Task ExecuteAsync_ShouldSkipTicker_WhenLessThan50Candles()
     {
         // Arrange
-        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>())).ReturnsAsync(GenerateCandles(30));
+        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>()))
+            .ReturnsAsync(GenerateCandles(30));
         var context = new PortfolioAnalysisContext();
 
         // Act
@@ -71,7 +63,8 @@ public sealed class CalculateIndicatorsStepTests
     public async Task ExecuteAsync_ShouldCalculateAllIndicators()
     {
         // Arrange
-        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>())).ReturnsAsync(GenerateCandles(100));
+        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>()))
+            .ReturnsAsync(GenerateCandles(100));
         var context = new PortfolioAnalysisContext();
 
         // Act
@@ -94,7 +87,8 @@ public sealed class CalculateIndicatorsStepTests
     {
         // Arrange
         var candles = GenerateCandles(100);
-        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>())).ReturnsAsync(candles);
+        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>()))
+            .ReturnsAsync(candles);
 
         var context = new PortfolioAnalysisContext();
 
@@ -112,7 +106,8 @@ public sealed class CalculateIndicatorsStepTests
     public async Task ExecuteAsync_ShouldGroupByDateAndFlatten()
     {
         // Arrange
-        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>())).ReturnsAsync(GenerateCandles(100));
+        _marketMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PriceHistoryPoint, bool>>>()))
+            .ReturnsAsync(GenerateCandles(100));
         var context = new PortfolioAnalysisContext();
 
         // Act
@@ -125,5 +120,19 @@ public sealed class CalculateIndicatorsStepTests
         {
             Assert.All(group, i => Assert.Equal(group.Key, i.Date));
         }
+    }
+
+    private List<PriceHistoryPoint> GenerateCandles(int count)
+    {
+        return Enumerable.Range(0, count).Select(i => new PriceHistoryPoint
+        {
+            Ticker = _ticker,
+            Date = DateTime.UtcNow.AddDays(-count + i),
+            Open = 100,
+            High = 105,
+            Low = 95,
+            Close = 100 + (i % 3),
+            Volume = 1_000 + (i * 10),
+        }).ToList();
     }
 }

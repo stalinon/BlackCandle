@@ -27,7 +27,7 @@ public interface IRepository<T>
     ///     Удалить сущность по идентификатору
     /// </summary>
     Task RemoveAsync(string id);
-    
+
     /// <summary>
     ///     Добавить скопом
     /// </summary>

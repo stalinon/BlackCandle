@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Interfaces;
@@ -10,7 +11,8 @@ namespace BlackCandle.Infrastructure.Persistence.InMemory;
 /// Хранилище сущностей в оперативной памяти
 /// </summary>
 /// <typeparam name="T">Тип сущности</typeparam>
-internal sealed class InMemoryRepository<T> : IRepository<T> where T : IEntity
+internal sealed class InMemoryRepository<T> : IRepository<T>
+    where T : IEntity
 {
     private readonly ConcurrentDictionary<string, T> _storage = new();
 
@@ -23,7 +25,9 @@ internal sealed class InMemoryRepository<T> : IRepository<T> where T : IEntity
 
     /// <inheritdoc />
     public Task<T?> GetByIdAsync(string id)
-        => Task.FromResult(_storage.GetValueOrDefault(id));
+    {
+        return Task.FromResult(_storage.GetValueOrDefault(id));
+    }
 
     /// <inheritdoc />
     public Task AddAsync(T entity)
@@ -46,7 +50,7 @@ internal sealed class InMemoryRepository<T> : IRepository<T> where T : IEntity
         {
             _storage[entity.Id] = entity;
         }
-        
+
         return Task.CompletedTask;
     }
 

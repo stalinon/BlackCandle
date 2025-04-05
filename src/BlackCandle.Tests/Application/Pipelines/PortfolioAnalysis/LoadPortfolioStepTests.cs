@@ -3,6 +3,7 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
@@ -34,7 +35,7 @@ public sealed class LoadPortfolioStepTests
         var expected = new List<PortfolioAsset>
         {
             new() { Ticker = new Ticker { Symbol = "AAPL" }, Quantity = 10 },
-            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 5 }
+            new() { Ticker = new Ticker { Symbol = "SBER" }, Quantity = 5 },
         };
 
         mockPortfolioClient.Setup(x => x.GetPortfolioAsync()).ReturnsAsync(expected);

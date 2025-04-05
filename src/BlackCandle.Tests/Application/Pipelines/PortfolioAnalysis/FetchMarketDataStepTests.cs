@@ -1,9 +1,11 @@
 using System.Linq.Expressions;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
@@ -36,6 +38,9 @@ public sealed class FetchMarketDataStepTests
     private readonly FetchMarketDataStep _step;
     private readonly PortfolioAnalysisContext _context = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FetchMarketDataStepTests"/> class.
+    /// </summary>
     public FetchMarketDataStepTests()
     {
         List<PortfolioAsset> assets =
@@ -46,7 +51,7 @@ public sealed class FetchMarketDataStepTests
 
         _marketMock
             .Setup(x => x.GetHistoricalDataAsync(It.IsAny<Ticker>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-            .ReturnsAsync([new() { Ticker = _ticker1, Open = 100 }]);
+            .ReturnsAsync([new PriceHistoryPoint { Ticker = _ticker1, Open = 100 }]);
 
         _fundamentalsMock.Setup(x => x.GetFundamentalsAsync(_ticker1))
             .ReturnsAsync(new FundamentalData { Ticker = "AAPL" });
@@ -77,7 +82,9 @@ public sealed class FetchMarketDataStepTests
         await _step.ExecuteAsync(_context);
 
         // Assert
-        _marketMock.Verify(x => x.GetHistoricalDataAsync(It.IsAny<Ticker>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Exactly(2));
+        _marketMock.Verify(
+            x => x.GetHistoricalDataAsync(It.IsAny<Ticker>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()),
+            Times.Exactly(2));
     }
 
     /// <summary>

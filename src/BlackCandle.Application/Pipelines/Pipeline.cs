@@ -1,4 +1,3 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Enums;
@@ -8,25 +7,43 @@ namespace BlackCandle.Application.Pipelines;
 /// <summary>
 ///     Пайплайн
 /// </summary>
-public abstract class Pipeline<TContext> where TContext : new()
+public abstract class Pipeline<TContext>
+    where TContext : new()
 {
     private readonly IEnumerable<IPipelineStep<TContext>> _steps;
     private readonly ILoggerService _logger;
+
+    /// <inheritdoc cref="Pipeline{TContext}" />
+    protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
+    {
+        _steps = steps;
+        _logger = logger;
+
+        // ReSharper disable once VirtualMemberCallInConstructor
+        _logger.AddPrefix(Name);
+
+        foreach (var pipelineStep in _steps)
+        {
+            pipelineStep.Status = PipelineStepStatus.NotStarted;
+            pipelineStep.EarlyExitAction = EarlyExit;
+            pipelineStep.Logger = _logger;
+        }
+    }
+
+    /// <summary>
+    ///     Реакция на смену статуса шага
+    /// </summary>
+    public event PipelineStepStatusChangedHandler<TContext>? OnStepStatusChanged;
+
+    /// <summary>
+    ///     Реакция на смену статуса
+    /// </summary>
+    public event PipelineStatusChangedHandler<TContext>? OnStatusChanged;
 
     /// <summary>
     ///     Контекст пайплайна
     /// </summary>
     public TContext Context { get; } = new();
-    
-    /// <summary>
-    ///     Реакция на смену статуса шага
-    /// </summary>
-    public event PipelineStepStatusChangedHandler<TContext>? OnStepStatusChanged;
-    
-    /// <summary>
-    ///     Реакция на смену статуса
-    /// </summary>
-    public event PipelineStatusChangedHandler<TContext>? OnStatusChanged;
 
     /// <summary>
     ///     Статус пайплайна
@@ -38,23 +55,6 @@ public abstract class Pipeline<TContext> where TContext : new()
     /// </summary>
     protected abstract string Name { get; }
 
-    /// <inheritdoc cref="Pipeline{TContext}" />
-    protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
-    {
-        _steps = steps;
-        _logger = logger;
-        
-        // ReSharper disable once VirtualMemberCallInConstructor
-        _logger.AddPrefix(Name);
-        
-        foreach (var pipelineStep in _steps)
-        {
-            pipelineStep.Status = PipelineStepStatus.NotStarted;
-            pipelineStep.EarlyExitAction = EarlyExit;
-            pipelineStep.Logger = _logger;
-        }
-    }
-    
     /// <summary>
     ///     Запуск пайплайна
     /// </summary>
@@ -75,7 +75,7 @@ public abstract class Pipeline<TContext> where TContext : new()
                 {
                     return;
                 }
-                
+
                 UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
             }
             catch (Exception ex)
@@ -86,7 +86,7 @@ public abstract class Pipeline<TContext> where TContext : new()
                 throw;
             }
         }
-        
+
         UpdatePipelineStatus(PipelineStatus.Completed, Context);
     }
 
@@ -98,13 +98,13 @@ public abstract class Pipeline<TContext> where TContext : new()
         UpdatePipelineStepStatus(PipelineStepStatus.Completed, step, Context);
         UpdatePipelineStatus(PipelineStatus.NotStarted, context, exception);
     }
-    
+
     private void UpdatePipelineStepStatus(PipelineStepStatus newStatus, IPipelineStep<TContext> step, TContext context, Exception? ex = null)
     {
         step.Status = newStatus;
         OnStepStatusChanged?.Invoke(step.Status, step.StepName, context, ex);
     }
-    
+
     private void UpdatePipelineStatus(PipelineStatus newStatus, TContext context, Exception? ex = null)
     {
         Status = newStatus;

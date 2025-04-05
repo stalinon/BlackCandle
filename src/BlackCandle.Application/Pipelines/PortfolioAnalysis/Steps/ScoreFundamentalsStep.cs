@@ -14,7 +14,9 @@ internal sealed class ScoreFundamentalsStep(IDataStorageContext dataStorage) : P
     public override string StepName => "Фундаментальный скоринг";
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(PortfolioAnalysisContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(
+        PortfolioAnalysisContext context,
+        CancellationToken cancellationToken = default)
     {
         var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
         foreach (var asset in portfolio)
@@ -49,7 +51,7 @@ internal sealed class ScoreFundamentalsStep(IDataStorageContext dataStorage) : P
                 score++;
             }
 
-            if (fundamental.MarketCap is > 100_000) // в млн руб
+            if (fundamental.MarketCap is > 100_000)
             {
                 score++;
             }

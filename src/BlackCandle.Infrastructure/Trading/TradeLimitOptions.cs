@@ -9,7 +9,7 @@ internal sealed class TradeLimitOptions
     ///     Минимальная цена сделки
     /// </summary>
     public decimal MinTradeAmountRub { get; set; } = 1000m;
-    
+
     /// <summary>
     ///     Максимальная позиция
     /// </summary>
