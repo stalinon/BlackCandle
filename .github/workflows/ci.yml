@@ -60,15 +60,16 @@ jobs:
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             --logger trx \
-            --settings coveragerunsettings.runsettings
+            --settings coveragerunsettings.runsettings \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
       - name: Upload Test & Coverage Results
         uses: actions/upload-artifact@v4
         with:
           name: test-and-coverage
           path: |
-            **/TestResults/*.trx
-            **/TestResults/*/coverage.cobertura.xml
+            src/**/TestResults/**/*.trx
+            src/**/TestResults/**/*.xml
 
   coverage:
     name: 📊 Coverage
@@ -92,7 +93,7 @@ jobs:
       - name: Prepare coverage
         run: |
           mkdir -p coverage
-          cp ./artifacts/**/coverage.cobertura.xml coverage/coverage.cobertura.xml
+          find ./artifacts -name "coverage.cobertura.xml" -exec cp {} coverage/coverage.cobertura.xml \;
 
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5
