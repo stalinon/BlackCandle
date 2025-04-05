@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Enums;
+using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 
@@ -20,6 +21,13 @@ internal sealed class PlaceOrdersStep(IInvestApiFacade investApi) : PipelineStep
         {
             try
             {
+                // если пайплайн исполняется в режиме превью, то не выставляем заявки
+                if (context.PreviewMode)
+                {
+                    context.PreviewOrders.Add(new OrderPreview(trade.Ticker, trade.Side, trade.Quantity, trade.Price));
+                    continue;
+                }
+
                 Logger.LogInfo($"Отправка заявки: {trade.Side} {trade.Quantity} {trade.Ticker.Symbol}");
 
                 var price = await investApi.Trading.PlaceMarketOrderAsync(
