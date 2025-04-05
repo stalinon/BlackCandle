@@ -17,7 +17,7 @@ public static class DependencyInjectionConfig
     /// </summary>
     public static IServiceCollection AddProjectServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IDataStorageContext, InMemoryDataStorageContext>();
+        services.AddScoped<IDataStorageContext, InMemoryDataStorageContext>();
         services.RegisterPipelines();
         services.AddUseCases();
         services.AddInfrastructure(configuration);

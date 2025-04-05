@@ -14,4 +14,9 @@ public class TinkoffClientConfiguration
     ///     Идентификатор аккаунта
     /// </summary>
     public string AccountId { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Использовать песочницу
+    /// </summary>
+    public bool UseSandbox { get; set; } = true;
 }

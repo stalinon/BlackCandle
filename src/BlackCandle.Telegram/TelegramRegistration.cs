@@ -16,7 +16,7 @@ public static class TelegramRegistration
     public static IServiceCollection AddTelegram(this IServiceCollection services, IConfiguration config)
     {
         services.Configure<TelegramOptions>(config.GetSection("Telegram"));
-        services.AddSingleton<ITelegramService, TelegramService>();
+        services.AddScoped<ITelegramService, TelegramService>();
         return services;
     }
 }

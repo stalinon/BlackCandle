@@ -13,17 +13,14 @@ namespace BlackCandle.API.Middleware;
 /// <inheritdoc cref="ErrorHandlingMiddleware" />
 public class ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger)
 {
-    private readonly RequestDelegate _next = next;
-    private readonly ILoggerService _logger = logger;
-
     /// <inheritdoc cref="ErrorHandlingMiddleware" />
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
-        catch (EmptyPortfolioException ex)
+        catch (BlackCandleException ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
         }
@@ -35,7 +32,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger
 
     private Task HandleExceptionAsync(HttpContext context, Exception ex, HttpStatusCode statusCode)
     {
-        _logger.LogError("Произошло необработанное исключение.", ex);
+        logger.LogError("Произошло необработанное исключение.", ex);
 
         var response = OperationResult<string>.Failure(ex.Message);
 

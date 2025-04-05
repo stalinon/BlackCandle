@@ -24,10 +24,10 @@ internal sealed class SmartLabFundamentalClient(IDataStorageContext context, ILo
     public async Task<FundamentalData?> GetFundamentalsAsync(Ticker ticker)
     {
         var existing = await _repository.GetByIdAsync(ticker.Symbol);
-        if (existing is { } data && DateTime.UtcNow.Date == data.LastUpdated.Date)
+        if (existing != null && DateTime.UtcNow.Date == existing.LastUpdated.Date)
         {
             logger.LogInfo($"SmartLab: возвращаем кэшированные фундаментальные данные по {ticker.Symbol}");
-            return data;
+            return existing;
         }
 
         logger.LogInfo("SmartLab: загрузка таблицы фундаментала с сайта");
