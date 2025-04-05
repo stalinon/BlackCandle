@@ -2,9 +2,9 @@
 
 | Проверка         | Статус |
 |------------------|--------|
-| 💅 Code Style     | ![Style](https://github.com/stalinon/BlackCandle/actions/workflows/build.yml/badge.svg?branch=main&label=Style) |
-| 🏗 Build          | ![Build](https://github.com/stalinon/BlackCandle/actions/workflows/build.yml/badge.svg?branch=main&label=Build) |
-| 🧪 Tests          | ![Tests](https://github.com/stalinon/BlackCandle/actions/workflows/test.yml/badge.svg?branch=main&label=Tests) |
+| 💅 Code Style     | ![Style](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Style) |
+| 🏗 Build          | ![Build](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Build) |
+| 🧪 Tests          | ![Tests](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Tests) |
 | 📊 Coverage       | ![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main) |
 
 ---
