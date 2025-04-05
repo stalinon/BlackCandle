@@ -1,4 +1,5 @@
 using BlackCandle.Domain.Entities;
+using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.Application.Pipelines.AutoTradeExecution;
 
@@ -21,4 +22,18 @@ public class AutoTradeExecutionContext
     ///     Совершенные сделки
     /// </summary>
     public List<ExecutedTrade> ExecutedTrades { get; set; } = [];
+
+    #region Preview
+
+    /// <summary>
+    ///     Режим превью (не исполняются заявки)
+    /// </summary>
+    public bool PreviewMode { get; set; } = false;
+
+    /// <summary>
+    ///     Сделки, которые могли бы использоваться
+    /// </summary>
+    public List<OrderPreview> PreviewOrders { get; set; } = new();
+
+    #endregion
 }
