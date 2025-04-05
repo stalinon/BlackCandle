@@ -21,7 +21,7 @@ internal static class InvestApiRegistration
     {
         services.AddSmartLabScraper();
         services.AddTinkoffInvestApiServices(configuration);
-        services.AddSingleton<IInvestApiFacade, InvestApiFacade>();
+        services.AddScoped<IInvestApiFacade, InvestApiFacade>();
 
         return services;
     }

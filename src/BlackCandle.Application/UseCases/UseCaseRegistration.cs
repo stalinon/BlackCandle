@@ -1,5 +1,7 @@
 using System.Reflection;
 
+using BlackCandle.Application.Pipelines;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.UseCases;

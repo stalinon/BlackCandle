@@ -96,6 +96,13 @@ public sealed class CheckAutoTradePermissionStepTests
         var context = new AutoTradeExecutionContext();
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _step.ExecuteAsync(context));
+        if (count == 0)
+        {
+            await Assert.ThrowsAsync<BotNotConfiguredException>(() => _step.ExecuteAsync(context));
+        }
+        else
+        {
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _step.ExecuteAsync(context));
+        }
     }
 }

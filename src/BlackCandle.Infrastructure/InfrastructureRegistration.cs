@@ -19,7 +19,7 @@ public static class InfrastructureRegistration
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ILoggerService, ConsoleLogger>();
+        services.AddSingleton<ILoggerService, ConsoleLogger>();
 
         services.AddInvestApiServices(configuration);
 

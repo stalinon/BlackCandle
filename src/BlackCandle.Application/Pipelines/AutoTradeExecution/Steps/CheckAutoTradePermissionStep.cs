@@ -18,6 +18,11 @@ internal sealed class CheckAutoTradePermissionStep(IDataStorageContext dataStora
         CancellationToken cancellationToken = default)
     {
         var botSettings = await dataStorage.BotSettings.GetAllAsync();
+        if (botSettings.Count == 0)
+        {
+            throw new BotNotConfiguredException();
+        }
+
         var settings = botSettings.Single();
         if (!settings.EnableAutoTrading)
         {

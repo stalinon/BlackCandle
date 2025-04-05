@@ -30,6 +30,7 @@ workspace.xml
 *.userosscache
 *.sln.docstates
 *.DotSettings.user
+**.**.DotSettings.user
 
 # VSCode
 .vscode/

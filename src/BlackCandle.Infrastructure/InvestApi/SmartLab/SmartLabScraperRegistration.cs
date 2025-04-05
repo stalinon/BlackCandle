@@ -14,7 +14,7 @@ internal static class SmartLabScraperRegistration
     /// </summary>
     public static IServiceCollection AddSmartLabScraper(this IServiceCollection services)
     {
-        services.AddSingleton<IFundamentalDataClient, SmartLabFundamentalClient>();
+        services.AddScoped<IFundamentalDataClient, SmartLabFundamentalClient>();
         return services;
     }
 }

@@ -1,9 +1,9 @@
-namespace BlackCandle.Infrastructure.Trading;
+namespace BlackCandle.Domain.Configuration;
 
 /// <summary>
 ///     Настройки ограничений
 /// </summary>
-internal sealed class TradeLimitOptions
+public sealed class TradeLimitOptions
 {
     /// <summary>
     ///     Минимальная цена сделки

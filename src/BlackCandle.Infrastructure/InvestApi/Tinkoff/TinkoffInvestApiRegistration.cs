@@ -17,18 +17,23 @@ internal static class TinkoffInvestApiRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var options = configuration.GetValue<TinkoffClientConfiguration>("Tinkoff")!;
+        var options = configuration.GetValue<TinkoffClientConfiguration>("Tinkoff") ?? new();
         services.Configure<TinkoffClientConfiguration>(o =>
         {
             o.ApiKey = options.ApiKey;
             o.AccountId = options.ApiKey;
+            o.UseSandbox = options.UseSandbox;
         });
 
-        services.AddInvestApiClient((_, settings) => settings.AccessToken = options.ApiKey);
+        services.AddInvestApiClient((_, settings) =>
+        {
+            settings.AccessToken = options.ApiKey;
+            settings.Sandbox = options.UseSandbox;
+        });
 
-        services.AddSingleton<IMarketDataClient, TinkoffMarketDataClient>();
-        services.AddSingleton<IPortfolioClient, TinkoffPortfolioClient>();
-        services.AddSingleton<ITradingClient, TinkoffTradingClient>();
+        services.AddScoped<IMarketDataClient, TinkoffMarketDataClient>();
+        services.AddScoped<IPortfolioClient, TinkoffPortfolioClient>();
+        services.AddScoped<ITradingClient, TinkoffTradingClient>();
 
         return services;
     }
