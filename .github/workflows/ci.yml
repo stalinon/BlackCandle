@@ -62,12 +62,13 @@ jobs:
             --logger trx \
             --settings coveragerunsettings.runsettings
 
-      - name: Upload Test Results
+      - name: Upload Test & Coverage Results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-and-coverage
           path: |
             **/TestResults/*.trx
+            **/TestResults/*/coverage.cobertura.xml
 
   coverage:
     name: 📊 Coverage
@@ -82,10 +83,16 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test-and-coverage
+          path: ./artifacts
+
       - name: Prepare coverage
         run: |
           mkdir -p coverage
-          find ./src/BlackCandle.Tests -type f -name "coverage.cobertura.xml" -exec cp {} coverage/coverage.cobertura.xml \;
+          cp ./artifacts/**/coverage.cobertura.xml coverage/coverage.cobertura.xml
 
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5
