@@ -1,11 +1,8 @@
 ## 🚦 CI & Статусы качества репы
 
-| Проверка         | Статус |
-|------------------|--------|
-| 💅 Code Style     | ![Style](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Style) |
-| 🏗 Build          | ![Build](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Build) |
-| 🧪 Tests          | ![Tests](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Tests) |
-| 📊 Coverage       | ![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main) |
+| 💅 Code Style                                                                                          | 🏗 Build                                                                                           | 🧪 Tests                                                                                           | 📊 Coverage                                                                                       |
+|--------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| ![Style](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Style) | ![Build](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Build) | ![Tests](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=Tests) | ![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main)       |
 
 ---
 
@@ -13,6 +10,8 @@
 ![Last Commit](https://img.shields.io/github/last-commit/stalinon/BlackCandle)
 ![Open Issues](https://img.shields.io/github/issues/stalinon/BlackCandle)
 ![Repo Size](https://img.shields.io/github/repo-size/stalinon/BlackCandle)
+
+---
 
 ## Общая цель
 
