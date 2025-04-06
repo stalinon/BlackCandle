@@ -31,6 +31,8 @@ internal static class TinkoffInvestApiRegistration
             settings.Sandbox = options.UseSandbox;
         });
 
+        services.AddScoped<ITinkoffInvestApiClientWrapper, TinkoffInvestApiClientWrapper>();
+
         services.AddScoped<IMarketDataClient, TinkoffMarketDataClient>();
         services.AddScoped<IPortfolioClient, TinkoffPortfolioClient>();
         services.AddScoped<ITradingClient, TinkoffTradingClient>();

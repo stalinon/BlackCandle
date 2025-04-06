@@ -1,6 +1,9 @@
+using AngleSharp.Html.Parser;
+
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Infrastructure.InvestApi.SmartLab;
+using BlackCandle.Tests.Models;
 
 using Moq;
 
@@ -67,5 +70,27 @@ public class SmartLabFundamentalClientTests
 
         // Assert
         Assert.Equal((decimal?)expected, result);
+    }
+
+    /// <summary>
+    ///     Тест 3: Парсинг HTML — корректный разбор таблицы из SmartLab.
+    /// </summary>
+    [Fact(DisplayName = "Тест 3: Парсинг HTML — корректный разбор таблицы из SmartLab")]
+    public async Task LoadFundamentalsTableAsync_ShouldParseHtmlCorrectly()
+    {
+        // Arrange
+        var html = await File.ReadAllTextAsync("Data/smartlab.html"); // путь к реальному HTML
+        var parser = new HtmlParser();
+        var doc = await parser.ParseDocumentAsync(html);
+
+        var client = new SmartLabFundamentalClientTestWrapper(_repositoryMock.Object, new Mock<ILoggerService>().Object);
+
+        // Act
+        var table = await client.TestParseHtml(doc); // доступ через обёртку
+
+        // Assert
+        Assert.NotEmpty(table);
+        Assert.Contains("GAZP", table.Keys);
+        Assert.True(table["GAZP"].PERatio.HasValue);
     }
 }

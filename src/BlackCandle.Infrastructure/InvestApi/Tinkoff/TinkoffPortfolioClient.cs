@@ -1,4 +1,3 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
@@ -16,13 +15,11 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 ///     Реализация <see cref="IPortfolioClient" /> через Tinkoff Invest API
 /// </summary>
 /// <inheritdoc cref="TinkoffPortfolioClient" />
-internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger,
-    InvestApiClient investApiClient) : IPortfolioClient
+internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : IPortfolioClient
 {
     private readonly OperationsService.OperationsServiceClient _client = investApiClient.Operations;
     private readonly InstrumentsService.InstrumentsServiceClient _instrumentsClient = investApiClient.Instruments;
     private readonly TinkoffClientConfiguration _config = config.Value;
-    private readonly ILoggerService _logger = logger;
 
     /// <inheritdoc />
     public async Task<List<PortfolioAsset>> GetPortfolioAsync()
@@ -74,7 +71,7 @@ internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration
         }
         catch (Exception ex)
         {
-            _logger.LogError("Ошибка при получении портфеля из Tinkoff API", ex);
+            logger.LogError("Ошибка при получении портфеля из Tinkoff API", ex);
             throw new TinkoffApiException("Ошибка при получении портфеля");
         }
     }

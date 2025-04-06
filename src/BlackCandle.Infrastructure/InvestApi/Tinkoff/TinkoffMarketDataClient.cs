@@ -15,9 +15,8 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 ///     Реализация <see cref="IMarketDataClient" /> для Tinkoff API
 /// </summary>
 /// <inheritdoc cref="TinkoffMarketDataClient" />
-internal sealed class TinkoffMarketDataClient(ILoggerService logger, InvestApiClient investApiClient) : IMarketDataClient
+internal sealed class TinkoffMarketDataClient(ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : IMarketDataClient
 {
-    private readonly ILoggerService _logger = logger;
     private readonly MarketDataService.MarketDataServiceClient _client = investApiClient.MarketData;
 
     /// <inheritdoc />
@@ -46,7 +45,7 @@ internal sealed class TinkoffMarketDataClient(ILoggerService logger, InvestApiCl
         }
         catch (Exception ex)
         {
-            _logger.LogError("Ошибка при получении исторических данных от Tinkoff", ex);
+            logger.LogError("Ошибка при получении исторических данных от Tinkoff", ex);
             throw new TinkoffApiException("Ошибка при получении исторических данных от Tinkoff API");
         }
     }
@@ -61,7 +60,7 @@ internal sealed class TinkoffMarketDataClient(ILoggerService logger, InvestApiCl
         }
         catch (Exception ex)
         {
-            _logger.LogError("Ошибка при получении текущей цены инструмента от Tinkoff", ex);
+            logger.LogError("Ошибка при получении текущей цены инструмента от Tinkoff", ex);
             throw new TinkoffApiException("Ошибка при получении текущей цены инструмента от Tinkoff API");
         }
     }
