@@ -10,7 +10,7 @@ namespace BlackCandle.API.Configuration;
 /// <summary>
 ///     Конфигурация DI
 /// </summary>
-public static class DependencyInjectionConfig
+public static class DependencyInjectionConfigRegistration
 {
     /// <summary>
     ///     Добавить сервисы проекта
