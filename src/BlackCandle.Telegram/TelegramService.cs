@@ -15,7 +15,7 @@ internal sealed class TelegramService(
     IOptions<TelegramOptions> options,
     ILoggerService logger) : ITelegramService
 {
-    private readonly TelegramBotClient _bot = new(options.Value.BotToken);
+    private readonly ITelegramBotClient _bot = new TelegramBotClient(options.Value.BotToken);
     private readonly string _chatId = options.Value.ChatId;
 
     /// <inheritdoc />

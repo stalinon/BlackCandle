@@ -17,7 +17,11 @@ namespace BlackCandle.Infrastructure.InvestApi.SmartLab;
 /// <inheritdoc cref="SmartLabFundamentalClient" />
 internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerService logger) : IFundamentalDataClient
 {
-    private static readonly Uri TableUri = new("https://smart-lab.ru/q/shares_fundamental/");
+    /// <summary>
+    ///     Url к таблице
+    /// </summary>
+    protected Uri tableUri = new("https://smart-lab.ru/q/shares_fundamental/");
+
     private readonly HttpClient _httpClient = new();
     private readonly IRepository<FundamentalData> _repository = context.Fundamentals;
 
@@ -91,11 +95,14 @@ internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerSer
         return Task.FromResult(fundamentals);
     }
 
-    private async Task<Dictionary<string, FundamentalData>> LoadFundamentalsTableAsync()
+    /// <summary>
+    ///     Скрапинг таблицы
+    /// </summary>
+    protected virtual async Task<Dictionary<string, FundamentalData>> LoadFundamentalsTableAsync()
     {
         try
         {
-            var html = await _httpClient.GetStringAsync(TableUri);
+            var html = await _httpClient.GetStringAsync(tableUri);
             var parser = new HtmlParser();
             var doc = await parser.ParseDocumentAsync(html);
 

@@ -17,7 +17,7 @@ internal class SmartLabFundamentalClientTestWrapper : SmartLabFundamentalClient
 {
     /// <inheritdoc cref="SmartLabFundamentalClientTestWrapper" />
     public SmartLabFundamentalClientTestWrapper(IRepository<FundamentalData> repo, ILoggerService logger)
-        : base(new Mock<IDataStorageContext>().Object, logger)
+        : base(Mock.Of<IDataStorageContext>(x => x.Fundamentals == repo), logger)
     {
         typeof(SmartLabFundamentalClient)
             .GetField("_repository", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -25,10 +25,34 @@ internal class SmartLabFundamentalClientTestWrapper : SmartLabFundamentalClient
     }
 
     /// <summary>
+    ///     Симулировать ошибку
+    /// </summary>
+    public bool SimulateFailure { get; set; }
+
+    /// <summary>
     ///     Распарсить HTML
     /// </summary>
     public async Task<Dictionary<string, FundamentalData>> TestParseHtml(IDocument doc)
     {
         return await ParseTableAsync(doc);
+    }
+
+    /// <summary>
+    ///     Тестовый запуск
+    /// </summary>
+    public async Task<FundamentalData?> TestGetFundamentalsAsync(Ticker ticker)
+    {
+        return await GetFundamentalsAsync(ticker);
+    }
+
+    /// <inheritdoc />
+    protected override async Task<Dictionary<string, FundamentalData>> LoadFundamentalsTableAsync()
+    {
+        if (SimulateFailure)
+        {
+            tableUri = new Uri("https://smartlab.org/qwerqwrqewewrewrew");
+        }
+
+        return await base.LoadFundamentalsTableAsync();
     }
 }

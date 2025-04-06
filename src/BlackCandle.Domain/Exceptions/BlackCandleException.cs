@@ -3,10 +3,10 @@ namespace BlackCandle.Domain.Exceptions;
 /// <summary>
 ///     Класс исключений проекта. Обозначает предвиденные исключения
 /// </summary>
-public abstract class BlackCandleException : Exception
+public class BlackCandleException : Exception
 {
     /// <inheritdoc cref="BlackCandleException" />
-    protected BlackCandleException(string message)
+    public BlackCandleException(string message)
         : base(message)
     {
     }
