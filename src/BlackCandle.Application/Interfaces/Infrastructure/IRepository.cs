@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 
+using BlackCandle.Domain.Interfaces;
+
 namespace BlackCandle.Application.Interfaces.Infrastructure;
 
 /// <summary>
@@ -8,6 +10,11 @@ namespace BlackCandle.Application.Interfaces.Infrastructure;
 /// <typeparam name="T">Тип сущности</typeparam>
 public interface IRepository<T>
 {
+    /// <summary>
+    ///     Получить все сущности
+    /// </summary>
+    Task<List<T>> GetAllAsync(IFilter<T>? filter);
+
     /// <summary>
     ///     Получить все сущности
     /// </summary>

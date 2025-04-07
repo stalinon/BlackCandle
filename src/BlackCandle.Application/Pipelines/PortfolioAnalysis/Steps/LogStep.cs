@@ -1,5 +1,6 @@
 using System.Text;
 
+using BlackCandle.Application.Filters;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -20,7 +21,11 @@ internal sealed class LogStep(ITelegramService telegram, IDataStorageContext dat
         PortfolioAnalysisContext context,
         CancellationToken cancellationToken = default)
     {
-        var signals = await dataStorage.TradeSignals.GetAllAsync(s => s.Date.Date == DateTime.Now.Date);
+        var tradeFilter = new TradeSignalFilter
+        {
+            Date = DateTime.UtcNow.Date,
+        };
+        var signals = await dataStorage.TradeSignals.GetAllAsync(tradeFilter);
         var date = context.AnalysisTime;
 
         var report = BuildTelegramReport(signals, date);
