@@ -5,6 +5,7 @@ using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+using BlackCandle.Domain.Interfaces;
 
 using Moq;
 
@@ -52,7 +53,7 @@ public sealed class LoadSignalsStepTests
             new() { Action = TradeAction.Hold, Date = today },
         };
 
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync(signals.Where(s => s.Action != TradeAction.Hold).ToList());
 
         var context = new AutoTradeExecutionContext();
@@ -79,7 +80,7 @@ public sealed class LoadSignalsStepTests
             new() { Action = TradeAction.Sell, Date = today.AddDays(-1) },
         };
 
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync(signals.Where(s => s.Date.Date == today).ToList());
 
         var context = new AutoTradeExecutionContext();
@@ -106,7 +107,7 @@ public sealed class LoadSignalsStepTests
             new() { Action = TradeAction.Sell, Date = today },
         };
 
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync(expected);
 
         var context = new AutoTradeExecutionContext();

@@ -1,4 +1,4 @@
-using BlackCandle.Application.Interfaces;
+using BlackCandle.Application.Filters;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Enums;
 
@@ -18,8 +18,12 @@ internal sealed class LoadSignalsStep(IDataStorageContext dataStorage) : Pipelin
         CancellationToken cancellationToken = default)
     {
         var today = DateTime.UtcNow.Date;
-        var allSignals = await dataStorage.TradeSignals.GetAllAsync(s =>
-            s.Date.Date == today && (s.Action == TradeAction.Buy || s.Action == TradeAction.Sell));
+        var filter = new TradeSignalFilter
+        {
+            Date = today,
+            OnlyBuySell = true,
+        };
+        var allSignals = await dataStorage.TradeSignals.GetAllAsync(filter);
 
         context.Signals = allSignals;
     }

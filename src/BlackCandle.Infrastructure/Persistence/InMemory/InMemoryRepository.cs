@@ -17,6 +17,18 @@ internal sealed class InMemoryRepository<T> : IRepository<T>
     private readonly ConcurrentDictionary<string, T> _storage = new();
 
     /// <inheritdoc />
+    public Task<List<T>> GetAllAsync(IFilter<T>? filter)
+    {
+        var query = _storage.Values.AsQueryable();
+        if (filter is not null)
+        {
+            query = filter.Apply(query);
+        }
+
+        return Task.FromResult(query.ToList());
+    }
+
+    /// <inheritdoc />
     public Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
     {
         var result = predicate is null ? _storage.Values : _storage.Values.Where(predicate.Compile());

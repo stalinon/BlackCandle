@@ -5,6 +5,7 @@ using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
+using BlackCandle.Domain.Interfaces;
 
 using Moq;
 
@@ -45,7 +46,7 @@ public sealed class LogStepTests
     public async Task ExecuteAsync_ShouldSendEmptyMessage_WhenNoSignals()
     {
         // Arrange
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync([]);
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.Today.AddHours(10) };
@@ -80,7 +81,7 @@ public sealed class LogStepTests
             },
         };
 
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync(signals);
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.Today.AddHours(15) };
@@ -100,7 +101,7 @@ public sealed class LogStepTests
     [Fact(DisplayName = "Тест 3: Telegram-сервис вызывается один раз")]
     public async Task ExecuteAsync_ShouldCallTelegramService_Once()
     {
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
             .ReturnsAsync([]);
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.UtcNow };
@@ -123,8 +124,8 @@ public sealed class LogStepTests
             new() { Ticker = new Ticker { Symbol = "SBER" }, Date = today.AddDays(-1) }, // не должен попасть
         };
 
-        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<TradeSignal, bool>>>()))
-            .ReturnsAsync((Expression<Func<TradeSignal, bool>> pred) => signals.Where(pred.Compile()).ToList());
+        _signalsRepo.Setup(x => x.GetAllAsync(It.IsAny<IFilter<TradeSignal>>()))
+            .ReturnsAsync((IFilter<TradeSignal> filter) => filter.Apply(signals.AsQueryable()).ToList());
 
         var context = new PortfolioAnalysisContext { AnalysisTime = DateTime.Now };
 
