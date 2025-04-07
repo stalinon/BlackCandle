@@ -5,7 +5,7 @@ namespace BlackCandle.API.Configuration;
 /// <summary>
 ///     Конфигурация Swagger-документации.
 /// </summary>
-public static class SwaggerSetup
+public static class SwaggerSetupRegistration
 {
     /// <summary>
     ///     Добавить документацию Swagger

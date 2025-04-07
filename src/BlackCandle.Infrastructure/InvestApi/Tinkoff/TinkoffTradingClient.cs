@@ -1,4 +1,3 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
@@ -16,12 +15,10 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 ///     Реализация <see cref="ITradingClient"/> через Tinkoff Invest API
 /// </summary>
 /// <inheritdoc cref="TinkoffTradingClient"/>
-internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger,
-    InvestApiClient investApiClient) : ITradingClient
+internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : ITradingClient
 {
     private readonly OrdersService.OrdersServiceClient _ordersClient = investApiClient.Orders;
     private readonly TinkoffClientConfiguration _config = config.Value;
-    private readonly ILoggerService _logger = logger;
 
     /// <inheritdoc />
     public async Task<decimal> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side)
@@ -53,7 +50,7 @@ internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Ошибка при выставлении заявки через Tinkoff API", ex);
+            logger.LogError("Ошибка при выставлении заявки через Tinkoff API", ex);
             throw new TinkoffApiException("Не удалось выставить заявку на рынок");
         }
     }

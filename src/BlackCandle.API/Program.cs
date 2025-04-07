@@ -31,3 +31,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+/// <summary>
+///     Точка входа в приложение
+/// </summary>
+public partial class Program { }

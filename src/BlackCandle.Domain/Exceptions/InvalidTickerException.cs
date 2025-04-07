@@ -4,6 +4,4 @@ namespace BlackCandle.Domain.Exceptions;
 /// Выбрасывается, если тикер некорректен или отсутствует.
 /// </summary>
 /// <inheritdoc cref="InvalidTickerException" />
-public class InvalidTickerException(string symbol) : BlackCandleException($"Некорректный тикер: {symbol}")
-{
-}
+public class InvalidTickerException(string symbol) : BlackCandleException($"Некорректный тикер: {symbol}");

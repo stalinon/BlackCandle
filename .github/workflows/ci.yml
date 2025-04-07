@@ -101,6 +101,8 @@ jobs:
           reports: 'coverage/coverage.cobertura.xml'
           targetdir: 'coveragereport'
           reporttypes: 'Html;Cobertura;Badges'
+          assemblyfilters: '-BlackCandle.Domain'
+          filefilters: '-*Registration.cs'
 
       - name: Upload to Coveralls
         uses: coverallsapp/github-action@v2
