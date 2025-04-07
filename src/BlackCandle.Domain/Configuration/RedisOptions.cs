@@ -6,6 +6,11 @@ namespace BlackCandle.Domain.Configuration;
 public sealed class RedisOptions
 {
     /// <summary>
+    ///     Использовать Redis
+    /// </summary>
+    public bool UseRedis { get; set; } = false;
+
+    /// <summary>
     ///     Конфигурация
     /// </summary>
     public string Configuration { get; set; } = "localhost:6379";

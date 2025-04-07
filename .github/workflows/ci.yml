@@ -60,8 +60,8 @@ jobs:
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             --logger trx \
-            --settings coveragerunsettings.runsettings \
-            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura \
+                 DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude=[BlackCandle.Domain]*
 
       - name: Upload Test & Coverage Results
         uses: actions/upload-artifact@v4

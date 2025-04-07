@@ -1,8 +1,13 @@
 using System.Net;
 
+using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Infrastructure.Persistence.InMemory;
+
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace BlackCandle.Tests.API;
 

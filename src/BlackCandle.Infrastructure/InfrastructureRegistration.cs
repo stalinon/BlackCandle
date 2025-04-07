@@ -2,6 +2,7 @@ using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Configuration;
 using BlackCandle.Infrastructure.InvestApi;
 using BlackCandle.Infrastructure.Logging;
+using BlackCandle.Infrastructure.Persistence.InMemory;
 using BlackCandle.Infrastructure.Persistence.Redis;
 using BlackCandle.Infrastructure.Trading;
 
@@ -36,6 +37,12 @@ public static class InfrastructureRegistration
     private static IServiceCollection RegisterRedis(this IServiceCollection services, IConfiguration configuration)
     {
         var options = configuration.GetValue<RedisOptions>("Redis") ?? new();
+        if (!options.UseRedis)
+        {
+            services.AddScoped<IDataStorageContext, InMemoryDataStorageContext>();
+            return services;
+        }
+
         services.Configure<RedisOptions>(o =>
         {
             o.Configuration = options.Configuration;
@@ -49,6 +56,7 @@ public static class InfrastructureRegistration
         });
 
         services.AddHostedService<RedisPingService>();
+        services.AddScoped<IDataStorageContext, RedisDataStorageContext>();
 
         return services;
     }

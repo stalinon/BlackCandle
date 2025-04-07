@@ -6,7 +6,7 @@ namespace BlackCandle.Infrastructure.Persistence.InMemory;
 /// <summary>
 ///     Контекст хранилища на основе памяти (in-memory)
 /// </summary>
-public sealed class InMemoryDataStorageContext : IDataStorageContext
+internal sealed class InMemoryDataStorageContext : IDataStorageContext
 {
     /// <inheritdoc />
     public IRepository<PortfolioAsset> PortfolioAssets { get; } = new InMemoryRepository<PortfolioAsset>();

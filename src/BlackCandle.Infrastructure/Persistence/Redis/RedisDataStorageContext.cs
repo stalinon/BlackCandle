@@ -10,7 +10,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis;
 /// <summary>
 ///     Контекст хранилища на основе Redis
 /// </summary>
-public class RedisDataStorageContext(IConnectionMultiplexer redis, RedisOptions options) : IDataStorageContext
+internal sealed class RedisDataStorageContext(IConnectionMultiplexer redis, RedisOptions options) : IDataStorageContext
 {
     /// <inheritdoc />
     public IRepository<PortfolioAsset> PortfolioAssets { get; } = new RedisRepository<PortfolioAsset, RedisPortfolioAsset>(redis, options);
