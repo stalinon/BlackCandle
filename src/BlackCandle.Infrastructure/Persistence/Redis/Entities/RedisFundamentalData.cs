@@ -6,6 +6,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Фундаментальные данные для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisFundamentalData : IStorageEntity<FundamentalData>
 {
     /// <summary>

@@ -7,6 +7,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Торговый сигнал для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
 {
     /// <summary>

@@ -8,6 +8,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Сущность настроек бота для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisBotSettings : IStorageEntity<BotSettings>
 {
     /// <summary>

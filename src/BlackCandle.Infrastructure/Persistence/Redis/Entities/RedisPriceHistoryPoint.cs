@@ -6,6 +6,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Точка исторических данных (OHLCV) для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisPriceHistoryPoint : IStorageEntity<PriceHistoryPoint>
 {
     /// <summary>

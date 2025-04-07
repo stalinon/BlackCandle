@@ -6,6 +6,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Результат анализа портфеля для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisPortfolioAnalysisResult : IStorageEntity<PortfolioAnalysisResult>
 {
     /// <summary>

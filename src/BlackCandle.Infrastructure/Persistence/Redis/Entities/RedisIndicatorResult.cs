@@ -7,6 +7,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Результат расчета индикатора для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisIndicatorResult : IStorageEntity<IndicatorResult>
 {
     /// <summary>

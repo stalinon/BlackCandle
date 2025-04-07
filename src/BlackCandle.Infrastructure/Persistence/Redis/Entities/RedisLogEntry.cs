@@ -6,6 +6,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Запись лога для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisLogEntry : IStorageEntity<LogEntry>
 {
     /// <summary>

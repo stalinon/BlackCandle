@@ -7,6 +7,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Выполненная сделка для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisExecutedTrade : IStorageEntity<ExecutedTrade>
 {
     /// <summary>

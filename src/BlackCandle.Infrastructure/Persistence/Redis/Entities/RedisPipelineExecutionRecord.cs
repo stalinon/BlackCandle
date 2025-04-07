@@ -7,6 +7,7 @@ namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 /// <summary>
 ///     Запись о выполнении пайплайна для Redis
 /// </summary>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 internal sealed class RedisPipelineExecutionRecord : IStorageEntity<PipelineExecutionRecord>
 {
     /// <summary>
