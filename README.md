@@ -1,6 +1,6 @@
 | CI / Code Style | Coverage | .NET | Code Quality | 🐞 Issues | 📦 Size | ⏱ Last Commit |
 |-----------------|----------|------|---------------|-----------|---------|----------------|
-| ![CI](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=CI+Build/Test) | [![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main)](https://coveralls.io/github/stalinon/BlackCandle?branch=main) | ![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet) | ![Maintainability](https://img.shields.io/badge/code--quality-strict-critical?color=black) | ![Issues](https://img.shields.io/github/issues/stalinon/BlackCandle) | ![Repo Size](https://img.shields.io/github/repo-size/stalinon/BlackCandle) | ![Last Commit](https://img.shields.io/github/last-commit/stalinon/BlackCandle) |
+| ![CI](https://github.com/stalinon/BlackCandle/actions/workflows/ci.yml/badge.svg?branch=main&label=CI+Build/Test) | [![Coverage](https://coveralls.io/repos/github/stalinon/BlackCandle/badge.svg?branch=main&t=2025-04-08)](https://coveralls.io/github/stalinon/BlackCandle?branch=main) | ![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet) | ![Maintainability](https://img.shields.io/badge/code--quality-strict-critical?color=black) | ![Issues](https://img.shields.io/github/issues/stalinon/BlackCandle) | ![Repo Size](https://img.shields.io/github/repo-size/stalinon/BlackCandle) | ![Last Commit](https://img.shields.io/github/last-commit/stalinon/BlackCandle) |
 
 ---
 
