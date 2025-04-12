@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Domain.Configuration;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,6 @@ public static class TelegramRegistration
     /// </summary>
     public static IServiceCollection AddTelegram(this IServiceCollection services, IConfiguration config)
     {
-        services.Configure<TelegramOptions>(config.GetSection("Telegram"));
         services.AddScoped<ITelegramService, TelegramService>();
         return services;
     }

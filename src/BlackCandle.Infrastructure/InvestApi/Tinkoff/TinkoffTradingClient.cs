@@ -3,10 +3,8 @@ using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Exceptions;
+using BlackCandle.Domain.Helpers;
 
-using Microsoft.Extensions.Options;
-
-using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
 namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
@@ -15,14 +13,16 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 ///     Реализация <see cref="ITradingClient"/> через Tinkoff Invest API
 /// </summary>
 /// <inheritdoc cref="TinkoffTradingClient"/>
-internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : ITradingClient
+internal sealed class TinkoffTradingClient(IBotSettingsService botSettingsService, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : ITradingClient
 {
     private readonly OrdersService.OrdersServiceClient _ordersClient = investApiClient.Orders;
-    private readonly TinkoffClientConfiguration _config = config.Value;
 
     /// <inheritdoc />
     public async Task<decimal> PlaceMarketOrderAsync(Ticker ticker, decimal quantity, TradeAction side)
     {
+        var config = await botSettingsService.GetAsync();
+        var tinkoffConfig = config.ToTinkoffConfig();
+
         try
         {
             var orderRequest = new PostOrderRequest
@@ -35,7 +35,7 @@ internal sealed class TinkoffTradingClient(IOptions<TinkoffClientConfiguration> 
                     TradeAction.Sell => OrderDirection.Sell,
                     _ => throw new ArgumentOutOfRangeException(nameof(side), "Неверное направление сделки"),
                 },
-                AccountId = _config.AccountId,
+                AccountId = tinkoffConfig.AccountId,
                 OrderType = OrderType.Market,
                 InstrumentId = ticker.Figi,
                 OrderId = Guid.NewGuid().ToString(),

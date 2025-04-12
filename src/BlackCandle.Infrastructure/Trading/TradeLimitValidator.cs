@@ -1,23 +1,23 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Trading;
-using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
-
-using Microsoft.Extensions.Options;
 
 namespace BlackCandle.Infrastructure.Trading;
 
 /// <inheritdoc cref="ITradeLimitValidator" />
 internal sealed class TradeLimitValidator(
     IInvestApiFacade investApi,
-    IOptions<TradeLimitOptions> options) : ITradeLimitValidator
+    IBotSettingsService botSettingsService) : ITradeLimitValidator
 {
-    private readonly TradeLimitOptions _config = options.Value;
-
-    /// <inheritdoc />
-    public bool Validate(TradeSignal signal, List<PortfolioAsset> portfolio)
+    /// <summary>
+    ///     Валидировать
+    /// </summary>
+    public async Task<bool> Validate(TradeSignal signal, List<PortfolioAsset> portfolio)
     {
+        var botSettings = await botSettingsService.GetAsync();
+
         if (signal.Action != TradeAction.Buy)
         {
             return true;
@@ -31,7 +31,7 @@ internal sealed class TradeLimitValidator(
         }
 
         // Проверка на мин. сумму сделки
-        if (price < _config.MinTradeAmountRub)
+        if (price < botSettings.TradeLimit.MinTradeAmountRub)
         {
             return false;
         }
@@ -44,6 +44,6 @@ internal sealed class TradeLimitValidator(
         var futureValue = currentValue + price.Value;
         var sharePercent = futureValue / (totalValue + price.Value) * 100m;
 
-        return sharePercent < _config.MaxPositionSharePercent;
+        return sharePercent < botSettings.TradeLimit.MaxPositionSharePercent;
     }
 }

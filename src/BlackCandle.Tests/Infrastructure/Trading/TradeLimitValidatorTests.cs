@@ -1,11 +1,10 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Infrastructure.Trading;
-
-using Microsoft.Extensions.Options;
 
 using Moq;
 
@@ -36,26 +35,32 @@ public sealed class TradeLimitValidatorTests
     {
         _apiMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
 
-        var options = Options.Create(new TradeLimitOptions
+        var options = new TradeLimitOptions
         {
             MinTradeAmountRub = 1000m,
             MaxPositionSharePercent = 50m,
+        };
+
+        var botSettingsServiceMock = new Mock<IBotSettingsService>();
+        botSettingsServiceMock.Setup(s => s.GetAsync()).ReturnsAsync(new BotSettings()
+        {
+            TradeLimit = options,
         });
 
-        _validator = new TradeLimitValidator(_apiMock.Object, options);
+        _validator = new TradeLimitValidator(_apiMock.Object, botSettingsServiceMock.Object);
     }
 
     /// <summary>
     ///     Тест 1: Игнорируется не-Buy сигнал
     /// </summary>
     [Fact(DisplayName = "Тест 1: Игнорируется не-Buy сигнал")]
-    public void Validate_ShouldReturnTrue_ForNonBuy()
+    public async Task Validate_ShouldReturnTrue_ForNonBuy()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Sell };
 
         // Act
-        var result = _validator.Validate(signal, []);
+        var result = await _validator.Validate(signal, []);
 
         // Assert
         Assert.True(result);
@@ -68,14 +73,14 @@ public sealed class TradeLimitValidatorTests
     [InlineData(null)]
     [InlineData(0.0)]
     [InlineData(-5.0)]
-    public void Validate_ShouldReject_WhenPriceInvalid(double? price)
+    public async Task Validate_ShouldReject_WhenPriceInvalid(double? price)
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync((decimal?)price);
 
         // Act
-        var result = _validator.Validate(signal, []);
+        var result = await _validator.Validate(signal, []);
 
         // Assert
         Assert.False(result);
@@ -85,14 +90,14 @@ public sealed class TradeLimitValidatorTests
     ///     Тест 3: Отклонение при цене ниже минимальной
     /// </summary>
     [Fact(DisplayName = "Тест 3: Отклонение при цене ниже минимальной")]
-    public void Validate_ShouldReject_WhenPriceBelowMinimum()
+    public async Task Validate_ShouldReject_WhenPriceBelowMinimum()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(999);
 
         // Act
-        var result = _validator.Validate(signal, []);
+        var result = await _validator.Validate(signal, []);
 
         // Assert
         Assert.False(result);
@@ -102,7 +107,7 @@ public sealed class TradeLimitValidatorTests
     ///     Тест 4: Отклонение при превышении доли позиции
     /// </summary>
     [Fact(DisplayName = "Тест 4: Отклонение при превышении доли позиции")]
-    public void Validate_ShouldReject_WhenShareTooBig()
+    public async Task Validate_ShouldReject_WhenShareTooBig()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL" } };
@@ -114,7 +119,7 @@ public sealed class TradeLimitValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(signal, portfolio);
+        var result = await _validator.Validate(signal, portfolio);
 
         // Assert
         Assert.False(result);
@@ -124,7 +129,7 @@ public sealed class TradeLimitValidatorTests
     ///     Тест 5: Успешная валидация при корректных условиях
     /// </summary>
     [Fact(DisplayName = "Тест 5: Успешная валидация при корректных условиях")]
-    public void Validate_ShouldReturnTrue_WhenWithinLimits()
+    public async Task Validate_ShouldReturnTrue_WhenWithinLimits()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL" } };
@@ -136,7 +141,7 @@ public sealed class TradeLimitValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(signal, portfolio);
+        var result = await _validator.Validate(signal, portfolio);
 
         // Assert
         Assert.True(result);

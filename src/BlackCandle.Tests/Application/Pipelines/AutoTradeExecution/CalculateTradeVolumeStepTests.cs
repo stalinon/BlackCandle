@@ -43,7 +43,7 @@ public sealed class CalculateTradeVolumeStepTests
             Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }],
         };
 
-        _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).Returns(0);
+        _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).ReturnsAsync(0);
 
         await _step.ExecuteAsync(context);
 
@@ -61,7 +61,7 @@ public sealed class CalculateTradeVolumeStepTests
             Signals = [new TradeSignal { Ticker = new Ticker { Symbol = "AAPL" } }],
         };
 
-        _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).Returns(10);
+        _exec.Setup(x => x.CalculateVolume(It.IsAny<TradeSignal>())).ReturnsAsync(10);
 
         await _step.ExecuteAsync(context);
 
@@ -85,8 +85,8 @@ public sealed class CalculateTradeVolumeStepTests
             ],
         };
 
-        _exec.Setup(x => x.CalculateVolume(It.Is<TradeSignal>(s => s.Ticker.Symbol == "AAPL"))).Returns(10);
-        _exec.Setup(x => x.CalculateVolume(It.Is<TradeSignal>(s => s.Ticker.Symbol == "SBER"))).Returns(0);
+        _exec.Setup(x => x.CalculateVolume(It.Is<TradeSignal>(s => s.Ticker.Symbol == "AAPL"))).ReturnsAsync(10);
+        _exec.Setup(x => x.CalculateVolume(It.Is<TradeSignal>(s => s.Ticker.Symbol == "SBER"))).ReturnsAsync(0);
 
         await _step.ExecuteAsync(context);
 
@@ -109,7 +109,7 @@ public sealed class CalculateTradeVolumeStepTests
             ],
         };
 
-        _exec.Setup(s => s.CalculateVolume(It.IsAny<TradeSignal>())).Returns(1);
+        _exec.Setup(s => s.CalculateVolume(It.IsAny<TradeSignal>())).ReturnsAsync(1);
 
         await _step.ExecuteAsync(context);
 

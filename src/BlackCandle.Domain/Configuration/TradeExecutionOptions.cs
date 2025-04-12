@@ -14,4 +14,9 @@ public sealed class TradeExecutionOptions
     ///     Максимальное количество лотов в сделке
     /// </summary>
     public int MaxLotsPerTrade { get; set; } = 100;
+
+    /// <summary>
+    ///     Клонировать сущность
+    /// </summary>
+    public TradeExecutionOptions Copy() => (TradeExecutionOptions)MemberwiseClone();
 }

@@ -9,13 +9,28 @@ namespace BlackCandle.Domain.Entities;
 /// </summary>
 public class BotSettings : IEntity
 {
+    /// <summary>
+    ///     Идентификатор по умолчанию
+    /// </summary>
+    public const string DefaultId = "GlobalSettings";
+
     /// <inheritdoc />
-    public string Id => "GlobalSettings";
+    public string Id => DefaultId;
 
     /// <summary>
     ///     Разрешено ли автоисполнение
     /// </summary>
     public bool EnableAutoTrading { get; set; }
+
+    /// <summary>
+    ///     Настройки Telegram
+    /// </summary>
+    public TelegramOptions? TelegramOptions { get; set; }
+
+    /// <summary>
+    ///     Настройки клиента Tinkoff
+    /// </summary>
+    public TinkoffClientOptions? TinkoffClientOptions { get; set; }
 
     /// <summary>
     ///     Лимиты сделок
@@ -36,4 +51,21 @@ public class BotSettings : IEntity
     ///     Статус бота
     /// </summary>
     public BotStatus BotStatus { get; set; }
+
+    /// <summary>
+    ///     Клонировать сущность
+    /// </summary>
+    public BotSettings Copy()
+    {
+        return new()
+        {
+            EnableAutoTrading = EnableAutoTrading,
+            TelegramOptions = TelegramOptions?.Copy(),
+            TinkoffClientOptions = TinkoffClientOptions?.Copy(),
+            TradeLimit = TradeLimit.Copy(),
+            TradeExecution = TradeExecution.Copy(),
+            Schedules = Schedules.ToDictionary(s => s.Key, s => s.Value.Copy()),
+            BotStatus = BotStatus,
+        };
+    }
 }

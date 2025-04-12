@@ -1,7 +1,9 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
+using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
+using BlackCandle.Domain.Helpers;
 using BlackCandle.Infrastructure.InvestApi.Tinkoff.Extensions;
 
 using Microsoft.Extensions.Options;
@@ -15,20 +17,22 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 ///     Реализация <see cref="IPortfolioClient" /> через Tinkoff Invest API
 /// </summary>
 /// <inheritdoc cref="TinkoffPortfolioClient" />
-internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration> config, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : IPortfolioClient
+internal sealed class TinkoffPortfolioClient(IBotSettingsService botSettingsService, ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : IPortfolioClient
 {
     private readonly OperationsService.OperationsServiceClient _client = investApiClient.Operations;
     private readonly InstrumentsService.InstrumentsServiceClient _instrumentsClient = investApiClient.Instruments;
-    private readonly TinkoffClientConfiguration _config = config.Value;
 
     /// <inheritdoc />
     public async Task<List<PortfolioAsset>> GetPortfolioAsync()
     {
+        var botSettings = await botSettingsService.GetAsync();
+        var config = botSettings.ToTinkoffConfig();
+
         try
         {
             var positions = await _client.GetPortfolioAsync(new PortfolioRequest
             {
-                AccountId = _config.AccountId,
+                AccountId = config.AccountId,
             });
 
             var assets = new List<PortfolioAsset>();

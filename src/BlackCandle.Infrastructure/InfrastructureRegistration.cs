@@ -1,9 +1,11 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Domain.Configuration;
+using BlackCandle.Domain.Interfaces;
 using BlackCandle.Infrastructure.InvestApi;
 using BlackCandle.Infrastructure.Logging;
 using BlackCandle.Infrastructure.Persistence.InMemory;
 using BlackCandle.Infrastructure.Persistence.Redis;
+using BlackCandle.Infrastructure.Settings;
 using BlackCandle.Infrastructure.Trading;
 
 using Microsoft.Extensions.Configuration;
@@ -26,7 +28,16 @@ public static class InfrastructureRegistration
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        var options = configuration.GetSection("Encryption").Get<EncryptionOptions>() ?? new();
+        services.Configure<EncryptionOptions>(o =>
+        {
+            o.Key = options.Key;
+            o.Iv = options.Iv;
+        });
+
         services.AddSingleton<ILoggerService, ConsoleLogger>();
+        services.AddSingleton<ISecretsProtector, AesSecretsProtector>();
+        services.AddScoped<IBotSettingsService, BotSettingsService>();
         services.AddInvestApiServices(configuration);
         services.AddTradingServices(configuration);
         services.RegisterRedis(configuration);

@@ -53,7 +53,7 @@ public sealed class ValidateTradeLimitsStepTests
             .ReturnsAsync(MockPortfolio());
 
         _validator.Setup(x => x.Validate(signal, It.IsAny<List<PortfolioAsset>>()))
-            .Returns(true);
+            .Returns(Task.FromResult(true));
 
         // Act
         await _step.ExecuteAsync(context);
@@ -76,7 +76,7 @@ public sealed class ValidateTradeLimitsStepTests
             .ReturnsAsync(MockPortfolio());
 
         _validator.Setup(x => x.Validate(It.IsAny<TradeSignal>(), It.IsAny<List<PortfolioAsset>>()))
-            .Returns(false);
+            .Returns(Task.FromResult(false));
 
         await _step.ExecuteAsync(context);
 
@@ -101,7 +101,7 @@ public sealed class ValidateTradeLimitsStepTests
             .ReturnsAsync(MockPortfolio());
 
         _validator.Setup(x => x.Validate(It.IsAny<TradeSignal>(), It.IsAny<List<PortfolioAsset>>()))
-            .Returns(false);
+            .Returns(Task.FromResult(false));
 
         await _step.ExecuteAsync(context);
 
@@ -121,7 +121,7 @@ public sealed class ValidateTradeLimitsStepTests
             .ReturnsAsync(MockPortfolio());
 
         _validator.Setup(x => x.Validate(It.IsAny<TradeSignal>(), It.IsAny<List<PortfolioAsset>>()))
-            .Returns(true);
+            .Returns(Task.FromResult(true));
 
         await _step.ExecuteAsync(context);
 

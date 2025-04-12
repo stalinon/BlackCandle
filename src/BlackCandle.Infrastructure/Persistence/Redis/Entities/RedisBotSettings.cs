@@ -17,6 +17,16 @@ internal sealed class RedisBotSettings : IStorageEntity<BotSettings>
     public bool EnableAutoTrading { get; set; }
 
     /// <summary>
+    ///     Настройки Telegram
+    /// </summary>
+    public TelegramOptions? TelegramOptions { get; set; }
+
+    /// <summary>
+    ///     Настройки клиента Tinkoff
+    /// </summary>
+    public TinkoffClientOptions? TinkoffClientOptions { get; set; }
+
+    /// <summary>
     ///     Лимиты сделок
     /// </summary>
     public TradeLimitOptions TradeLimit { get; set; } = new();
@@ -40,9 +50,11 @@ internal sealed class RedisBotSettings : IStorageEntity<BotSettings>
     public BotSettings ToEntity() => new()
     {
         EnableAutoTrading = EnableAutoTrading,
-        TradeLimit = TradeLimit,
-        TradeExecution = TradeExecution,
-        Schedules = Schedules,
+        TelegramOptions = TelegramOptions?.Copy(),
+        TinkoffClientOptions = TinkoffClientOptions?.Copy(),
+        TradeLimit = TradeLimit.Copy(),
+        TradeExecution = TradeExecution.Copy(),
+        Schedules = Schedules.ToDictionary(s => s.Key, s => s.Value.Copy()),
         BotStatus = BotStatus,
     };
 
@@ -52,9 +64,11 @@ internal sealed class RedisBotSettings : IStorageEntity<BotSettings>
         return new RedisBotSettings
         {
             EnableAutoTrading = entity.EnableAutoTrading,
-            TradeLimit = entity.TradeLimit,
-            TradeExecution = entity.TradeExecution,
-            Schedules = entity.Schedules,
+            TelegramOptions = entity.TelegramOptions?.Copy(),
+            TinkoffClientOptions = entity.TinkoffClientOptions?.Copy(),
+            TradeLimit = entity.TradeLimit.Copy(),
+            TradeExecution = entity.TradeExecution.Copy(),
+            Schedules = entity.Schedules.ToDictionary(s => s.Key, s => s.Value.Copy()),
             BotStatus = entity.BotStatus,
         };
     }

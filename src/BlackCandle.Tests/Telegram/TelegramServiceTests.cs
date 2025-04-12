@@ -1,10 +1,7 @@
-using System.Reflection;
-using System.Text;
-
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Domain.Configuration;
+using BlackCandle.Domain.Entities;
 using BlackCandle.Telegram;
-
-using Microsoft.Extensions.Options;
 
 using Moq;
 
@@ -16,55 +13,52 @@ using Telegram.Bot.Types.Enums;
 namespace BlackCandle.Tests.Telegram;
 
 /// <summary>
-///     Тесты на <see cref="TelegramService"/>
+///     Тесты на <see cref="TelegramService" />
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item>Отправка текста вызывает Telegram API через SendRequest</item>
-///         <item>Ошибки при отправке логируются</item>
-///         <item>Исключение при отправке сообщения логируется</item>
-///         <item>Исключение при отправке файла логируется</item>
+///         <item>Отправляет сообщение</item>
+///         <item>Отправляет файл</item>
+///         <item>Логирует ошибку при отправке текста</item>
+///         <item>Логирует ошибку при отправке файла</item>
 ///     </list>
 /// </remarks>
 public sealed class TelegramServiceTests
 {
-    private const string Token = "123:ABC";
-    private const string ChatId = "666";
+    private const string ChatId = "1337";
 
+    private readonly Mock<IBotSettingsService> _botSettingsMock = new();
     private readonly Mock<ILoggerService> _loggerMock = new();
     private readonly Mock<ITelegramBotClient> _botMock = new();
+
     private readonly TelegramService _service;
 
-    /// <inheritdoc cref="TelegramServiceTests" />
+    /// <inheritdoc cref="TelegramServiceTests"/>
     public TelegramServiceTests()
     {
-        var options = Options.Create(new TelegramOptions
+        _botSettingsMock.Setup(x => x.GetAsync()).ReturnsAsync(new BotSettings
         {
-            BotToken = Token,
-            ChatId = ChatId,
+            TelegramOptions = new TelegramOptions
+            {
+                BotToken = "dummy-token",
+                ChatId = ChatId,
+            },
         });
 
-        // Мокаем SendRequest
         _botMock.Setup(x => x.SendRequest(It.IsAny<SendMessageRequest>(), default))
             .ReturnsAsync(new Message());
 
         _botMock.Setup(x => x.SendRequest(It.IsAny<SendDocumentRequest>(), default))
             .ReturnsAsync(new Message());
 
-        // Инъекция через reflection (как раньше)
-        _service = (TelegramService)Activator.CreateInstance(
-            typeof(TelegramService),
-            args: [options, _loggerMock.Object])!;
-
-        var field = typeof(TelegramService).GetField("_bot", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        field.SetValue(_service, _botMock.Object);
+        _service = new TelegramServiceProxy(_botSettingsMock.Object, _loggerMock.Object, _botMock.Object);
     }
 
     /// <summary>
-    ///     Тест 1: Отправка текста вызывает Telegram API через SendRequest
+    ///     Тест 1: Отправка текста вызывает Telegram API
     /// </summary>
-    [Fact(DisplayName = "Тест 1: Отправка текста вызывает Telegram API через SendRequest")]
-    public async Task SendMessageAsync_ShouldCallSendRequest()
+    [Fact(DisplayName = "Тест 1: Отправка текста вызывает Telegram API")]
+    public async Task SendMessageAsync_ShouldCallTelegramApi()
     {
         // Act
         await _service.SendMessageAsync("hello", disableNotification: true);
@@ -73,77 +67,90 @@ public sealed class TelegramServiceTests
         _botMock.Verify(
             x => x.SendRequest(
             It.Is<SendMessageRequest>(r =>
-                r.ChatId == ChatId &&
                 r.Text == "hello" &&
+                r.ChatId == ChatId &&
                 r.ParseMode == ParseMode.Markdown &&
-                r.DisableNotification == true),
-            default), Times.Once);
+                r.DisableNotification == true), default),
+            Times.Once);
     }
 
     /// <summary>
-    ///     Тест 2: Отправка файла вызывает Telegram API через SendRequest
+    ///     Тест 2: Отправка файла вызывает Telegram API
     /// </summary>
-    [Fact(DisplayName = "Тест 2: Отправка файла вызывает Telegram API через SendRequest")]
-    public async Task SendFileAsync_ShouldCallSendRequest()
+    [Fact(DisplayName = "Тест 2: Отправка файла вызывает Telegram API")]
+    public async Task SendFileAsync_ShouldCallTelegramApi()
     {
-        // Arrange
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("file content"));
+        using var stream = new MemoryStream("file content"u8.ToArray());
 
         // Act
-        await _service.SendFileAsync(stream, "file.pdf", "вложение");
+        await _service.SendFileAsync(stream, "file.pdf", "caption here");
 
         // Assert
         _botMock.Verify(
             x => x.SendRequest(
-            It.Is<SendDocumentRequest>(r => r.ChatId == ChatId),
-            default), Times.Once);
+            It.Is<SendDocumentRequest>(r =>
+                r.Caption == "caption here" &&
+                r.ChatId == ChatId &&
+                r.ParseMode == ParseMode.Markdown &&
+                r.Document is InputFileStream), default),
+            Times.Once);
     }
 
     /// <summary>
-    ///     Тест 3: Исключение при отправке сообщения логируется
+    ///     Тест 3: Ошибка при отправке сообщения логируется
     /// </summary>
-    [Fact(DisplayName = "Тест 3: Исключение при отправке сообщения логируется")]
-    public async Task SendMessageAsync_ShouldLogErrorOnException()
+    [Fact(DisplayName = "Тест 3: Ошибка при отправке сообщения логируется")]
+    public async Task SendMessageAsync_ShouldLogError_OnException()
     {
-        // Arrange
-        _botMock.Reset();
         _botMock.Setup(x => x.SendRequest(It.IsAny<SendMessageRequest>(), default))
             .ThrowsAsync(new Exception("fail"));
 
-        var field = typeof(TelegramService).GetField("_bot", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        field.SetValue(_service, _botMock.Object);
+        await _service.SendMessageAsync("err");
 
-        // Act
-        await _service.SendMessageAsync("провал");
-
-        // Assert
         _loggerMock.Verify(
             x => x.LogError("Ошибка при отправке Telegram-сообщения", It.Is<Exception>(e => e.Message == "fail")),
             Times.Once);
     }
 
     /// <summary>
-    ///     Тест 4: Исключение при отправке файла логируется
+    ///     Тест 4: Ошибка при отправке файла логируется
     /// </summary>
-    [Fact(DisplayName = "Тест 4: Исключение при отправке файла логируется")]
-    public async Task SendFileAsync_ShouldLogErrorOnException()
+    [Fact(DisplayName = "Тест 4: Ошибка при отправке файла логируется")]
+    public async Task SendFileAsync_ShouldLogError_OnException()
     {
-        // Arrange
         using var stream = new MemoryStream("капут"u8.ToArray());
 
-        _botMock.Reset();
         _botMock.Setup(x => x.SendRequest(It.IsAny<SendDocumentRequest>(), default))
-            .ThrowsAsync(new Exception("фейл файла"));
+            .ThrowsAsync(new Exception("file fail"));
 
-        var field = typeof(TelegramService).GetField("_bot", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        field.SetValue(_service, _botMock.Object);
+        await _service.SendFileAsync(stream, "fail.pdf", "💀");
 
-        // Act
-        await _service.SendFileAsync(stream, "fail.txt", "приложение");
-
-        // Assert
         _loggerMock.Verify(
-            x => x.LogError("Ошибка при отправке файла в Telegram", It.Is<Exception>(e => e.Message == "фейл файла")),
+            x => x.LogError("Ошибка при отправке файла в Telegram", It.Is<Exception>(e => e.Message == "file fail")),
             Times.Once);
+    }
+
+    /// <summary>
+    ///     Прокси-реализация для внедрения мокнутого TelegramBotClient
+    /// </summary>
+    private sealed class TelegramServiceProxy : TelegramService
+    {
+        private readonly ITelegramBotClient _mockBot;
+        private readonly string _chatId;
+
+        /// <inheritdoc cref="TelegramServiceProxy" />
+        public TelegramServiceProxy(
+            IBotSettingsService settingsService,
+            ILoggerService logger,
+            ITelegramBotClient bot)
+            : base(settingsService, logger)
+        {
+            _mockBot = bot;
+            _chatId = ChatId;
+        }
+
+        /// <inheritdoc />
+        protected override Task<(ITelegramBotClient Bot, string ChatId)> GetBotSettings()
+            => Task.FromResult((_mockBot, _chatId));
     }
 }

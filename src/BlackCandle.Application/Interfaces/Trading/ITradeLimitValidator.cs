@@ -18,5 +18,5 @@ public interface ITradeLimitValidator
     ///         <item>Актив не ликвиден или запрещён</item>
     ///     </list>
     /// </remarks>
-    bool Validate(TradeSignal signal, List<PortfolioAsset> portfolio);
+    Task<bool> Validate(TradeSignal signal, List<PortfolioAsset> portfolio);
 }

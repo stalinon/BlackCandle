@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Exceptions;
@@ -177,7 +178,7 @@ public class TinkoffApiTests
             .Returns(instrumentResponse);
 
         var client = new TinkoffPortfolioClient(
-            Options.Create(new TinkoffClientConfiguration { AccountId = "123" }),
+            MockBotSettingsService(),
             new Mock<ILoggerService>().Object,
             MockApiClient(operations: operationsMock.Object, instruments: instrumentsMock.Object));
 
@@ -205,7 +206,7 @@ public class TinkoffApiTests
                 () => { }));
 
         var client = new TinkoffTradingClient(
-            Options.Create(new TinkoffClientConfiguration { AccountId = "123" }),
+            MockBotSettingsService(),
             new Mock<ILoggerService>().Object,
             MockApiClient(orders: ordersMock.Object));
 
@@ -221,7 +222,7 @@ public class TinkoffApiTests
     public async Task PlaceMarketOrderAsync_ShouldThrowArgumentOutOfRangeException()
     {
         var client = new TinkoffTradingClient(
-            Options.Create(new TinkoffClientConfiguration { AccountId = "123" }),
+            MockBotSettingsService(),
             new Mock<ILoggerService>().Object,
             MockApiClient());
 
@@ -264,7 +265,7 @@ public class TinkoffApiTests
             .Throws(new RpcException(new Status(StatusCode.Unavailable, "портфель умер")));
 
         var client = new TinkoffPortfolioClient(
-            Options.Create(new TinkoffClientConfiguration { AccountId = "123" }),
+            MockBotSettingsService(),
             new Mock<ILoggerService>().Object,
             MockApiClient(operations: operationsMock.Object));
 
@@ -285,7 +286,7 @@ public class TinkoffApiTests
             .Throws(new RpcException(new Status(StatusCode.Internal, "заказ пошёл по бороде")));
 
         var client = new TinkoffTradingClient(
-            Options.Create(new TinkoffClientConfiguration { AccountId = "123" }),
+            MockBotSettingsService(),
             new Mock<ILoggerService>().Object,
             MockApiClient(orders: ordersMock.Object));
 
@@ -374,5 +375,22 @@ public class TinkoffApiTests
         apiClient.SetupGet(x => x.Instruments).Returns(instruments ?? Mock.Of<InstrumentsService.InstrumentsServiceClient>());
         apiClient.SetupGet(x => x.Operations).Returns(operations ?? Mock.Of<OperationsService.OperationsServiceClient>());
         return apiClient.Object;
+    }
+
+    private static IBotSettingsService MockBotSettingsService()
+    {
+        var tinkoffSettings = new TinkoffClientOptions
+        {
+            ApiKey = "123",
+        };
+        var botSettings = new BotSettings
+        {
+            TinkoffClientOptions = tinkoffSettings,
+        };
+
+        var mock = new Mock<IBotSettingsService>();
+        mock.Setup(c => c.GetAsync()).ReturnsAsync(botSettings);
+
+        return mock.Object;
     }
 }

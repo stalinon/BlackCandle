@@ -1,6 +1,6 @@
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Trading;
+using BlackCandle.Domain.Entities;
 
 namespace BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
 
@@ -21,7 +21,14 @@ internal sealed class ValidateTradeLimitsStep(
     {
         var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
 
-        var validSignals = context.Signals.Where(signal => validator.Validate(signal, portfolio)).ToList();
+        var validSignals = new List<TradeSignal>();
+        foreach (var signal in context.Signals)
+        {
+            if (await validator.Validate(signal, portfolio))
+            {
+                validSignals.Add(signal);
+            }
+        }
 
         context.Signals = validSignals;
     }
