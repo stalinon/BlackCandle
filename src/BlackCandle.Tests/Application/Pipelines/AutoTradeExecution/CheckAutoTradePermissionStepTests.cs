@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.AutoTradeExecution.Steps;
@@ -17,13 +15,11 @@ namespace BlackCandle.Tests.Application.Pipelines.AutoTradeExecution;
 ///     <list type="number">
 ///         <item>Проверка разрешения: true — шаг выполняется</item>
 ///         <item>Проверка разрешения: false — вызывается EarlyExit</item>
-///         <item>Ошибка, если в настройках больше одного элемента или ни одного</item>
 ///     </list>
 /// </remarks>
 public sealed class CheckAutoTradePermissionStepTests
 {
-    private readonly Mock<IRepository<BotSettings>> _settingsRepo = new();
-    private readonly Mock<IDataStorageContext> _storage = new();
+    private readonly Mock<IBotSettingsService> _settings = new();
 
     private readonly CheckAutoTradePermissionStep _step;
 
@@ -32,8 +28,7 @@ public sealed class CheckAutoTradePermissionStepTests
     /// </summary>
     public CheckAutoTradePermissionStepTests()
     {
-        _storage.Setup(x => x.BotSettings).Returns(_settingsRepo.Object);
-        _step = new CheckAutoTradePermissionStep(_storage.Object);
+        _step = new CheckAutoTradePermissionStep(_settings.Object);
     }
 
     /// <summary>
@@ -43,8 +38,8 @@ public sealed class CheckAutoTradePermissionStepTests
     public async Task ExecuteAsync_ShouldPass_WhenEnabled()
     {
         // Arrange
-        _settingsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<BotSettings, bool>>>()))
-            .ReturnsAsync([new BotSettings { EnableAutoTrading = true }]);
+        _settings.Setup(x => x.GetAsync())
+            .ReturnsAsync(new BotSettings { EnableAutoTrading = true });
 
         var context = new AutoTradeExecutionContext();
 
@@ -60,13 +55,13 @@ public sealed class CheckAutoTradePermissionStepTests
     public async Task ExecuteAsync_ShouldCallEarlyExit_WhenDisabled()
     {
         // Arrange
-        _settingsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<BotSettings, bool>>>()))
-            .ReturnsAsync([new BotSettings { EnableAutoTrading = false }]);
+        _settings.Setup(x => x.GetAsync())
+            .ReturnsAsync(new BotSettings { EnableAutoTrading = false });
 
         var context = new AutoTradeExecutionContext();
         var triggered = false;
 
-        _step.EarlyExitAction += (ctx, ex, _) =>
+        _step.EarlyExitAction += (_, ex, _) =>
         {
             triggered = true;
             Assert.IsType<AutoTradeNotEnabledException>(ex);
@@ -77,32 +72,5 @@ public sealed class CheckAutoTradePermissionStepTests
 
         // Assert
         Assert.True(triggered);
-    }
-
-    /// <summary>
-    ///     Тест 3: Ошибка, если в настройках больше одного элемента или ни одного
-    /// </summary>
-    [Theory(DisplayName = "Тест 3: Ошибка, если в настройках больше одного элемента или ни одного")]
-    [InlineData(0)]
-    [InlineData(2)]
-    public async Task ExecuteAsync_ShouldThrow_WhenSettingsAreInvalid(int count)
-    {
-        // Arrange
-        var list = Enumerable.Range(1, count)
-            .Select(_ => new BotSettings { EnableAutoTrading = true }).ToList();
-
-        _settingsRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<BotSettings, bool>>>())).ReturnsAsync(list);
-
-        var context = new AutoTradeExecutionContext();
-
-        // Act & Assert
-        if (count == 0)
-        {
-            await Assert.ThrowsAsync<BotNotConfiguredException>(() => _step.ExecuteAsync(context));
-        }
-        else
-        {
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _step.ExecuteAsync(context));
-        }
     }
 }

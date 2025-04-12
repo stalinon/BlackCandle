@@ -19,4 +19,9 @@ public class CronSchedule
     ///     Следующий запуск
     /// </summary>
     public DateTime NextRun { get; set; }
+
+    /// <summary>
+    ///     Клонировать сущность
+    /// </summary>
+    public CronSchedule Copy() => (CronSchedule)MemberwiseClone();
 }

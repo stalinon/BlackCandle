@@ -1,6 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
-
-using Microsoft.Extensions.Options;
+using BlackCandle.Domain.Helpers;
 
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -12,19 +11,18 @@ namespace BlackCandle.Telegram;
 ///     Реализация Telegram-сервиса
 /// </summary>
 internal sealed class TelegramService(
-    IOptions<TelegramOptions> options,
+    IBotSettingsService botSettingsService,
     ILoggerService logger) : ITelegramService
 {
-    private readonly ITelegramBotClient _bot = new TelegramBotClient(options.Value.BotToken);
-    private readonly string _chatId = options.Value.ChatId;
-
     /// <inheritdoc />
     public async Task SendMessageAsync(string message, bool disableNotification = false)
     {
+        var (bot, chatId) = await GetBotSettings();
+
         try
         {
-            await _bot.SendMessage(
-                _chatId,
+            await bot.SendMessage(
+                chatId,
                 message,
                 ParseMode.Markdown,
                 disableNotification: disableNotification);
@@ -38,12 +36,14 @@ internal sealed class TelegramService(
     /// <inheritdoc />
     public async Task SendFileAsync(Stream fileStream, string fileName, string caption = "")
     {
+        var (bot, chatId) = await GetBotSettings();
+
         try
         {
             var input = new InputFileStream(fileStream, fileName);
 
-            await _bot.SendDocument(
-                _chatId,
+            await bot.SendDocument(
+                chatId,
                 input,
                 caption,
                 ParseMode.Markdown);
@@ -52,5 +52,12 @@ internal sealed class TelegramService(
         {
             logger.LogError("Ошибка при отправке файла в Telegram", ex);
         }
+    }
+
+    private async Task<(ITelegramBotClient Bot, string ChatId)> GetBotSettings()
+    {
+        var botSettings = await botSettingsService.GetAsync();
+        var telegramBotConfig = botSettings.ToTelegramConfig();
+        return (new TelegramBotClient(telegramBotConfig.BotToken), telegramBotConfig.ChatId);
     }
 }

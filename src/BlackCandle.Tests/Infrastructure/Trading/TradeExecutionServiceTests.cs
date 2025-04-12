@@ -1,3 +1,4 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Domain.Configuration;
@@ -5,11 +6,7 @@ using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Infrastructure.Trading;
 
-using Microsoft.Extensions.Options;
-
 using Moq;
-
-using Xunit;
 
 namespace BlackCandle.Tests.Infrastructure.Trading;
 
@@ -39,26 +36,32 @@ public sealed class TradeExecutionServiceTests
     {
         _facadeMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
 
-        var config = Options.Create(new TradeExecutionOptions
+        var config = new TradeExecutionOptions
         {
             MaxTradeAmountRub = 10000m,
             MaxLotsPerTrade = 5,
+        };
+
+        var botSettingsServiceMock = new Mock<IBotSettingsService>();
+        botSettingsServiceMock.Setup(s => s.GetAsync()).ReturnsAsync(new BotSettings()
+        {
+            TradeExecution = config,
         });
 
-        _service = new TradeExecutionService(_facadeMock.Object, config);
+        _service = new TradeExecutionService(_facadeMock.Object, botSettingsServiceMock.Object);
     }
 
     /// <summary>
     ///     Тест 1: Сигнал Hold всегда даёт объём 0
     /// </summary>
     [Fact(DisplayName = "Тест 1: Сигнал Hold всегда даёт объём 0")]
-    public void CalculateVolume_ShouldReturnZero_WhenActionIsHold()
+    public async Task CalculateVolume_ShouldReturnZero_WhenActionIsHold()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Hold };
 
         // Act
-        var volume = _service.CalculateVolume(signal);
+        var volume = await _service.CalculateVolume(signal);
 
         // Assert
         Assert.Equal(0, volume);
@@ -70,14 +73,14 @@ public sealed class TradeExecutionServiceTests
     [Theory(DisplayName = "Тест 2: Нулевая или отрицательная цена — объём 0")]
     [InlineData(0)]
     [InlineData(-100)]
-    public void CalculateVolume_ShouldReturnZero_WhenPriceInvalid(decimal price)
+    public async Task CalculateVolume_ShouldReturnZero_WhenPriceInvalid(decimal price)
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "TEST" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(price);
 
         // Act
-        var volume = _service.CalculateVolume(signal);
+        var volume = await _service.CalculateVolume(signal);
 
         // Assert
         Assert.Equal(0, volume);
@@ -87,14 +90,14 @@ public sealed class TradeExecutionServiceTests
     ///     Тест 3: Слишком маленький бюджет — объём 0
     /// </summary>
     [Fact(DisplayName = "Тест 3: Слишком маленький бюджет — объём 0")]
-    public void CalculateVolume_ShouldReturnZero_WhenBudgetTooSmall()
+    public async Task CalculateVolume_ShouldReturnZero_WhenBudgetTooSmall()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "TEST" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(20_000m);
 
         // Act
-        var volume = _service.CalculateVolume(signal);
+        var volume = await _service.CalculateVolume(signal);
 
         // Assert
         Assert.Equal(0, volume);
@@ -104,14 +107,14 @@ public sealed class TradeExecutionServiceTests
     ///     Тест 4: Ограничение по MaxLotsPerTrade
     /// </summary>
     [Fact(DisplayName = "Тест 4: Ограничение по MaxLotsPerTrade")]
-    public void CalculateVolume_ShouldRespectMaxLotsLimit()
+    public async Task CalculateVolume_ShouldRespectMaxLotsLimit()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "TEST" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(100m); // rawQty = 100
 
         // Act
-        var volume = _service.CalculateVolume(signal);
+        var volume = await _service.CalculateVolume(signal);
 
         // Assert
         Assert.Equal(5, volume); // MaxLotsPerTrade
@@ -121,14 +124,14 @@ public sealed class TradeExecutionServiceTests
     ///     Тест 5: Корректный сигнал даёт правильный объём
     /// </summary>
     [Fact(DisplayName = "Тест 5: Корректный сигнал даёт правильный объём")]
-    public void CalculateVolume_ShouldReturnExpectedVolume()
+    public async Task CalculateVolume_ShouldReturnExpectedVolume()
     {
         // Arrange
         var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "TEST" } };
         _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(2500m); // rawQty = 4
 
         // Act
-        var volume = _service.CalculateVolume(signal);
+        var volume = await _service.CalculateVolume(signal);
 
         // Assert
         Assert.Equal(4, volume);

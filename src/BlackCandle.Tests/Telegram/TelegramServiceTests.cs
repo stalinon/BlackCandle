@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Domain.Configuration;
 using BlackCandle.Telegram;
 
 using Microsoft.Extensions.Options;

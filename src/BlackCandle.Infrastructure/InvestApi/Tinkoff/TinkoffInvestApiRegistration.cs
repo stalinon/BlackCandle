@@ -1,4 +1,6 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
+using BlackCandle.Domain.Helpers;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,18 +19,13 @@ internal static class TinkoffInvestApiRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var options = configuration.GetSection("Tinkoff").Get<TinkoffClientConfiguration>() ?? new();
-        services.Configure<TinkoffClientConfiguration>(o =>
+        services.AddInvestApiClient((sp, settings) =>
         {
-            o.ApiKey = options.ApiKey;
-            o.AccountId = options.AccountId;
-            o.UseSandbox = options.UseSandbox;
-        });
-
-        services.AddInvestApiClient((_, settings) =>
-        {
-            settings.AccessToken = options.ApiKey;
-            settings.Sandbox = options.UseSandbox;
+            using var scope = sp.CreateScope();
+            var botSettingsService = scope.ServiceProvider.GetRequiredService<IBotSettingsService>();
+            var tinkoffConfig = botSettingsService.GetAsync().GetAwaiter().GetResult().ToTinkoffConfig();
+            settings.AccessToken = tinkoffConfig.ApiKey;
+            settings.Sandbox = tinkoffConfig.UseSandbox;
         });
 
         services.AddScoped<ITinkoffInvestApiClientWrapper, TinkoffInvestApiClientWrapper>();

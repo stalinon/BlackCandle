@@ -1,23 +1,23 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Application.Interfaces.Trading;
-using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
-
-using Microsoft.Extensions.Options;
 
 namespace BlackCandle.Infrastructure.Trading;
 
 /// <inheritdoc cref="ITradeExecutionService" />
 internal sealed class TradeExecutionService(
     IInvestApiFacade investApi,
-    IOptions<TradeExecutionOptions> options) : ITradeExecutionService
+    IBotSettingsService botSettingsService) : ITradeExecutionService
 {
-    private readonly TradeExecutionOptions _config = options.Value;
-
-    /// <inheritdoc />
-    public decimal CalculateVolume(TradeSignal signal)
+    /// <summary>
+    ///     Посчитать объемы
+    /// </summary>
+    public async Task<decimal> CalculateVolume(TradeSignal signal)
     {
+        var botSettings = await botSettingsService.GetAsync();
+
         if (signal.Action == TradeAction.Hold)
         {
             return 0;
@@ -29,7 +29,7 @@ internal sealed class TradeExecutionService(
             return 0;
         }
 
-        var maxBudget = _config.MaxTradeAmountRub;
+        var maxBudget = botSettings.TradeExecution.MaxTradeAmountRub;
         var rawQty = Math.Floor(maxBudget / price.Value);
 
         if (rawQty <= 0)
@@ -37,7 +37,7 @@ internal sealed class TradeExecutionService(
             return 0;
         }
 
-        var quantity = Math.Min(rawQty, _config.MaxLotsPerTrade);
+        var quantity = Math.Min(rawQty, botSettings.TradeExecution.MaxLotsPerTrade);
 
         return quantity;
     }

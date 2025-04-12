@@ -14,13 +14,13 @@ internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionS
     public override string Name => "Вычисление объемов сделок";
 
     /// <inheritdoc />
-    public override Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(AutoTradeExecutionContext context, CancellationToken cancellationToken = default)
     {
         var trades = new List<ExecutedTrade>();
 
         foreach (var signal in context.Signals)
         {
-            var qty = executionService.CalculateVolume(signal);
+            var qty = await executionService.CalculateVolume(signal);
             if (qty <= 0)
             {
                 continue;
@@ -40,7 +40,5 @@ internal sealed class CalculateTradeVolumeStep(ITradeExecutionService executionS
         }
 
         context.ExecutedTrades = trades;
-
-        return Task.CompletedTask;
     }
 }

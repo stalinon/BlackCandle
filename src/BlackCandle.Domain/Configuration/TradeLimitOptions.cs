@@ -14,4 +14,9 @@ public sealed class TradeLimitOptions
     ///     Максимальная позиция
     /// </summary>
     public decimal MaxPositionSharePercent { get; set; } = 25m;
+
+    /// <summary>
+    ///     Клонировать сущность
+    /// </summary>
+    public TradeLimitOptions Copy() => (TradeLimitOptions)MemberwiseClone();
 }

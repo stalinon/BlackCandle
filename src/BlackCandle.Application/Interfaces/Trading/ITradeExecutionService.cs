@@ -10,5 +10,5 @@ public interface ITradeExecutionService
     /// <summary>
     ///     Рассчитать объем для потенциальной сделки
     /// </summary>
-    decimal CalculateVolume(TradeSignal signal);
+    Task<decimal> CalculateVolume(TradeSignal signal);
 }
