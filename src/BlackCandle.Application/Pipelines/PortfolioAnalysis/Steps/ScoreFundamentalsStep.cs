@@ -18,10 +18,8 @@ internal sealed class ScoreFundamentalsStep(IDataStorageContext dataStorage) : P
         PortfolioAnalysisContext context,
         CancellationToken cancellationToken = default)
     {
-        var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
-        foreach (var asset in portfolio)
+        foreach (var ticker in context.Tickers)
         {
-            var ticker = asset.Ticker;
             var fundamental = await dataStorage.Fundamentals.GetByIdAsync(ticker.Symbol);
 
             if (fundamental is null)

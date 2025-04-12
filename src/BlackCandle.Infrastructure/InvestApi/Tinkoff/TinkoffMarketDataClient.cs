@@ -14,7 +14,6 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 /// <summary>
 ///     Реализация <see cref="IMarketDataClient" /> для Tinkoff API
 /// </summary>
-/// <inheritdoc cref="TinkoffMarketDataClient" />
 internal sealed class TinkoffMarketDataClient(ILoggerService logger, ITinkoffInvestApiClientWrapper investApiClient) : IMarketDataClient
 {
     private readonly MarketDataService.MarketDataServiceClient _client = investApiClient.MarketData;

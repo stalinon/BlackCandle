@@ -20,5 +20,7 @@ internal sealed class LoadPortfolioStep(IInvestApiFacade investApi, IDataStorage
         var portfolio = await investApi.Portfolio.GetPortfolioAsync();
         await dataStorage.PortfolioAssets.TruncateAsync();
         await dataStorage.PortfolioAssets.AddRangeAsync(portfolio);
+
+        context.Tickers.AddRange(portfolio.Select(a => a.Ticker));
     }
 }

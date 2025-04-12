@@ -36,6 +36,7 @@ internal static class TinkoffInvestApiRegistration
         services.AddScoped<IMarketDataClient, TinkoffMarketDataClient>();
         services.AddScoped<IPortfolioClient, TinkoffPortfolioClient>();
         services.AddScoped<ITradingClient, TinkoffTradingClient>();
+        services.AddScoped<IInstrumentClient, TinkoffInstrumentClient>();
 
         return services;
     }

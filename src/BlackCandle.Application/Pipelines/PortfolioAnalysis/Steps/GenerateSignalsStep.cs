@@ -20,9 +20,8 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
     {
         var now = DateTime.UtcNow;
 
-        var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
-        var indicatorData = portfolio
-            .Select(a => (a.Ticker, Indicators: context.Indicators.GetValueOrDefault(a.Ticker)))
+        var indicatorData = context.Tickers
+            .Select(t => (t, Indicators: context.Indicators.GetValueOrDefault(t)))
             .Where(a => a.Indicators != null)
             .ToList();
         foreach (var (ticker, indicators) in indicatorData)

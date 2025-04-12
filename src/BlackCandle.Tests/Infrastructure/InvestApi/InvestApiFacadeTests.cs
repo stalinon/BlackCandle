@@ -25,15 +25,17 @@ public sealed class InvestApiFacadeTests
         var market = new Mock<IMarketDataClient>().Object;
         var portfolio = new Mock<IPortfolioClient>().Object;
         var trading = new Mock<ITradingClient>().Object;
+        var instrument = new Mock<IInstrumentClient>().Object;
         var fundamentals = new Mock<IFundamentalDataClient>().Object;
 
         // Act
-        var facade = new InvestApiFacade(market, portfolio, trading, fundamentals);
+        var facade = new InvestApiFacade(market, portfolio, trading, fundamentals, instrument);
 
         // Assert
         Assert.Equal(market, facade.Marketdata);
         Assert.Equal(portfolio, facade.Portfolio);
         Assert.Equal(trading, facade.Trading);
         Assert.Equal(fundamentals, facade.Fundamentals);
+        Assert.Equal(instrument, facade.Instruments);
     }
 }

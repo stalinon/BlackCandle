@@ -294,6 +294,74 @@ public class TinkoffApiTests
         await act.Should().ThrowAsync<TinkoffApiException>();
     }
 
+    /// <summary>
+    ///     Тест 10: GetTopTickersAsync должен выбросить исключение при ошибке GRPC
+    /// </summary>
+    [Fact(DisplayName = "Тест 10: GetTopTickersAsync должен выбросить исключение при ошибке GRPC")]
+    public async Task GetTopTickersAsync_ShouldThrowException_WhenGrpcFails()
+    {
+        var instrumentsMock = new Mock<InstrumentsService.InstrumentsServiceClient>();
+        instrumentsMock
+            .Setup(x => x.SharesAsync(It.IsAny<InstrumentsRequest>(), null, null, It.IsAny<CancellationToken>()))
+            .Throws(new RpcException(new Status(StatusCode.Internal, "жопа")));
+
+        var client = new TinkoffInstrumentClient(
+            new Mock<ILoggerService>().Object,
+            MockApiClient(instruments: instrumentsMock.Object));
+
+        var act = async () => await client.GetTopTickersAsync(10);
+
+        await act.Should().ThrowAsync<TinkoffApiException>();
+    }
+
+    /// <summary>
+    ///     Тест 11: GetTopTickersAsync должен вернуть список акций
+    /// </summary>
+    [Fact(DisplayName = "Тест 11: GetTopTickersAsync должен вернуть список акций")]
+    public async Task GetTopTickersAsync_ShouldReturnTickers_WhenSharesProvided()
+    {
+        var instrumentsMock = new Mock<InstrumentsService.InstrumentsServiceClient>();
+        instrumentsMock
+            .Setup(x => x.SharesAsync(It.IsAny<InstrumentsRequest>(), null, null, It.IsAny<CancellationToken>()))
+            .Returns(() => new AsyncUnaryCall<SharesResponse>(
+                Task.FromResult(new SharesResponse
+                {
+                    Instruments =
+                    {
+                        new Share
+                        {
+                            Sector = "Sector",
+                            Ticker = "Ticker",
+                            Figi = "figi",
+                            Currency = "Currency",
+                            ApiTradeAvailableFlag = true,
+                            BuyAvailableFlag = true,
+                            ForQualInvestorFlag = false,
+                            TradingStatus = SecurityTradingStatus.NormalTrading,
+                            BlockedTcaFlag = false,
+                            LiquidityFlag = true,
+                            DivYieldFlag = false,
+                            IssueSize = 100_000_000,
+                            IpoDate = DateTime.UtcNow.ToTimestamp(),
+                        },
+                    },
+                }),
+                Task.FromResult(new Metadata()),
+                () => Status.DefaultSuccess,
+                () => new Metadata(),
+                () => { }));
+
+        var client = new TinkoffInstrumentClient(
+            new Mock<ILoggerService>().Object,
+            MockApiClient(instruments: instrumentsMock.Object));
+
+        var result = (await client.GetTopTickersAsync(10)).ToArray();
+
+        result.Should().NotBeNull();
+        result.Should().NotBeEmpty();
+        result.Should().HaveCount(1);
+    }
+
     private static ITinkoffInvestApiClientWrapper MockApiClient(
         OrdersService.OrdersServiceClient? orders = null,
         MarketDataService.MarketDataServiceClient? marketData = null,

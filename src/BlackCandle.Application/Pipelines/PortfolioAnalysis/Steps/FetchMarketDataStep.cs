@@ -20,14 +20,13 @@ internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStora
         var now = DateTime.UtcNow;
         var weekAgo = now.AddDays(-7);
 
-        var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
-        foreach (var asset in portfolio)
+        foreach (var ticker in context.Tickers)
         {
-            var marketdata = await investApi.Marketdata.GetHistoricalDataAsync(asset.Ticker, weekAgo, now);
+            var marketdata = await investApi.Marketdata.GetHistoricalDataAsync(ticker, weekAgo, now);
             await dataStorage.Marketdata.TruncateAsync();
             await dataStorage.Marketdata.AddRangeAsync(marketdata);
 
-            var fundamentalData = await investApi.Fundamentals.GetFundamentalsAsync(asset.Ticker);
+            var fundamentalData = await investApi.Fundamentals.GetFundamentalsAsync(ticker);
             if (fundamentalData != null)
             {
                 await dataStorage.Fundamentals.AddAsync(fundamentalData);

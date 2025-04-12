@@ -33,9 +33,7 @@ public sealed class GenerateSignalsStepTests
 
     private readonly Ticker _ticker = new() { Symbol = "AAPL" };
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GenerateSignalsStepTests"/> class.
-    /// </summary>
+    /// <inheritdoc cref="GenerateSignalsStepTests" />
     public GenerateSignalsStepTests()
     {
         _storage.Setup(x => x.TradeSignals).Returns(_signalRepo.Object);
@@ -53,6 +51,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             { [_ticker] = BuildIndicators(("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 25)) },
             FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 5 },
@@ -73,6 +72,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(
@@ -97,6 +97,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(
@@ -121,6 +122,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(
@@ -145,6 +147,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(
@@ -169,6 +172,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(
@@ -193,6 +197,7 @@ public sealed class GenerateSignalsStepTests
     {
         var context = new PortfolioAnalysisContext
         {
+            Tickers = [_ticker],
             Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
             {
                 [_ticker] = BuildIndicators(

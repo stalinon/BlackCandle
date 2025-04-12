@@ -9,6 +9,11 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis;
 public class PortfolioAnalysisContext
 {
     /// <summary>
+    ///     Тикеры, участвующие в анализе
+    /// </summary>
+    public List<Ticker> Tickers { get; set; } = new();
+
+    /// <summary>
     ///     Время анализа
     /// </summary>
     public DateTime AnalysisTime { get; set; } = DateTime.UtcNow;

@@ -15,6 +15,7 @@ internal static class PortfolioAnalysisRegistration
     /// </summary>
     public static IServiceCollection RegisterPortfolioAnalysis(this IServiceCollection services)
     {
+        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, DiscoverNewTickersStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, LoadPortfolioStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, FetchMarketDataStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, CalculateIndicatorsStep>();
