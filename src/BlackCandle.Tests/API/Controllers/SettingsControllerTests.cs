@@ -4,7 +4,9 @@ using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.ValueObjects;
 
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Moq;
 
 namespace BlackCandle.Tests.API.Controllers;
