@@ -125,25 +125,6 @@ public sealed class PipelineExecutionTrackerTests
         record.ErrorMessage.Should().Be("fail");
     }
 
-    private sealed class Logger : ILoggerService
-    {
-        public void AddPrefix(string prefix)
-        {
-        }
-
-        public void LogInfo(string message)
-        {
-        }
-
-        public void LogWarning(string message)
-        {
-        }
-
-        public void LogError(string message, Exception? ex = null)
-        {
-        }
-    }
-
     private sealed class TestContext;
 
     private sealed class TestPipeline : Pipeline<TestContext>

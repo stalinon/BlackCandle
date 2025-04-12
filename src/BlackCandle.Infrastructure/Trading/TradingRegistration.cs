@@ -16,7 +16,7 @@ internal static class TradingRegistration
     /// </summary>
     public static IServiceCollection AddTradingServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var tradeLimits = configuration.GetValue<TradeLimitOptions>("TradeLimits") ?? new TradeLimitOptions();
+        var tradeLimits = configuration.GetSection("TradeLimits").Get<TradeLimitOptions>() ?? new TradeLimitOptions();
         services.Configure<TradeLimitOptions>(o =>
         {
             o.MinTradeAmountRub = tradeLimits.MinTradeAmountRub;
@@ -24,7 +24,7 @@ internal static class TradingRegistration
         });
         services.AddScoped<ITradeLimitValidator, TradeLimitValidator>();
 
-        var tradeExecution = configuration.GetValue<TradeExecutionOptions>("TradeExecution") ??
+        var tradeExecution = configuration.GetSection("TradeExecution").Get<TradeExecutionOptions>() ??
                              new TradeExecutionOptions();
         services.Configure<TradeExecutionOptions>(o =>
         {

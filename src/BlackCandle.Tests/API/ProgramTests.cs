@@ -27,7 +27,15 @@ public sealed class ProgramTests : IClassFixture<WebApplicationFactory<Program>>
     /// <inheritdoc cref="ProgramTests" />
     public ProgramTests(WebApplicationFactory<Program> factory)
     {
-        _client = factory.CreateClient();
+        _client = factory
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddSingleton(new Logger());
+                });
+            })
+            .CreateClient();
     }
 
     /// <summary>

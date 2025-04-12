@@ -17,11 +17,11 @@ internal static class TinkoffInvestApiRegistration
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var options = configuration.GetValue<TinkoffClientConfiguration>("Tinkoff") ?? new();
+        var options = configuration.GetSection("Tinkoff").Get<TinkoffClientConfiguration>() ?? new();
         services.Configure<TinkoffClientConfiguration>(o =>
         {
             o.ApiKey = options.ApiKey;
-            o.AccountId = options.ApiKey;
+            o.AccountId = options.AccountId;
             o.UseSandbox = options.UseSandbox;
         });
 

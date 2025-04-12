@@ -98,7 +98,7 @@ public sealed class FetchMarketDataStepTests
         await _step.ExecuteAsync(_context);
 
         // Assert
-        _marketRepo.Verify(x => x.TruncateAsync(), Times.Exactly(2));
+        _marketRepo.Verify(x => x.TruncateAsync(), Times.Exactly(1));
     }
 
     /// <summary>

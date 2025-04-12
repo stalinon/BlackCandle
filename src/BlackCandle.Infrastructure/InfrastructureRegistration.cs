@@ -36,7 +36,7 @@ public static class InfrastructureRegistration
 
     private static IServiceCollection RegisterRedis(this IServiceCollection services, IConfiguration configuration)
     {
-        var options = configuration.GetValue<RedisOptions>("Redis") ?? new();
+        var options = configuration.GetSection("Redis").Get<RedisOptions>() ?? new();
         if (!options.UseRedis)
         {
             services.AddScoped<IDataStorageContext, InMemoryDataStorageContext>();

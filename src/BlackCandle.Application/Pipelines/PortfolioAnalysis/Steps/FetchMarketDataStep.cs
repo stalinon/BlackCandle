@@ -17,13 +17,14 @@ internal sealed class FetchMarketDataStep(IInvestApiFacade investApi, IDataStora
         PortfolioAnalysisContext context,
         CancellationToken cancellationToken = default)
     {
-        var now = DateTime.UtcNow;
-        var weekAgo = now.AddDays(-7);
+        var now = DateTime.UtcNow.Date;
+        var weekAgo = now.AddDays(-100);
 
+        await dataStorage.Marketdata.TruncateAsync();
+        await dataStorage.Fundamentals.TruncateAsync();
         foreach (var ticker in context.Tickers)
         {
             var marketdata = await investApi.Marketdata.GetHistoricalDataAsync(ticker, weekAgo, now);
-            await dataStorage.Marketdata.TruncateAsync();
             await dataStorage.Marketdata.AddRangeAsync(marketdata);
 
             var fundamentalData = await investApi.Fundamentals.GetFundamentalsAsync(ticker);

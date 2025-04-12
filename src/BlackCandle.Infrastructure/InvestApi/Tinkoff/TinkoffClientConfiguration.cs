@@ -6,6 +6,11 @@ namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
 public class TinkoffClientConfiguration
 {
     /// <summary>
+    ///     Базовый URL песочницы
+    /// </summary>
+    public const string SandboxBaseUrl = "sandbox-invest-public-api.tinkoff.ru:443";
+
+    /// <summary>
     ///     Ключ API
     /// </summary>
     public string ApiKey { get; set; } = string.Empty;
