@@ -65,6 +65,7 @@ public abstract class Pipeline<TContext>
     public virtual async Task RunAsync(CancellationToken cancellationToken = default)
     {
         UpdatePipelineStatus(PipelineStatus.Running, Context);
+        _logger.LogInfo($"Запущен пайплайн: {Name}");
 
         foreach (var step in _steps)
         {
@@ -87,11 +88,13 @@ public abstract class Pipeline<TContext>
                 _logger.LogError($"Ошибка на шаге {step.Name}", ex);
                 UpdatePipelineStepStatus(PipelineStepStatus.Failed, step, Context, ex);
                 UpdatePipelineStatus(PipelineStatus.Failed, Context, ex);
+                _logger.LogInfo($"Необработанная ошибка в пайплайне: {Name}");
                 throw;
             }
         }
 
         UpdatePipelineStatus(PipelineStatus.Completed, Context);
+        _logger.LogInfo($"Завершен пайплайн: {Name}");
     }
 
     /// <summary>

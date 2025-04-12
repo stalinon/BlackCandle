@@ -28,7 +28,7 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
                 continue;
             }
 
-            var quotes = candles.Select(c => new Quote
+            var quotes = candles.OrderBy(c => c.Date).Select(c => new Quote
             {
                 Timestamp = c.Date,
                 Open = c.Open,

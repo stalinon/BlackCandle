@@ -26,7 +26,7 @@ internal sealed class TinkoffPortfolioClient(IOptions<TinkoffClientConfiguration
     {
         try
         {
-            var positions = await _client.GetPortfolioAsync(new PortfolioRequest()
+            var positions = await _client.GetPortfolioAsync(new PortfolioRequest
             {
                 AccountId = _config.AccountId,
             });

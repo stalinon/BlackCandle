@@ -5,6 +5,8 @@ using BlackCandle.Infrastructure.Persistence.Redis.Entities;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 using StackExchange.Redis;
@@ -31,9 +33,11 @@ public sealed class RedisDataStorageContextTests
         // Arrange
         var redis = new Mock<IConnectionMultiplexer>().Object;
         var options = new RedisOptions { Prefix = "test:" };
+        var mockOptions = new Mock<IOptions<RedisOptions>>();
+        mockOptions.Setup(x => x.Value).Returns(options);
 
         // Act
-        var context = new RedisDataStorageContext(redis, options);
+        var context = new RedisDataStorageContext(redis, mockOptions.Object);
 
         // Assert
         context.PortfolioAssets.Should().BeOfType<RedisRepository<PortfolioAsset, RedisPortfolioAsset>>();
