@@ -17,7 +17,7 @@ internal class SmartLabFundamentalClientTestWrapper : SmartLabFundamentalClient
 {
     /// <inheritdoc cref="SmartLabFundamentalClientTestWrapper" />
     public SmartLabFundamentalClientTestWrapper(IRepository<FundamentalData> repo, ILoggerService logger)
-        : base(Mock.Of<IDataStorageContext>(x => x.Fundamentals == repo), logger)
+        : base(repo, logger)
     {
         typeof(SmartLabFundamentalClient)
             .GetField("_repository", BindingFlags.NonPublic | BindingFlags.Instance)

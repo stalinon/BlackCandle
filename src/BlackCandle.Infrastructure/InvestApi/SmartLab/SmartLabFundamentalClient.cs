@@ -3,7 +3,6 @@ using System.Globalization;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 
-using BlackCandle.Application.Interfaces;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
 using BlackCandle.Domain.Entities;
@@ -15,7 +14,7 @@ namespace BlackCandle.Infrastructure.InvestApi.SmartLab;
 ///     Скрапер таблицы фундаментальных данных с Smart-Lab
 /// </summary>
 /// <inheritdoc cref="SmartLabFundamentalClient" />
-internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerService logger) : IFundamentalDataClient
+internal class SmartLabFundamentalClient(IRepository<FundamentalData> repository, ILoggerService logger) : IFundamentalDataClient
 {
     /// <summary>
     ///     Url к таблице
@@ -23,16 +22,21 @@ internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerSer
     protected Uri tableUri = new("https://smart-lab.ru/q/shares_fundamental/");
 
     private readonly HttpClient _httpClient = new();
-    private readonly IRepository<FundamentalData> _repository = context.Fundamentals;
+    private DateTime _lastUpdate;
 
     /// <inheritdoc />
     public async Task<FundamentalData?> GetFundamentalsAsync(Ticker ticker)
     {
-        var existing = await _repository.GetByIdAsync(ticker.Symbol);
+        var existing = await repository.GetByIdAsync(ticker.Symbol);
         if (existing != null && DateTime.UtcNow.Date == existing.LastUpdated.Date)
         {
-            logger.LogInfo($"SmartLab: возвращаем кэшированные фундаментальные данные по {ticker.Symbol}");
             return existing;
+        }
+
+        if (DateTime.UtcNow - _lastUpdate < TimeSpan.FromDays(1))
+        {
+            // за день ничего бы не обновили на странице, тикера нет в таблице
+            return default;
         }
 
         logger.LogInfo("SmartLab: загрузка таблицы фундаментала с сайта");
@@ -41,7 +45,7 @@ internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerSer
         foreach (var entry in table.Values)
         {
             entry.LastUpdated = DateTime.UtcNow;
-            await _repository.AddAsync(entry); // overwrite по ID
+            await repository.AddAsync(entry); // overwrite по ID
         }
 
         return table.GetValueOrDefault(ticker.Symbol.ToUpper());
@@ -105,6 +109,7 @@ internal class SmartLabFundamentalClient(IDataStorageContext context, ILoggerSer
             var html = await _httpClient.GetStringAsync(tableUri);
             var parser = new HtmlParser();
             var doc = await parser.ParseDocumentAsync(html);
+            _lastUpdate = DateTime.UtcNow;
 
             return await ParseTableAsync(doc);
         }

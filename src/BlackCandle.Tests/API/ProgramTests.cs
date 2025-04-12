@@ -32,7 +32,7 @@ public sealed class ProgramTests : IClassFixture<WebApplicationFactory<Program>>
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddSingleton(new Logger());
+                    services.AddSingleton<ILoggerService, Logger>();
                 });
             })
             .CreateClient();

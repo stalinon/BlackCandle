@@ -38,12 +38,13 @@ internal sealed class DefaultSignalGenerationStrategy : ISignalGenerationStrateg
         if (rsi.Value < 40 && ema.Value > sma.Value)
         {
             action = TradeAction.Buy;
-            confidence = score >= 3 ? ConfidenceLevel.Medium : ConfidenceLevel.Low;
+            confidence = score >= 2 ? ConfidenceLevel.Medium : ConfidenceLevel.Low;
         }
-        else if (rsi.Value > 60 && ema.Value < sma.Value)
+
+        if (rsi.Value > 60 && ema.Value < sma.Value)
         {
             action = TradeAction.Sell;
-            confidence = score >= 3 ? ConfidenceLevel.Medium : ConfidenceLevel.Low;
+            confidence = score >= 2 ? ConfidenceLevel.Medium : ConfidenceLevel.Low;
         }
 
         return new TradeSignal

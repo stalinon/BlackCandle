@@ -32,11 +32,8 @@ public class SmartLabFundamentalClientTests
     public SmartLabFundamentalClientTests()
     {
         _repositoryMock = new Mock<IRepository<FundamentalData>>();
-        var dataStorageMock = new Mock<IDataStorageContext>();
-        dataStorageMock.Setup(x => x.Fundamentals).Returns(_repositoryMock.Object);
-
         Mock<ILoggerService> loggerMock = new();
-        _client = new SmartLabFundamentalClient(dataStorageMock.Object, loggerMock.Object);
+        _client = new SmartLabFundamentalClient(_repositoryMock.Object, loggerMock.Object);
     }
 
     /// <summary>
