@@ -37,7 +37,8 @@ internal sealed class TinkoffInstrumentClient(ILoggerService logger, ITinkoffInv
                 })
                 .Select(i => new
                 {
-                    i, Score = CalculateScore(i, now),
+                    i,
+                    Score = CalculateScore(i, now),
                 })
                 .OrderByDescending(x => x.Score)
                 .Take(count)
