@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
+using BlackCandle.Application.Trading;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,8 @@ internal static class PortfolioAnalysisRegistration
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, GenerateSignalsStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, LogStep>();
         services.AddTransient<PortfolioAnalysisPipeline>();
+
+        services.AddSignalGeneration();
 
         return services;
     }

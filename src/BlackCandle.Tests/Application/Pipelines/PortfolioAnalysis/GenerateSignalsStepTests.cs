@@ -1,6 +1,5 @@
-using System.Linq.Expressions;
-
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
@@ -16,216 +15,124 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item>Не генерируется сигнал без RSI</item>
-///         <item>Buy (Low) при RSI меньше 30 без подтверждений</item>
-///         <item>Buy (Medium) при RSI меньше 30 и слабом score</item>
-///         <item>Buy (High) при RSI меньше 30 и сильном score</item>
-///         <item>Sell (Medium) при RSI > 70 без подтверждений</item>
-///         <item>Sell (High) при RSI > 70 и подтверждении</item>
-///         <item>Hold при RSI в пределах нормы</item>
+///         <item>Генерация сигнала вызывается по тикерам с индикаторами</item>
+///         <item>Сигналы добавляются, если не null</item>
+///         <item>Сигналы не добавляются, если null</item>
+///         <item>Тикеры без индикаторов игнорируются</item>
 ///     </list>
 /// </remarks>
 public sealed class GenerateSignalsStepTests
 {
-    private readonly Mock<IRepository<TradeSignal>> _signalRepo = new();
-    private readonly Mock<IRepository<PortfolioAsset>> _portfolioRepo = new();
-    private readonly Mock<IDataStorageContext> _storage = new();
+    private readonly Mock<IRepository<TradeSignal>> _signalRepoMock = new();
+    private readonly Mock<IDataStorageContext> _storageMock = new();
+    private readonly Mock<ISignalGenerationStrategy> _strategyMock = new();
 
-    private readonly Ticker _ticker = new() { Symbol = "AAPL" };
+    private readonly GenerateSignalsStep _step;
+    private readonly PortfolioAnalysisContext _context = new();
 
-    /// <inheritdoc cref="GenerateSignalsStepTests" />
+    /// <inheritdoc cref="GenerateSignalsStepTests"/>
     public GenerateSignalsStepTests()
     {
-        _storage.Setup(x => x.TradeSignals).Returns(_signalRepo.Object);
-        _storage.Setup(x => x.PortfolioAssets).Returns(_portfolioRepo.Object);
+        _storageMock.Setup(x => x.TradeSignals).Returns(_signalRepoMock.Object);
 
-        _portfolioRepo.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<PortfolioAsset, bool>>>()))
-            .ReturnsAsync([new PortfolioAsset { Ticker = _ticker }]);
+        _step = new GenerateSignalsStep(_storageMock.Object, _strategyMock.Object);
     }
 
     /// <summary>
-    ///     Тест 1: Не генерируется сигнал без RSI
+    ///     Тест 1: Генерация сигнала вызывается по тикерам с индикаторами
     /// </summary>
-    [Fact(DisplayName = "Тест 1: Не генерируется сигнал без RSI")]
-    public async Task ExecuteAsync_ShouldNotGenerateSignal_WhenNoRSI()
+    [Fact(DisplayName = "Тест 1: Генерация сигнала вызывается по тикерам с индикаторами")]
+    public async Task ExecuteAsync_ShouldCallGenerate_WhenIndicatorsExist()
     {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            { [_ticker] = BuildIndicators(("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 25)) },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 5 },
-        };
+        // Arrange
+        var ticker = new Ticker { Symbol = "AAPL" };
+        _context.Tickers.Add(ticker);
+        _context.Indicators[ticker] =
+        [
+            new() { Name = "RSI14", Value = 50, Date = DateTime.UtcNow }
+        ];
 
-        var step = new GenerateSignalsStep(_storage.Object);
+        _strategyMock
+            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
+            .Returns(new TradeSignal { Ticker = ticker, Action = TradeAction.Hold });
 
-        await step.ExecuteAsync(context);
+        // Act
+        await _step.ExecuteAsync(_context);
 
-        _signalRepo.Verify(x => x.AddAsync(It.IsAny<TradeSignal>()), Times.Never);
+        // Assert
+        _strategyMock.Verify(
+            x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()),
+            Times.Once);
     }
 
     /// <summary>
-    ///     Тест 2: Buy (Low) при RSI меньше 30 без подтверждений
+    ///     Тест 2: Сигналы добавляются, если не null
     /// </summary>
-    [Fact(DisplayName = "Тест 2: Buy (Low) при RSI < 30 без подтверждений")]
-    public async Task ExecuteAsync_ShouldGenerateBuyLowSignal()
+    [Fact(DisplayName = "Тест 2: Сигналы добавляются, если не null")]
+    public async Task ExecuteAsync_ShouldAddSignal_WhenNotNull()
     {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 25), ("MACD", -1), ("EMA12", 5), ("SMA20", 6), ("ADX14", 10)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 2 },
-        };
+        // Arrange
+        var ticker = new Ticker { Symbol = "SBER" };
+        _context.Tickers.Add(ticker);
+        _context.Indicators[ticker] =
+        [
+            new() { Name = "MACD", Value = 1, Date = DateTime.UtcNow }
+        ];
 
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
+        var signal = new TradeSignal { Ticker = ticker, Action = TradeAction.Buy };
 
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.Low)), Times.Once);
+        _strategyMock
+            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
+            .Returns(signal);
+
+        // Act
+        await _step.ExecuteAsync(_context);
+
+        // Assert
+        _signalRepoMock.Verify(x => x.AddAsync(signal), Times.Once);
     }
 
     /// <summary>
-    ///     Тест 3: Buy (Medium) при RSI меньше 30 и слабом score
+    ///     Тест 3: Сигналы не добавляются, если null
     /// </summary>
-    [Fact(DisplayName = "Тест 3: Buy (Medium) при RSI < 30 и слабом score")]
-    public async Task ExecuteAsync_ShouldGenerateBuyMediumSignal()
+    [Fact(DisplayName = "Тест 3: Сигналы не добавляются, если null")]
+    public async Task ExecuteAsync_ShouldNotAddSignal_WhenNullReturned()
     {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 3 },
-        };
+        // Arrange
+        var ticker = new Ticker { Symbol = "LKOH" };
+        _context.Tickers.Add(ticker);
+        _context.Indicators[ticker] =
+        [
+            new() { Name = "ADX14", Value = 22, Date = DateTime.UtcNow }
+        ];
 
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
+        _strategyMock
+            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
+            .Returns((TradeSignal?)null);
 
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.Medium)), Times.Once);
+        // Act
+        await _step.ExecuteAsync(_context);
+
+        // Assert
+        _signalRepoMock.Verify(x => x.AddAsync(It.IsAny<TradeSignal>()), Times.Never);
     }
 
     /// <summary>
-    ///     Тест 4: Buy (High) при RSI меньше 30 и сильном score
+    ///     Тест 4: Тикеры без индикаторов игнорируются
     /// </summary>
-    [Fact(DisplayName = "Тест 4: Buy (High) при RSI < 30 и сильном score")]
-    public async Task ExecuteAsync_ShouldGenerateBuyHighSignal()
+    [Fact(DisplayName = "Тест 4: Тикеры без индикаторов игнорируются")]
+    public async Task ExecuteAsync_ShouldSkipTickers_WithoutIndicators()
     {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 25), ("MACD", 1), ("EMA12", 7), ("SMA20", 6), ("ADX14", 25)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 5 },
-        };
+        // Arrange
+        var ticker = new Ticker { Symbol = "GAZP" };
+        _context.Tickers.Add(ticker); // но в Indicators словаре нет
 
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
+        // Act
+        await _step.ExecuteAsync(_context);
 
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Buy && s.Confidence == ConfidenceLevel.High)), Times.Once);
-    }
-
-    /// <summary>
-    ///     Тест 5: Sell (Medium) при RSI > 70 без подтверждений
-    /// </summary>
-    [Fact(DisplayName = "Тест 5: Sell (Medium) при RSI > 70 без подтверждений")]
-    public async Task ExecuteAsync_ShouldGenerateSellMediumSignal()
-    {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 75), ("MACD", 1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 10)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 2 },
-        };
-
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
-
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Sell && s.Confidence == ConfidenceLevel.Medium)), Times.Once);
-    }
-
-    /// <summary>
-    ///     Тест 6: Sell (High) при RSI > 70 и подтверждении
-    /// </summary>
-    [Fact(DisplayName = "Тест 6: Sell (High) при RSI > 70 и подтверждении")]
-    public async Task ExecuteAsync_ShouldGenerateSellHighSignal()
-    {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 75), ("MACD", -1), ("EMA12", 10), ("SMA20", 9), ("ADX14", 30)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 4 },
-        };
-
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
-
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Sell && s.Confidence == ConfidenceLevel.High)), Times.Once);
-    }
-
-    /// <summary>
-    ///     Тест 7: Hold при RSI между 30 и 70
-    /// </summary>
-    [Fact(DisplayName = "Тест 7: Hold при RSI между 30 и 70")]
-    public async Task ExecuteAsync_ShouldGenerateHoldSignal()
-    {
-        var context = new PortfolioAnalysisContext
-        {
-            Tickers = [_ticker],
-            Indicators = new Dictionary<Ticker, List<TechnicalIndicator>>
-            {
-                [_ticker] = BuildIndicators(
-                    ("RSI14", 50), ("MACD", 0), ("EMA12", 5), ("SMA20", 5), ("ADX14", 10)),
-            },
-            FundamentalScores = new Dictionary<Ticker, int> { [_ticker] = 3 },
-        };
-
-        var step = new GenerateSignalsStep(_storage.Object);
-        await step.ExecuteAsync(context);
-
-        _signalRepo.Verify(
-            x => x.AddAsync(It.Is<TradeSignal>(s =>
-            s.Action == TradeAction.Hold)), Times.Once);
-    }
-
-    private static TechnicalIndicator Indicator(string name, double value, int offset = 0)
-    {
-        return new TechnicalIndicator
-        {
-            Name = name,
-            Value = value,
-            Date = DateTime.UtcNow.AddMinutes(-offset),
-        };
-    }
-
-    private static List<TechnicalIndicator> BuildIndicators(params (string Name, double Value)[] values)
-    {
-        return values.Select(v => Indicator(v.Name, v.Value)).ToList();
+        // Assert
+        _strategyMock.Verify(
+            x => x.Generate(It.IsAny<Ticker>(), It.IsAny<List<TechnicalIndicator>>(), It.IsAny<int>(), It.IsAny<DateTime>()),
+            Times.Never);
     }
 }
