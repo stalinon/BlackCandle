@@ -10,7 +10,7 @@ namespace BlackCandle.Telegram;
 /// <summary>
 ///     Реализация Telegram-сервиса
 /// </summary>
-internal sealed class TelegramService(
+internal class TelegramService(
     IBotSettingsService botSettingsService,
     ILoggerService logger) : ITelegramService
 {
@@ -54,7 +54,10 @@ internal sealed class TelegramService(
         }
     }
 
-    private async Task<(ITelegramBotClient Bot, string ChatId)> GetBotSettings()
+    /// <summary>
+    ///     Получить бота
+    /// </summary>
+    protected virtual async Task<(ITelegramBotClient Bot, string ChatId)> GetBotSettings()
     {
         var botSettings = await botSettingsService.GetAsync();
         var telegramBotConfig = botSettings.ToTelegramConfig();
