@@ -3,12 +3,12 @@ using BlackCandle.Application.Interfaces.InvestApi;
 namespace BlackCandle.Infrastructure.InvestApi;
 
 /// <inheritdoc cref="IInvestApiFacade" />
-/// <inheritdoc cref="InvestApiFacade" />
 internal sealed class InvestApiFacade(
     IMarketDataClient marketdata,
     IPortfolioClient portfolio,
     ITradingClient trading,
-    IFundamentalDataClient fundamentals) : IInvestApiFacade
+    IFundamentalDataClient fundamentals,
+    IInstrumentClient instruments) : IInvestApiFacade
 {
     /// <inheritdoc />
     public IMarketDataClient Marketdata { get; } = marketdata;
@@ -21,4 +21,7 @@ internal sealed class InvestApiFacade(
 
     /// <inheritdoc />
     public IFundamentalDataClient Fundamentals { get; } = fundamentals;
+
+    /// <inheritdoc />
+    public IInstrumentClient Instruments { get; } = instruments;
 }

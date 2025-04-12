@@ -16,4 +16,7 @@ public interface IInvestApiFacade
 
     /// <inheritdoc cref="IFundamentalDataClient" />
     public IFundamentalDataClient Fundamentals { get; }
+
+    /// <inheritdoc cref="IInstrumentClient" />
+    public IInstrumentClient Instruments { get; }
 }

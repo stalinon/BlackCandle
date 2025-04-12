@@ -38,9 +38,7 @@ public sealed class FetchMarketDataStepTests
     private readonly FetchMarketDataStep _step;
     private readonly PortfolioAnalysisContext _context = new();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FetchMarketDataStepTests"/> class.
-    /// </summary>
+    /// <inheritdoc cref="FetchMarketDataStepTests"/>
     public FetchMarketDataStepTests()
     {
         List<PortfolioAsset> assets =
@@ -48,6 +46,9 @@ public sealed class FetchMarketDataStepTests
             new() { Ticker = _ticker1 },
             new() { Ticker = _ticker2 }
         ];
+
+        _context.Tickers.Add(_ticker1);
+        _context.Tickers.Add(_ticker2);
 
         _marketMock
             .Setup(x => x.GetHistoricalDataAsync(It.IsAny<Ticker>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
