@@ -1,4 +1,7 @@
+using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
+using BlackCandle.Domain.Entities;
+using BlackCandle.Infrastructure.Persistence.InMemory;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +17,8 @@ internal static class SmartLabScraperRegistration
     /// </summary>
     public static IServiceCollection AddSmartLabScraper(this IServiceCollection services)
     {
-        services.AddScoped<IFundamentalDataClient, SmartLabFundamentalClient>();
+        services.AddScoped<IFundamentalDataClient, SmartLabFundamentalClient>(
+            sp => new SmartLabFundamentalClient(new InMemoryRepository<FundamentalData>(), sp.GetRequiredService<ILoggerService>()));
         return services;
     }
 }
