@@ -55,4 +55,9 @@ public class TechnicalScore
     ///     Причина сигнала
     /// </summary>
     public string? Reason { get; set; }
+
+    /// <summary>
+    ///     Скопировать
+    /// </summary>
+    public TechnicalScore Copy() => (TechnicalScore)MemberwiseClone();
 }

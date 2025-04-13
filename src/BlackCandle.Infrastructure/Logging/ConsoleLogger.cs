@@ -9,6 +9,16 @@ internal sealed class ConsoleLogger : ILoggerService
 {
     private readonly List<string> _prefixes = [];
 
+    /// <inheritdoc cref="ConsoleLogger" />
+    public ConsoleLogger()
+    { }
+
+    /// <inheritdoc cref="ConsoleLogger" />
+    private ConsoleLogger(IEnumerable<string> prefixes)
+    {
+        _prefixes = prefixes.ToList();
+    }
+
     private string Preffix => string.Join(" ", _prefixes.Select(x => $"[{x}]"));
 
     /// <inheritdoc />
@@ -38,7 +48,7 @@ internal sealed class ConsoleLogger : ILoggerService
         Console.ResetColor();
     }
 
-    /// <inheritdoc />s
+    /// <inheritdoc />
     public void LogError(string message, Exception? ex = null)
     {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -51,5 +61,13 @@ internal sealed class ConsoleLogger : ILoggerService
         }
 
         Console.ResetColor();
+    }
+
+    /// <summary>
+    ///     Копировать сервис логирования
+    /// </summary>
+    public ILoggerService Copy()
+    {
+        return new ConsoleLogger(_prefixes);
     }
 }

@@ -11,14 +11,26 @@ namespace BlackCandle.API.Middleware;
 ///     Глобальный middleware обработки исключений, не даёт приложению упасть.
 /// </summary>
 /// <inheritdoc cref="ErrorHandlingMiddleware" />
-public class ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger)
+public class ErrorHandlingMiddleware : IDisposable
 {
+    private readonly RequestDelegate _next;
+    private readonly IServiceScope _scope;
+    private readonly ILoggerService _logger;
+
+    /// <inheritdoc cref="ErrorHandlingMiddleware" />
+    public ErrorHandlingMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
+    {
+        _next = next;
+        _scope = serviceScopeFactory.CreateScope();
+        _logger = _scope.ServiceProvider.GetRequiredService<ILoggerService>();
+    }
+
     /// <inheritdoc cref="ErrorHandlingMiddleware" />
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await next(context);
+            await _next(context);
         }
         catch (BlackCandleException ex)
         {
@@ -30,9 +42,12 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILoggerService logger
         }
     }
 
+    /// <inheritdoc />
+    public void Dispose() => _scope.Dispose();
+
     private Task HandleExceptionAsync(HttpContext context, Exception ex, HttpStatusCode statusCode)
     {
-        logger.LogError("Произошло необработанное исключение.", ex);
+        _logger.LogError("Произошло необработанное исключение.", ex);
 
         var response = OperationResult<string>.Failure(ex.Message);
 

@@ -3,6 +3,8 @@ using BlackCandle.Infrastructure.Persistence.Redis;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
 
 using StackExchange.Redis;
@@ -36,7 +38,7 @@ public sealed class RedisPingServiceTests
                  .Returns(dbMock.Object);
 
         var loggerMock = new Mock<ILoggerService>();
-        var service = new RedisPingService(redisMock.Object, loggerMock.Object);
+        var service = new RedisPingService(redisMock.Object, CreateServiceScopeFactory(loggerMock));
 
         // Act
         await service.StartAsync(default);
@@ -54,8 +56,7 @@ public sealed class RedisPingServiceTests
     {
         // Arrange
         var redis = new Mock<IConnectionMultiplexer>().Object;
-        var logger = new Mock<ILoggerService>().Object;
-        var service = new RedisPingService(redis, logger);
+        var service = new RedisPingService(redis, CreateServiceScopeFactory());
 
         // Act
         var result = service.StopAsync(default);
@@ -63,5 +64,19 @@ public sealed class RedisPingServiceTests
 
         // Assert
         result.Should().Be(Task.CompletedTask);
+    }
+
+    private static IServiceScopeFactory CreateServiceScopeFactory(Mock<ILoggerService>? loggerMock = null)
+    {
+        loggerMock ??= new Mock<ILoggerService>();
+        var logger = loggerMock.Object;
+        var mock = new Mock<IServiceScopeFactory>();
+        var mockScope = new Mock<IServiceScope>();
+        var mockProvider = new Mock<IServiceProvider>();
+        mockProvider.Setup(p => p.GetService(typeof(ILoggerService))).Returns(logger);
+
+        mockScope.Setup(s => s.ServiceProvider).Returns(mockProvider.Object);
+        mock.Setup(s => s.CreateScope()).Returns(mockScope.Object);
+        return mock.Object;
     }
 }
