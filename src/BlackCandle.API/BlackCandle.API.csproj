@@ -15,6 +15,7 @@
         <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj"/>
         <ProjectReference Include="..\BlackCandle.Infrastructure\BlackCandle.Infrastructure.csproj"/>
         <ProjectReference Include="..\BlackCandle.Telegram\BlackCandle.Telegram.csproj"/>
+        <ProjectReference Include="..\BlackCandle.Web\BlackCandle.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -66,6 +66,7 @@ dotnet_diagnostic.SA1206.severity = none
 dotnet_diagnostic.SA1117.severity = none
 dotnet_diagnostic.SA1124.severity = none
 dotnet_diagnostic.SA1401.severity = none
+dotnet_diagnostic.ASP0014.severity = none
 
 #########################
 # Для JSON

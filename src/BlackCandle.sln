@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Scheduler", "Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Tests", "BlackCandle.Tests\BlackCandle.Tests.csproj", "{F45BC608-3D10-4976-8CE9-C2C49D62E73B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackCandle.Web", "BlackCandle.Web\BlackCandle.Web.csproj", "{4B4B56F8-F7C5-4488-AAEA-2DB402583BDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,5 +51,9 @@ Global
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F45BC608-3D10-4976-8CE9-C2C49D62E73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B4B56F8-F7C5-4488-AAEA-2DB402583BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B4B56F8-F7C5-4488-AAEA-2DB402583BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B4B56F8-F7C5-4488-AAEA-2DB402583BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B4B56F8-F7C5-4488-AAEA-2DB402583BDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
