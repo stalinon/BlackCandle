@@ -72,12 +72,12 @@ public sealed class LogStepTests
             new()
             {
                 Ticker = new Ticker { Symbol = "AAPL" }, Action = TradeAction.Buy, Confidence = ConfidenceLevel.High,
-                Score = 5, Reason = "RSI < 30", Date = DateTime.Today,
+                FundamentalScore = 5, Reason = "RSI < 30", Date = DateTime.Today,
             },
             new()
             {
                 Ticker = new Ticker { Symbol = "SBER" }, Action = TradeAction.Sell, Confidence = ConfidenceLevel.Medium,
-                Score = 3, Reason = "ADX > 20", Date = DateTime.Today,
+                FundamentalScore = 3, Reason = "ADX > 20", Date = DateTime.Today,
             },
         };
 

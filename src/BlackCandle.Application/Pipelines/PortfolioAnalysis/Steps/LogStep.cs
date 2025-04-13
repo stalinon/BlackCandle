@@ -62,7 +62,7 @@ internal sealed class LogStep(ITelegramService telegram, IDataStorageContext dat
             };
 
             sb.AppendLine($"{emoji} `{s.Ticker}` → *{s.Action}* {conf}");
-            sb.AppendLine($"_Фундаментальный анализ: {s.Score}");
+            sb.AppendLine($"_Фундаментальный анализ: {s.FundamentalScore}");
             sb.AppendLine($"_Причина: {s.Reason}_");
             sb.AppendLine();
         }
