@@ -11,4 +11,9 @@ public interface IPortfolioClient
     ///     Получить портфолио
     /// </summary>
     Task<List<PortfolioAsset>> GetPortfolioAsync();
+
+    /// <summary>
+    ///     Получить текущее количество доступных денег
+    /// </summary>
+    Task<decimal> GetAvailableCashAsync();
 }

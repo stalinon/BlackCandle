@@ -24,7 +24,9 @@ internal sealed class LoadSignalsStep(IDataStorageContext dataStorage) : Pipelin
             OnlyBuySell = true,
         };
         var allSignals = await dataStorage.TradeSignals.GetAllAsync(filter);
-
-        context.Signals = allSignals;
+        context.Signals = allSignals
+            .Where(x => x.Action != TradeAction.Hold)
+            .Where(x => x.Confidence != ConfidenceLevel.Low)
+            .ToList();
     }
 }

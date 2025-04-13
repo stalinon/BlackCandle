@@ -43,6 +43,11 @@ public class TradeSignal : IEntity
     public int FundamentalScore { get; set; }
 
     /// <summary>
+    ///     Возможные деньги на сигнал
+    /// </summary>
+    public decimal? AllocatedCash { get; set; }
+
+    /// <summary>
     ///     Технические оценки
     /// </summary>
     public List<TechnicalScore> TechnicalScores { get; set; } = new();
