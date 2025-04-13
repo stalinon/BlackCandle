@@ -1,5 +1,6 @@
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Interfaces;
+using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.Domain.Entities;
 
@@ -17,6 +18,11 @@ public class TradeSignal : IEntity
     public Ticker Ticker { get; set; } = null!;
 
     /// <summary>
+    ///     Дата генерации
+    /// </summary>
+    public DateTime Date { get; set; }
+
+    /// <summary>
     ///     Действие
     /// </summary>
     public TradeAction Action { get; set; }
@@ -32,12 +38,12 @@ public class TradeSignal : IEntity
     public ConfidenceLevel Confidence { get; set; }
 
     /// <summary>
-    ///     Дата генерации
-    /// </summary>
-    public DateTime Date { get; set; }
-
-    /// <summary>
     ///     Результативный балл сигнала (по фундаменталке)
     /// </summary>
-    public int Score { get; set; }
+    public int FundamentalScore { get; set; }
+
+    /// <summary>
+    ///     Технические оценки
+    /// </summary>
+    public List<TechnicalScore> TechnicalScores { get; set; } = new();
 }

@@ -1,10 +1,8 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
-using BlackCandle.Application.Interfaces.Trading;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis.Steps;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
-using BlackCandle.Domain.ValueObjects;
 
 using Moq;
 
@@ -15,100 +13,77 @@ namespace BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis;
 /// </summary>
 /// <remarks>
 ///     <list type="number">
-///         <item>Генерация сигнала вызывается по тикерам с индикаторами</item>
-///         <item>Сигналы добавляются, если не null</item>
-///         <item>Сигналы не добавляются, если null</item>
-///         <item>Тикеры без индикаторов игнорируются</item>
+///         <item>Генерация сигнала вызывается при наличии фундаментального и технических скорингов</item>
+///         <item>Сигнал не создаётся без фундаментального скоринга</item>
+///         <item>Сигнал не создаётся без технических скоров</item>
 ///     </list>
 /// </remarks>
 public sealed class GenerateSignalsStepTests
 {
     private readonly Mock<IRepository<TradeSignal>> _signalRepoMock = new();
     private readonly Mock<IDataStorageContext> _storageMock = new();
-    private readonly Mock<ISignalGenerationStrategy> _strategyMock = new();
-
     private readonly GenerateSignalsStep _step;
     private readonly PortfolioAnalysisContext _context = new();
 
-    /// <inheritdoc cref="GenerateSignalsStepTests"/>
+    /// <inheritdoc cref="GenerateSignalsStepTests" />
     public GenerateSignalsStepTests()
     {
-        _storageMock.Setup(x => x.TradeSignals).Returns(_signalRepoMock.Object);
-
-        _step = new GenerateSignalsStep(_storageMock.Object, _strategyMock.Object);
+        _storageMock.SetupGet(x => x.TradeSignals).Returns(_signalRepoMock.Object);
+        _step = new GenerateSignalsStep(_storageMock.Object);
     }
 
     /// <summary>
-    ///     Тест 1: Генерация сигнала вызывается по тикерам с индикаторами
+    ///     Тест 1: Генерация сигнала вызывается при наличии фундаментального и технических скорингов
     /// </summary>
-    [Fact(DisplayName = "Тест 1: Генерация сигнала вызывается по тикерам с индикаторами")]
-    public async Task ExecuteAsync_ShouldCallGenerate_WhenIndicatorsExist()
+    [Fact(DisplayName = "Тест 1: Генерация сигнала вызывается при наличии фундаментального и технических скорингов")]
+    public async Task ExecuteAsync_ShouldGenerateSignal_WhenScoresExist()
     {
         // Arrange
         var ticker = new Ticker { Symbol = "AAPL" };
         _context.Tickers.Add(ticker);
-        _context.Indicators[ticker] =
+        _context.FundamentalScores[ticker] = 3;
+        _context.TechnicalScores[ticker] =
         [
-            new() { Name = "RSI14", Value = 50, Date = DateTime.UtcNow }
+            new()
+            {
+                IndicatorName = "RSI14",
+                Score = 2,
+                Value = 25,
+                Reason = "RSI < 30",
+            },
         ];
-
-        _strategyMock
-            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
-            .Returns(new TradeSignal { Ticker = ticker, Action = TradeAction.Hold });
 
         // Act
         await _step.ExecuteAsync(_context);
 
         // Assert
-        _strategyMock.Verify(
-            x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()),
-            Times.Once);
+        _signalRepoMock.Verify(
+        x => x.AddAsync(It.Is<TradeSignal>(s =>
+                s.Ticker.Symbol == "AAPL" &&
+                s.FundamentalScore == 3 &&
+                s.TechnicalScores.Count == 1)),
+        Times.Once);
     }
 
     /// <summary>
-    ///     Тест 2: Сигналы добавляются, если не null
+    ///     Тест 2: Сигнал не создаётся без фундаментального скоринга
     /// </summary>
-    [Fact(DisplayName = "Тест 2: Сигналы добавляются, если не null")]
-    public async Task ExecuteAsync_ShouldAddSignal_WhenNotNull()
+    [Fact(DisplayName = "Тест 2: Сигнал не создаётся без фундаментального скоринга")]
+    public async Task ExecuteAsync_ShouldNotGenerate_WhenNoFundamentalScore()
     {
         // Arrange
-        var ticker = new Ticker { Symbol = "SBER" };
+        var ticker = new Ticker { Symbol = "MSFT" };
         _context.Tickers.Add(ticker);
-        _context.Indicators[ticker] =
+        _context.TechnicalScores[ticker] =
         [
-            new() { Name = "MACD", Value = 1, Date = DateTime.UtcNow }
+            new()
+            {
+                IndicatorName = "MACD",
+                Score = 1,
+                Value = 0.8,
+                Reason = "MACD > 0",
+            },
         ];
-
-        var signal = new TradeSignal { Ticker = ticker, Action = TradeAction.Buy };
-
-        _strategyMock
-            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
-            .Returns(signal);
-
-        // Act
-        await _step.ExecuteAsync(_context);
-
-        // Assert
-        _signalRepoMock.Verify(x => x.AddAsync(signal), Times.Once);
-    }
-
-    /// <summary>
-    ///     Тест 3: Сигналы не добавляются, если null
-    /// </summary>
-    [Fact(DisplayName = "Тест 3: Сигналы не добавляются, если null")]
-    public async Task ExecuteAsync_ShouldNotAddSignal_WhenNullReturned()
-    {
-        // Arrange
-        var ticker = new Ticker { Symbol = "LKOH" };
-        _context.Tickers.Add(ticker);
-        _context.Indicators[ticker] =
-        [
-            new() { Name = "ADX14", Value = 22, Date = DateTime.UtcNow }
-        ];
-
-        _strategyMock
-            .Setup(x => x.Generate(ticker, It.IsAny<List<TechnicalIndicator>>(), 0, It.IsAny<DateTime>()))
-            .Returns((TradeSignal?)null);
 
         // Act
         await _step.ExecuteAsync(_context);
@@ -118,21 +93,22 @@ public sealed class GenerateSignalsStepTests
     }
 
     /// <summary>
-    ///     Тест 4: Тикеры без индикаторов игнорируются
+    ///     Тест 3: Сигнал не создаётся без технических скоров
     /// </summary>
-    [Fact(DisplayName = "Тест 4: Тикеры без индикаторов игнорируются")]
-    public async Task ExecuteAsync_ShouldSkipTickers_WithoutIndicators()
+    [Fact(DisplayName = "Тест 3: Сигнал не создаётся без технических скоров")]
+    public async Task ExecuteAsync_ShouldNotGenerate_WhenNoTechnicalScores()
     {
         // Arrange
-        var ticker = new Ticker { Symbol = "GAZP" };
-        _context.Tickers.Add(ticker); // но в Indicators словаре нет
+        var ticker = new Ticker { Symbol = "GOOG" };
+        _context.Tickers.Add(ticker);
+        _context.FundamentalScores[ticker] = 2;
+
+        // технические скоры отсутствуют
 
         // Act
         await _step.ExecuteAsync(_context);
 
         // Assert
-        _strategyMock.Verify(
-            x => x.Generate(It.IsAny<Ticker>(), It.IsAny<List<TechnicalIndicator>>(), It.IsAny<int>(), It.IsAny<DateTime>()),
-            Times.Never);
+        _signalRepoMock.Verify(x => x.AddAsync(It.IsAny<TradeSignal>()), Times.Never);
     }
 }

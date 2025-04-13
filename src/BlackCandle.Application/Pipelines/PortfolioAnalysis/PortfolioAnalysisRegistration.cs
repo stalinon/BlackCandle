@@ -21,6 +21,7 @@ internal static class PortfolioAnalysisRegistration
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, FetchMarketDataStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, CalculateIndicatorsStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, ScoreFundamentalsStep>();
+        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, EvaluateTechnicalScoresStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, GenerateSignalsStep>();
         services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, LogStep>();
         services.AddTransient<PortfolioAnalysisPipeline>();

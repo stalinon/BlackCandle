@@ -163,7 +163,7 @@ public sealed class RedisRepositoryTests
             Confidence = ConfidenceLevel.High,
             Reason = "mock",
             Date = DateTime.Today,
-            Score = 80,
+            FundamentalScore = 80,
         };
 
         // Act

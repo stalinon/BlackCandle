@@ -48,7 +48,7 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
         Reason = Reason,
         Confidence = Confidence,
         Date = Date,
-        Score = Score,
+        FundamentalScore = Score,
     };
 
     /// <inheritdoc />
@@ -61,7 +61,7 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
             Reason = entity.Reason,
             Confidence = entity.Confidence,
             Date = entity.Date,
-            Score = entity.Score,
+            Score = entity.FundamentalScore,
         };
     }
 }

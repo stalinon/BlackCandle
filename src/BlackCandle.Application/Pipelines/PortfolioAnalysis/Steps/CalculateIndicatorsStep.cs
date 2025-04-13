@@ -86,6 +86,14 @@ internal sealed class CalculateIndicatorsStep(IDataStorageContext dataStorage) :
                 Value = a.Adx,
             }));
 
+            // 6. CLOSE
+            indicators.AddRange(quotes.Select(a => new TechnicalIndicator
+            {
+                Name = "CLOSE",
+                Date = a.Timestamp,
+                Value = (double?)a.Close,
+            }));
+
             context.Indicators[ticker] = indicators
                 .Where(i => i.Value.HasValue)
                 .GroupBy(i => i.Date)

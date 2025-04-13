@@ -31,7 +31,6 @@ internal class TradeSignalFilter : IFilter<TradeSignal>
 
         if (OnlyBuySell == true)
         {
-            query = query.Where(s => s.Action == TradeAction.Buy || s.Action == TradeAction.Sell);
         }
 
         return query;

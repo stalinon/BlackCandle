@@ -24,6 +24,11 @@ public class PortfolioAnalysisContext
     public Dictionary<Ticker, List<TechnicalIndicator>> Indicators { get; set; } = [];
 
     /// <summary>
+    ///     Технический оценки
+    /// </summary>
+    public Dictionary<Ticker, List<TechnicalScore>> TechnicalScores { get; set; } = [];
+
+    /// <summary>
     ///     Скоры по фундаментальным данным
     /// </summary>
     public Dictionary<Ticker, int> FundamentalScores { get; set; } = [];

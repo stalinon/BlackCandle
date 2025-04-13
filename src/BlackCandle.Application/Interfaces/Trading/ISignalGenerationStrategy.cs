@@ -11,5 +11,5 @@ public interface ISignalGenerationStrategy
     /// <summary>
     ///     Генерировать сигнал
     /// </summary>
-    TradeSignal? Generate(Ticker ticker, List<TechnicalIndicator> indicators, int fundamentalScore, DateTime now);
+    TechnicalScore? GenerateScore(Ticker ticker, List<TechnicalIndicator> indicators);
 }
