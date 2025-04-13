@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="MudBlazor" Version="8.5.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +23,12 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>BlackCandle.Tests</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Watch Include="..\BlackCandle.Web\**\*.razor" />
+        <Watch Include="..\BlackCandle.Web\**\*.cs" />
+        <Watch Include="..\BlackCandle.Web\**\*.css" />
     </ItemGroup>
 
 </Project>

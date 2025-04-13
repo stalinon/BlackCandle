@@ -1,0 +1,70 @@
+@page "/login"
+@page "/admin/login"
+@using BlackCandle.Web.Interfaces
+@inject IAuthenticationService AuthService
+@inject NavigationManager Nav
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex justify-center align-center full-height">
+    <MudPaper Class="pa-6" Elevation="12" Square="false" Style="min-width: 360px; border-radius: 12px;">
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
+                🔒 Вход в систему
+            </MudText>
+
+            <MudTextField @bind-Value="_login"
+                          Label="Логин"
+                          Variant="Variant.Filled"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Person"
+                          Immediate="true"
+                          Required="true"
+                          For="@(() => _login)" />
+
+            <MudTextField @bind-Value="_password"
+                          Label="Пароль"
+                          Variant="Variant.Filled"
+                          InputType="InputType.Password"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Lock"
+                          Required="true"
+                          Immediate="true"
+                          For="@(() => _password)" />
+
+            <MudButton OnClick="LoginAsync"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Style="margin-top: 8px;"
+                       FullWidth="true">
+                Войти
+            </MudButton>
+
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <MudAlert Severity="Severity.Error" Dense="true" Elevation="0" Class="mt-2">
+                    @_error
+                </MudAlert>
+            }
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private string _login = null!;
+    private string _password = null!;
+    private string _error = null!;
+
+    private async Task LoginAsync()
+    {
+        _error = null!;
+
+        var success = await AuthService.LoginAsync(_login, _password);
+        if (success)
+        {
+            Nav.NavigateTo("/");
+        }
+        else
+        {
+            _error = "Неверные учетные данные.";
+        }
+    }
+}
