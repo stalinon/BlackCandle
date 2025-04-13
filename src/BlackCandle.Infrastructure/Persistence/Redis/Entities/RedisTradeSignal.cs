@@ -1,6 +1,7 @@
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
 using BlackCandle.Domain.Interfaces;
+using BlackCandle.Domain.ValueObjects;
 
 namespace BlackCandle.Infrastructure.Persistence.Redis.Entities;
 
@@ -14,6 +15,11 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
     ///     Символ
     /// </summary>
     public Ticker Ticker { get; set; } = null!;
+
+    /// <summary>
+    ///     Дата генерации
+    /// </summary>
+    public DateTime Date { get; set; }
 
     /// <summary>
     ///     Действие
@@ -31,14 +37,14 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
     public ConfidenceLevel Confidence { get; set; }
 
     /// <summary>
-    ///     Дата генерации
-    /// </summary>
-    public DateTime Date { get; set; }
-
-    /// <summary>
     ///     Результативный балл сигнала (по фундаменталке)
     /// </summary>
-    public int Score { get; set; }
+    public int FundamentalScore { get; set; }
+
+    /// <summary>
+    ///     Технические оценки
+    /// </summary>
+    public List<TechnicalScore> TechnicalScores { get; set; } = new();
 
     /// <inheritdoc />
     public TradeSignal ToEntity() => new()
@@ -48,7 +54,8 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
         Reason = Reason,
         Confidence = Confidence,
         Date = Date,
-        FundamentalScore = Score,
+        FundamentalScore = FundamentalScore,
+        TechnicalScores = TechnicalScores.Select(t => t.Copy()).ToList(),
     };
 
     /// <inheritdoc />
@@ -61,7 +68,8 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
             Reason = entity.Reason,
             Confidence = entity.Confidence,
             Date = entity.Date,
-            Score = entity.FundamentalScore,
+            FundamentalScore = entity.FundamentalScore,
+            TechnicalScores = entity.TechnicalScores.Select(t => t.Copy()).ToList(),
         };
     }
 }

@@ -26,4 +26,12 @@ internal sealed class Logger : ILoggerService
     public void LogError(string message, Exception? ex = null)
     {
     }
+
+    /// <summary>
+    ///     Копировать сервис логирования
+    /// </summary>
+    public ILoggerService Copy()
+    {
+        throw new NotImplementedException();
+    }
 }

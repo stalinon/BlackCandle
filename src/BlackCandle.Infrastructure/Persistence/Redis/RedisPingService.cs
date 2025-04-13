@@ -1,5 +1,6 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using StackExchange.Redis;
@@ -13,12 +14,15 @@ public class RedisPingService : IHostedService
 {
     private readonly IConnectionMultiplexer _redis;
     private readonly ILoggerService _logger;
+    private readonly IServiceScope _scope;
 
     /// <inheritdoc cref="RedisPingService" />
-    public RedisPingService(IConnectionMultiplexer redis, ILoggerService logger)
+    public RedisPingService(IConnectionMultiplexer redis, IServiceScopeFactory scopeFactory)
     {
         _redis = redis;
-        _logger = logger;
+        _scope = scopeFactory.CreateScope();
+
+        _logger = _scope.ServiceProvider.GetRequiredService<ILoggerService>();
         _logger.AddPrefix("Redis");
     }
 
@@ -32,5 +36,8 @@ public class RedisPingService : IHostedService
 
     /// <inheritdoc />
     public Task StopAsync(CancellationToken cancellationToken)
-        => Task.CompletedTask;
+    {
+        _scope.Dispose();
+        return Task.CompletedTask;
+    }
 }

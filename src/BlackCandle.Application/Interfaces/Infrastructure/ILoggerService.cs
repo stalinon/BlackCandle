@@ -25,4 +25,9 @@ public interface ILoggerService
     ///     Записывает сообщение об ошибке.
     /// </summary>
     void LogError(string message, Exception? ex = null);
+
+    /// <summary>
+    ///     Копировать сервис логирования
+    /// </summary>
+    ILoggerService Copy();
 }

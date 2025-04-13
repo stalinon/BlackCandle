@@ -67,7 +67,7 @@ public sealed class RedisRepositoryTests
             Confidence = ConfidenceLevel.Medium,
             Reason = "logic",
             Date = DateTime.Today,
-            Score = 90,
+            FundamentalScore = 90,
         };
         var json = JsonSerializer.Serialize(redisEntity);
         var values = new RedisValue[] { json };
@@ -99,7 +99,7 @@ public sealed class RedisRepositoryTests
             Confidence = ConfidenceLevel.Medium,
             Reason = "logic",
             Date = DateTime.Today,
-            Score = 90,
+            FundamentalScore = 90,
         };
         var json = JsonSerializer.Serialize(entity);
         var values = new RedisValue[] { json };
@@ -135,7 +135,7 @@ public sealed class RedisRepositoryTests
             Confidence = ConfidenceLevel.Medium,
             Reason = "logic",
             Date = DateTime.Today,
-            Score = 90,
+            FundamentalScore = 90,
         };
         var json = JsonSerializer.Serialize(redisEntity);
 

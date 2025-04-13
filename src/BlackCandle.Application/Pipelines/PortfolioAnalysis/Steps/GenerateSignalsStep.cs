@@ -18,8 +18,9 @@ internal sealed class GenerateSignalsStep(IDataStorageContext dataStorage) : Pip
         PortfolioAnalysisContext context,
         CancellationToken cancellationToken = default)
     {
-        var now = DateTime.UtcNow;
+        await dataStorage.TradeSignals.TruncateAsync();
 
+        var now = DateTime.UtcNow;
         foreach (var ticker in context.Tickers)
         {
             var score = context.FundamentalScores.GetValueOrDefault(ticker, 0);

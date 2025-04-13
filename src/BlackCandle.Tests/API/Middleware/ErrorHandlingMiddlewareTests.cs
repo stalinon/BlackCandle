@@ -7,6 +7,7 @@ using BlackCandle.Domain.Exceptions;
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 using Moq;
 
@@ -45,7 +46,7 @@ public sealed class ErrorHandlingMiddlewareTests
                 Body = new MemoryStream(),
             },
         };
-        var middleware = new ErrorHandlingMiddleware(_ => throw new BlackCandleException("bad-request"), _loggerMock.Object);
+        var middleware = new ErrorHandlingMiddleware(_ => throw new BlackCandleException("bad-request"), CreateServiceScopeFactory());
 
         // Act
         await middleware.InvokeAsync(context);
@@ -73,7 +74,7 @@ public sealed class ErrorHandlingMiddlewareTests
                 Body = new MemoryStream(),
             },
         };
-        var middleware = new ErrorHandlingMiddleware(_ => throw new Exception("fatal"), _loggerMock.Object);
+        var middleware = new ErrorHandlingMiddleware(_ => throw new Exception("fatal"), CreateServiceScopeFactory());
 
         // Act
         await middleware.InvokeAsync(context);
@@ -100,7 +101,7 @@ public sealed class ErrorHandlingMiddlewareTests
             {
                 context.Response.StatusCode = (int)HttpStatusCode.OK;
                 return Task.CompletedTask;
-            }, _loggerMock.Object);
+            }, CreateServiceScopeFactory());
 
         // Act
         await middleware.InvokeAsync(context);
@@ -115,5 +116,17 @@ public sealed class ErrorHandlingMiddlewareTests
         context.Response.Body.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(context.Response.Body);
         return await reader.ReadToEndAsync();
+    }
+
+    private IServiceScopeFactory CreateServiceScopeFactory()
+    {
+        var mock = new Mock<IServiceScopeFactory>();
+        var mockScope = new Mock<IServiceScope>();
+        var mockProvider = new Mock<IServiceProvider>();
+        mockProvider.Setup(p => p.GetService(typeof(ILoggerService))).Returns(_loggerMock.Object);
+
+        mockScope.Setup(s => s.ServiceProvider).Returns(mockProvider.Object);
+        mock.Setup(s => s.CreateScope()).Returns(mockScope.Object);
+        return mock.Object;
     }
 }

@@ -35,9 +35,11 @@ public static class InfrastructureRegistration
             o.Iv = options.Iv;
         });
 
-        services.AddSingleton<ILoggerService, ConsoleLogger>();
         services.AddSingleton<ISecretsProtector, AesSecretsProtector>();
+
+        services.AddScoped<ILoggerService, ConsoleLogger>();
         services.AddScoped<IBotSettingsService, BotSettingsService>();
+
         services.AddInvestApiServices(configuration);
         services.AddTradingServices(configuration);
         services.RegisterRedis(configuration);
