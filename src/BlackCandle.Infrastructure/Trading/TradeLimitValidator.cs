@@ -36,9 +36,30 @@ internal sealed class TradeLimitValidator(
             return false;
         }
 
+        var currentAsset = portfolio.FirstOrDefault(p => p.Ticker.Equals(signal.Ticker));
+
+        if (botSettings.TradeLimit.MaxSectorPositions is { } sectorLimit)
+        {
+            // Находим бумагу по тикеру
+            var sector = currentAsset?.Ticker.Sector;
+
+            if (!string.IsNullOrWhiteSpace(sector))
+            {
+                var sameSectorCount = portfolio
+                    .Where(p => p.Ticker.Sector == sector)
+                    .Select(p => p.Ticker.Symbol)
+                    .Distinct()
+                    .Count();
+
+                if (sameSectorCount > sectorLimit)
+                {
+                    return false;
+                }
+            }
+        }
+
         // Проверка на долю позиции в портфеле
         var totalValue = portfolio.Sum(p => p.Quantity * p.CurrentValue);
-        var currentAsset = portfolio.FirstOrDefault(p => p.Ticker.Equals(signal.Ticker));
         var currentValue = currentAsset?.Quantity * currentAsset?.CurrentValue ?? 0m;
 
         var futureValue = currentValue + price.Value;

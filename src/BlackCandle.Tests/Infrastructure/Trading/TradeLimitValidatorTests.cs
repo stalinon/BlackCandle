@@ -20,6 +20,8 @@ namespace BlackCandle.Tests.Infrastructure.Trading;
 ///         <item>Отклонение при цене ниже минимальной</item>
 ///         <item>Отклонение при превышении доли в портфеле</item>
 ///         <item>Успешная валидация корректного сигнала</item>
+///         <item>Отклонение при превышении лимита бумаг в секторе</item>
+///         <item>Успешная валидация при недостижении лимита сектора</item>
 ///     </list>
 /// </remarks>
 public sealed class TradeLimitValidatorTests
@@ -142,6 +144,96 @@ public sealed class TradeLimitValidatorTests
 
         // Act
         var result = await _validator.Validate(signal, portfolio);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    ///     Тест 6: Отклонение при превышении лимита бумаг в секторе
+    /// </summary>
+    [Fact(DisplayName = "Тест 6: Отклонение при превышении лимита бумаг в секторе")]
+    public async Task Validate_ShouldReject_WhenSectorLimitExceeded()
+    {
+        // Arrange
+        var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL", Sector = "Finance" } };
+        _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(1_000);
+
+        var portfolio = new List<PortfolioAsset>
+        {
+            new() { Ticker = new Ticker { Symbol = "SBER", Sector = "Finance" }, Quantity = 1, CurrentValue = 1_000 },
+            new() { Ticker = new Ticker { Symbol = "VTBR", Sector = "Finance" }, Quantity = 1, CurrentValue = 1_000 },
+        };
+
+        // Force сектор в текущем сигнале такой же
+        portfolio.Add(new PortfolioAsset
+        {
+            Ticker = new Ticker { Symbol = "AAPL", Sector = "Finance" },
+            Quantity = 0,
+            CurrentValue = 0,
+        });
+
+        var options = new TradeLimitOptions
+        {
+            MinTradeAmountRub = 1000m,
+            MaxPositionSharePercent = 50m,
+            MaxSectorPositions = 2,
+        };
+
+        var botSettingsServiceMock = new Mock<IBotSettingsService>();
+        botSettingsServiceMock.Setup(s => s.GetAsync()).ReturnsAsync(new BotSettings
+        {
+            TradeLimit = options,
+        });
+
+        var validator = new TradeLimitValidator(_apiMock.Object, botSettingsServiceMock.Object);
+
+        // Act
+        var result = await validator.Validate(signal, portfolio);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    ///     Тест 7: Успешная валидация при недостижении лимита сектора
+    /// </summary>
+    [Fact(DisplayName = "Тест 7: Успешная валидация при недостижении лимита сектора")]
+    public async Task Validate_ShouldAllow_WhenSectorLimitNotReached()
+    {
+        // Arrange
+        var signal = new TradeSignal { Action = TradeAction.Buy, Ticker = new Ticker { Symbol = "AAPL", Sector = "Finance" } };
+        _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(1_000);
+
+        var portfolio = new List<PortfolioAsset>
+        {
+            new() { Ticker = new Ticker { Symbol = "SBER", Sector = "Finance" }, Quantity = 1, CurrentValue = 1_000 },
+        };
+
+        portfolio.Add(new PortfolioAsset
+        {
+            Ticker = new Ticker { Symbol = "AAPL", Sector = "Finance" },
+            Quantity = 0,
+            CurrentValue = 0,
+        });
+
+        var options = new TradeLimitOptions
+        {
+            MinTradeAmountRub = 1000m,
+            MaxPositionSharePercent = 100m,
+            MaxSectorPositions = 2,
+        };
+
+        var botSettingsServiceMock = new Mock<IBotSettingsService>();
+        botSettingsServiceMock.Setup(s => s.GetAsync()).ReturnsAsync(new BotSettings
+        {
+            TradeLimit = options,
+        });
+
+        var validator = new TradeLimitValidator(_apiMock.Object, botSettingsServiceMock.Object);
+
+        // Act
+        var result = await validator.Validate(signal, portfolio);
 
         // Assert
         Assert.True(result);
