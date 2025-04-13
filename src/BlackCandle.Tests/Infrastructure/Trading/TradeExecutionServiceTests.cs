@@ -29,9 +29,7 @@ public sealed class TradeExecutionServiceTests
 
     private readonly ITradeExecutionService _service;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TradeExecutionServiceTests"/> class.
-    /// </summary>
+    /// <inheritdoc cref="TradeExecutionServiceTests"/>
     public TradeExecutionServiceTests()
     {
         _facadeMock.Setup(x => x.Marketdata).Returns(_marketMock.Object);
@@ -135,5 +133,74 @@ public sealed class TradeExecutionServiceTests
 
         // Assert
         Assert.Equal(4, volume);
+    }
+
+    /// <summary>
+    ///     Тест 6: Используется AllocatedCash вместо лимита из настроек
+    /// </summary>
+    [Fact(DisplayName = "Тест 6: Используется AllocatedCash вместо лимита из настроек")]
+    public async Task CalculateVolume_ShouldUseAllocatedCash_IfSet()
+    {
+        // Arrange
+        var signal = new TradeSignal
+        {
+            Action = TradeAction.Buy,
+            Ticker = new Ticker { Symbol = "TEST" },
+            AllocatedCash = 3000m,
+        };
+
+        _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(1000m); // rawQty = 3
+
+        // Act
+        var volume = await _service.CalculateVolume(signal);
+
+        // Assert
+        Assert.Equal(3, volume);
+    }
+
+    /// <summary>
+    ///     Тест 7: AllocatedCash даёт объём, превышающий MaxLots — ограничивает
+    /// </summary>
+    [Fact(DisplayName = "Тест 7: AllocatedCash даёт объём, превышающий MaxLots — ограничивает")]
+    public async Task CalculateVolume_ShouldLimitVolume_WhenAllocatedExceedsMax()
+    {
+        // Arrange
+        var signal = new TradeSignal
+        {
+            Action = TradeAction.Buy,
+            Ticker = new Ticker { Symbol = "TEST" },
+            AllocatedCash = 1_000_000m,
+        };
+
+        _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(10m); // rawQty = 100000
+
+        // Act
+        var volume = await _service.CalculateVolume(signal);
+
+        // Assert
+        Assert.Equal(5, volume); // MaxLotsPerTrade = 5
+    }
+
+    /// <summary>
+    ///     Тест 8: AllocatedCash меньше цены — объём 0
+    /// </summary>
+    [Fact(DisplayName = "Тест 8: AllocatedCash меньше цены — объём 0")]
+    public async Task CalculateVolume_ShouldReturnZero_WhenAllocatedCashTooLow()
+    {
+        // Arrange
+        var signal = new TradeSignal
+        {
+            Action = TradeAction.Buy,
+            Ticker = new Ticker { Symbol = "TEST" },
+            AllocatedCash = 300m,
+        };
+
+        _marketMock.Setup(x => x.GetCurrentPriceAsync(It.IsAny<Ticker>())).ReturnsAsync(1000m); // rawQty = 0
+
+        // Act
+        var volume = await _service.CalculateVolume(signal);
+
+        // Assert
+        Assert.Equal(0, volume);
     }
 }

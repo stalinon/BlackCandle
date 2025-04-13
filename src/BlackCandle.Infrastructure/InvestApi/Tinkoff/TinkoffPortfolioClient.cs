@@ -1,14 +1,10 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.InvestApi;
-using BlackCandle.Domain.Configuration;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Exceptions;
 using BlackCandle.Domain.Helpers;
 using BlackCandle.Infrastructure.InvestApi.Tinkoff.Extensions;
 
-using Microsoft.Extensions.Options;
-
-using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
 
 namespace BlackCandle.Infrastructure.InvestApi.Tinkoff;
@@ -59,7 +55,7 @@ internal sealed class TinkoffPortfolioClient(IBotSettingsService botSettingsServ
                     Figi = figi,
                 };
 
-                var quantity = position.Quantity.Units + (position.Quantity.Nano / 1_000_000_000M);
+                var quantity = position.Quantity.ToDecimal();
 
                 var asset = new PortfolioAsset
                 {
@@ -77,6 +73,32 @@ internal sealed class TinkoffPortfolioClient(IBotSettingsService botSettingsServ
         {
             logger.LogError("Ошибка при получении портфеля из Tinkoff API", ex);
             throw new TinkoffApiException("Ошибка при получении портфеля");
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<decimal> GetAvailableCashAsync()
+    {
+        var botSettings = await botSettingsService.GetAsync();
+        var config = botSettings.ToTinkoffConfig();
+
+        try
+        {
+            var positions = await _client.GetPortfolioAsync(new PortfolioRequest
+            {
+                AccountId = config.AccountId,
+            });
+
+            var cash = positions.Positions
+                .Where(x => x.InstrumentType == "Currency" && x.Figi == "RU000A105EX7")
+                .Sum(x => x.Quantity.ToDecimal());
+
+            return cash;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Ошибка при получении текущего количество свободных денег из Tinkoff API", ex);
+            throw new TinkoffApiException("Ошибка при получении текущего количество свободных денег");
         }
     }
 }

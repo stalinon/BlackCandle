@@ -42,6 +42,11 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
     public int FundamentalScore { get; set; }
 
     /// <summary>
+    ///     Возможные деньги на сигнал
+    /// </summary>
+    public decimal? AllocatedCash { get; set; }
+
+    /// <summary>
     ///     Технические оценки
     /// </summary>
     public List<TechnicalScore> TechnicalScores { get; set; } = new();
@@ -55,6 +60,7 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
         Confidence = Confidence,
         Date = Date,
         FundamentalScore = FundamentalScore,
+        AllocatedCash = AllocatedCash,
         TechnicalScores = TechnicalScores.Select(t => t.Copy()).ToList(),
     };
 
@@ -69,6 +75,7 @@ internal sealed class RedisTradeSignal : IStorageEntity<TradeSignal>
             Confidence = entity.Confidence,
             Date = entity.Date,
             FundamentalScore = entity.FundamentalScore,
+            AllocatedCash = entity.AllocatedCash,
             TechnicalScores = entity.TechnicalScores.Select(t => t.Copy()).ToList(),
         };
     }

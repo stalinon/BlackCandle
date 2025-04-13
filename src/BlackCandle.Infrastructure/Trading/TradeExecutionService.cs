@@ -16,29 +16,26 @@ internal sealed class TradeExecutionService(
     /// </summary>
     public async Task<decimal> CalculateVolume(TradeSignal signal)
     {
-        var botSettings = await botSettingsService.GetAsync();
-
         if (signal.Action == TradeAction.Hold)
         {
             return 0;
         }
 
-        var price = investApi.Marketdata.GetCurrentPriceAsync(signal.Ticker).Result;
+        var botSettings = await botSettingsService.GetAsync();
+        var price = await investApi.Marketdata.GetCurrentPriceAsync(signal.Ticker);
         if (price is null or <= 0)
         {
             return 0;
         }
 
-        var maxBudget = botSettings.TradeExecution.MaxTradeAmountRub;
-        var rawQty = Math.Floor(maxBudget / price.Value);
+        var budget = signal.AllocatedCash ?? botSettings.TradeExecution.MaxTradeAmountRub;
+        var rawQty = Math.Floor(budget / price.Value);
 
         if (rawQty <= 0)
         {
             return 0;
         }
 
-        var quantity = Math.Min(rawQty, botSettings.TradeExecution.MaxLotsPerTrade);
-
-        return quantity;
+        return Math.Min(rawQty, botSettings.TradeExecution.MaxLotsPerTrade);
     }
 }
