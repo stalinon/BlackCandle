@@ -131,22 +131,82 @@ public sealed class TelegramServiceTests
     }
 
     /// <summary>
+    ///     Тест 5: При длинном сообщении вызывается SendFileAsync
+    /// </summary>
+    [Fact(DisplayName = "Тест 5: При длинном сообщении вызывается SendFileAsync")]
+    public async Task SendMessageAsync_ShouldSendFile_WhenMessageTooLong()
+    {
+        // arrange
+        var longMessage = new string('A', 5000); // больше лимита
+
+        var fileWasSent = false;
+
+        // подменяем TelegramService с перехватом SendFileAsync
+        var service = new TelegramServiceProxy(_botSettingsMock.Object, _loggerMock.Object, _botMock.Object,
+            onSendFile: () => fileWasSent = true);
+
+        // act
+        await service.SendMessageAsync(longMessage);
+
+        // assert
+        Assert.True(fileWasSent);
+    }
+
+    /// <summary>
+    ///     Тест 6: Ошибка в SendFileAsync логируется
+    /// </summary>
+    [Fact(DisplayName = "Тест 6: Ошибка в SendFileAsync логируется")]
+    public async Task SendMessageAsync_ShouldLogError_WhenSendFileFails()
+    {
+        var longMessage = new string('B', 5000); // снова длинное
+
+        var service = new TelegramServiceProxy(_botSettingsMock.Object, _loggerMock.Object, _botMock.Object,
+            onSendFile: () => throw new Exception("stream exploded"));
+
+        await service.SendMessageAsync(longMessage);
+
+        _loggerMock.Verify(
+            x => x.LogError(
+                "Ошибка при отправке Telegram-сообщения",
+                It.Is<Exception>(e => e.Message == "stream exploded")),
+            Times.Once);
+    }
+
+    /// <summary>
     ///     Прокси-реализация для внедрения мокнутого TelegramBotClient
     /// </summary>
     private sealed class TelegramServiceProxy : TelegramService
     {
         private readonly ITelegramBotClient _mockBot;
+        private readonly Action? _onSendFile;
         private readonly string _chatId;
 
         /// <inheritdoc cref="TelegramServiceProxy" />
         public TelegramServiceProxy(
             IBotSettingsService settingsService,
             ILoggerService logger,
-            ITelegramBotClient bot)
+            ITelegramBotClient bot,
+            Action? onSendFile = null)
             : base(settingsService, logger)
         {
             _mockBot = bot;
+            _onSendFile = onSendFile;
             _chatId = ChatId;
+        }
+
+        /// <inheritdoc />
+        public override async Task SendFileAsync(Stream fileStream, string fileName, string caption = "")
+        {
+            if (_onSendFile != null)
+            {
+                _onSendFile?.Invoke();
+            }
+            else
+            {
+                await base.SendFileAsync(fileStream, fileName, caption);
+            }
+
+            await Task.CompletedTask;
         }
 
         /// <inheritdoc />

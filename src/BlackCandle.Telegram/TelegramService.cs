@@ -14,6 +14,9 @@ internal class TelegramService(
     IBotSettingsService botSettingsService,
     ILoggerService logger) : ITelegramService
 {
+    private ITelegramBotClient? _bot;
+    private string? _chatId;
+
     /// <inheritdoc />
     public async Task SendMessageAsync(string message, bool disableNotification = false)
     {
@@ -21,11 +24,29 @@ internal class TelegramService(
 
         try
         {
-            await bot.SendMessage(
-                chatId,
-                message,
-                ParseMode.Markdown,
-                disableNotification: disableNotification);
+            if (message.Length > 4000)
+            {
+                // Слишком длинное сообщение — отправляем как файл
+                using var stream = new MemoryStream();
+                await using var writer = new StreamWriter(stream);
+                await writer.WriteAsync(message);
+                await writer.FlushAsync();
+                stream.Position = 0;
+
+                await SendFileAsync(
+                    stream,
+                    $"report_{DateTime.UtcNow:yyyyMMdd_HHmmss}.md",
+                    "Отчёт слишком большой, отправлен файлом.");
+            }
+            else
+            {
+                // Нормальная длина — шлём как текст
+                await bot.SendMessage(
+                    chatId,
+                    message,
+                    ParseMode.Markdown,
+                    disableNotification: disableNotification);
+            }
         }
         catch (Exception ex)
         {
@@ -34,7 +55,7 @@ internal class TelegramService(
     }
 
     /// <inheritdoc />
-    public async Task SendFileAsync(Stream fileStream, string fileName, string caption = "")
+    public virtual async Task SendFileAsync(Stream fileStream, string fileName, string caption = "")
     {
         var (bot, chatId) = await GetBotSettings();
 
@@ -59,8 +80,16 @@ internal class TelegramService(
     /// </summary>
     protected virtual async Task<(ITelegramBotClient Bot, string ChatId)> GetBotSettings()
     {
+        if (_bot != null && !string.IsNullOrEmpty(_chatId))
+        {
+            return (_bot, _chatId);
+        }
+
         var botSettings = await botSettingsService.GetAsync();
         var telegramBotConfig = botSettings.ToTelegramConfig();
-        return (new TelegramBotClient(telegramBotConfig.BotToken), telegramBotConfig.ChatId);
+        _bot = new TelegramBotClient(telegramBotConfig.BotToken);
+        _chatId = telegramBotConfig.ChatId;
+
+        return (_bot, _chatId);
     }
 }
