@@ -1,0 +1,29 @@
+@using BlackCandle.Domain.Entities
+@inject NavigationManager Nav
+
+<MudTd DataLabel="Тикер">@Asset.Ticker.Symbol</MudTd>
+<MudTd DataLabel="Количество">@Asset.Quantity</MudTd>
+<MudTd DataLabel="Средняя цена">@Asset.CurrentValue.ToString("C2")</MudTd>
+<MudTd DataLabel="Общая стоимость">
+    <span style="color:@GetColor()">@(TotalValue.ToString("C2"))</span>
+</MudTd>
+
+@code {
+    /// <summary>
+    ///     Актив в портфеле
+    /// </summary>
+    [Parameter]
+    public PortfolioAsset Asset { get; set; } = default!;
+
+    private decimal TotalValue => Asset.CurrentValue * Asset.Quantity;
+
+    private string GetColor()
+    {
+        return TotalValue switch
+        {
+            > 1000 => "green",
+            < 100 => "red",
+            _ => "inherit"
+        };
+    }
+}

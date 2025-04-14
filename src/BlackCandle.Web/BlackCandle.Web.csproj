@@ -24,4 +24,9 @@
         </AssemblyAttribute>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlackCandle.Application\BlackCandle.Application.csproj" />
+      <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

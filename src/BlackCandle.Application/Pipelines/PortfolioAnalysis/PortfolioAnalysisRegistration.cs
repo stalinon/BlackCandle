@@ -16,15 +16,15 @@ internal static class PortfolioAnalysisRegistration
     /// </summary>
     public static IServiceCollection RegisterPortfolioAnalysis(this IServiceCollection services)
     {
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, DiscoverNewTickersStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, LoadPortfolioStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, FetchMarketDataStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, CalculateIndicatorsStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, ScoreFundamentalsStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, EvaluateTechnicalScoresStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, GenerateSignalsStep>();
-        services.AddTransient<IPipelineStep<PortfolioAnalysisContext>, LogStep>();
-        services.AddTransient<PortfolioAnalysisPipeline>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, DiscoverNewTickersStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, LoadPortfolioStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, FetchMarketDataStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, CalculateIndicatorsStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, ScoreFundamentalsStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, EvaluateTechnicalScoresStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, GenerateSignalsStep>();
+        services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, LogStep>();
+        services.AddScoped<PortfolioAnalysisPipeline>();
 
         services.AddSignalGeneration();
 

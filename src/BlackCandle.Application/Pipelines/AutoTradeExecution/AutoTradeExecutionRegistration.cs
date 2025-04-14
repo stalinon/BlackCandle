@@ -15,14 +15,14 @@ internal static class AutoTradeExecutionRegistration
     /// </summary>
     public static IServiceCollection RegisterAutoTradeExecution(this IServiceCollection services)
     {
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, CheckAutoTradePermissionStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, LoadSignalsStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, ValidateTradeLimitsStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, CalculateTradeVolumeStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, PlaceOrdersStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, UpdatePortfolioStep>();
-        services.AddTransient<IPipelineStep<AutoTradeExecutionContext>, LogExecutedTradesStep>();
-        services.AddTransient<AutoTradeExecutionPipeline>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, CheckAutoTradePermissionStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, LoadSignalsStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, ValidateTradeLimitsStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, CalculateTradeVolumeStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, PlaceOrdersStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, UpdatePortfolioStep>();
+        services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, LogExecutedTradesStep>();
+        services.AddScoped<AutoTradeExecutionPipeline>();
 
         return services;
     }

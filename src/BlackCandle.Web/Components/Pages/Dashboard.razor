@@ -1,0 +1,25 @@
+@page "/dashboard"
+@using BlackCandle.Web.Components.Dashboard
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex flex-column align-center mt-8">
+    <MudPaper Elevation="4" Class="pa-6" Style="width: 100%;">
+        <MudText Typo="Typo.h5" GutterBottom="true">
+            Текущее состояние портфеля
+        </MudText>
+
+        @if (IsLoading)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+        else if (PortfolioAssets.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info" Dense="true">
+                Портфель пуст. Даже биржевые крысы ушли.
+            </MudAlert>
+        }
+        else
+        {
+            <PortfolioTable Assets="PortfolioAssets" />
+        }
+    </MudPaper>
+</MudContainer>

@@ -15,11 +15,11 @@ public static class TradingRegistration
     /// </summary>
     public static IServiceCollection AddSignalGeneration(this IServiceCollection services)
     {
-        services.AddTransient<ISignalGenerationStrategy, RsiSignalStrategy>();
-        services.AddTransient<ISignalGenerationStrategy, SmaSignalStrategy>();
-        services.AddTransient<ISignalGenerationStrategy, EmaSignalStrategy>();
-        services.AddTransient<ISignalGenerationStrategy, MacdSignalStrategy>();
-        services.AddTransient<ISignalGenerationStrategy, AdxSignalStrategy>();
+        services.AddScoped<ISignalGenerationStrategy, RsiSignalStrategy>();
+        services.AddScoped<ISignalGenerationStrategy, SmaSignalStrategy>();
+        services.AddScoped<ISignalGenerationStrategy, EmaSignalStrategy>();
+        services.AddScoped<ISignalGenerationStrategy, MacdSignalStrategy>();
+        services.AddScoped<ISignalGenerationStrategy, AdxSignalStrategy>();
         return services;
     }
 }
