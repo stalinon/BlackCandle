@@ -1,5 +1,6 @@
 using BlackCandle.API.Configuration;
 using BlackCandle.API.Middleware;
+using BlackCandle.Web;
 using BlackCandle.Web.Components;
 
 using MudBlazor.Services;
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
+builder.Services.AddWebServices();
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -38,6 +40,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAntiforgery();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorComponents<App>()

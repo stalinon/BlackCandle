@@ -1,20 +1,23 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 
-<MudPaper Class="mx-auto mt-12 p-6" MaxWidth="400px" Elevation="4">
-    <MudText Typo="Typo.h5" GutterBottom="true">Счётчик</MudText>
+<AuthorizeView Roles="Admin">
+    <MudPaper Class="mx-auto mt-12 p-6" MaxWidth="400px" Elevation="4">
+        <MudText Typo="Typo.h5" GutterBottom="true">Счётчик</MudText>
 
-    <MudCard>
-        <MudCardContent>
-            <MudText Typo="Typo.subtitle1">Текущее значение: <strong>@_count</strong></MudText>
-        </MudCardContent>
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle1">Текущее значение: <strong>@_count</strong></MudText>
+            </MudCardContent>
 
-        <MudCardActions>
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Increment">
-                Увеличить
-            </MudButton>
-        </MudCardActions>
-    </MudCard>
-</MudPaper>
+            <MudCardActions>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Increment">
+                    Увеличить
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudPaper>
+</AuthorizeView>
 
 @code {
     private int _count = 0;
