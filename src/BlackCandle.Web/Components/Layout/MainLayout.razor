@@ -1,16 +1,16 @@
-﻿@using MudBlazor
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
-<MudLayout>
-    <MudDrawer Open="true" ClipMode="DrawerClipMode.Always">
-        <MudNavMenu>
-        </MudNavMenu>
-    </MudDrawer>
-
-    <MudMainContent>
-        @Body
-    </MudMainContent>
-
-    <MudThemeProvider />
-    <MudPopoverProvider />
-</MudLayout>
+<HeadContent>
+    <title>BlackCandle Admin</title>
+    <base href="/" />
+    <link href="/app.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="/_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <script src="/_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="/_framework/blazor.server.js"></script>
+</HeadContent>
+@Body
+<MudThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>

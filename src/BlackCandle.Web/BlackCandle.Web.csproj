@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RazorLangVersion>8.0</RazorLangVersion>
         <RazorCompileOnBuild>true</RazorCompileOnBuild>
-        <RazorComponentGenerateServerPrerendered>true</RazorComponentGenerateServerPrerendered>
     </PropertyGroup>
 
     <ItemGroup>

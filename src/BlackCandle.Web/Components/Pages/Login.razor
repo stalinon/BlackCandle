@@ -1,16 +1,12 @@
-@page "/login"
 @page "/admin/login"
 @using BlackCandle.Web.Interfaces
 @inject IAuthenticationService AuthService
 @inject NavigationManager Nav
+@rendermode InteractiveServer
 
 <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex justify-center align-center full-height">
     <MudPaper Class="pa-6" Elevation="12" Square="false" Style="min-width: 360px; border-radius: 12px;">
         <MudStack Spacing="2">
-            <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
-                🔒 Вход в систему
-            </MudText>
-
             <MudTextField @bind-Value="_login"
                           Label="Логин"
                           Variant="Variant.Filled"
@@ -30,13 +26,21 @@
                           Immediate="true"
                           For="@(() => _password)" />
 
-            <MudButton OnClick="LoginAsync"
+            <MudButton OnClick="@(async () => await LoginAsync())"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        Style="margin-top: 8px;"
                        FullWidth="true">
                 Войти
             </MudButton>
+
+            <button @onclick="Clicked">
+                🔘 Нажми
+            </button>
+
+            @code {
+                void Clicked() => Console.WriteLine("💥 Кнопка работает");
+            }
 
             @if (!string.IsNullOrEmpty(_error))
             {

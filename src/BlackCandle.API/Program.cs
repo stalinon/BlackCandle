@@ -1,6 +1,7 @@
 using BlackCandle.API.Configuration;
 using BlackCandle.API.Middleware;
 using BlackCandle.Web;
+using BlackCandle.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddWebAdmin();
 
 builder.Services.AddAuthorization();
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents();
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -33,14 +34,15 @@ app.UseSwaggerDocumentation();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
-app.MapControllers();
-app.MapBlazorHub();
-app.MapFallbackToPage("/admin/{*path:nonfile}", "/_Host");
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.MapControllers();
 
