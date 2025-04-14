@@ -1,10 +1,14 @@
 using BlackCandle.API.Configuration;
 using BlackCandle.API.Middleware;
+using BlackCandle.Web;
+using BlackCandle.Web.Components;
+
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddWebServices();
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -13,7 +17,6 @@ builder.Configuration
     .AddUserSecrets<Program>()
     .AddEnvironmentVariables();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProjectServices(builder.Configuration);
@@ -21,15 +24,10 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();
-
+app.UseWebServices();
 app.UseSwaggerDocumentation();
-
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
 
 /// <summary>

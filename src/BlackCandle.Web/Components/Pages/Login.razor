@@ -1,0 +1,67 @@
+@attribute [AllowAnonymous]
+@page "/login"
+@inject NavigationManager Navigation
+
+<MudPaper Style="padding: 20px" MaxWidth="400px" Class="mx-auto mt-12 p-6" Elevation="4">
+    <MudText Typo="Typo.h5" Class="mb-4">Вход администратора</MudText>
+
+    @if (_hasError)
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mb-3">
+            Неверный логин или пароль.
+        </MudAlert>
+    }
+
+    <form method="post" action="@Base/@AuthRoutes.Login">
+        <div class="mb-3">
+            <label for="login">Логин</label>
+            <input class="mud-input" type="text" id="login" name="login" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Пароль</label>
+            <input class="mud-input" type="password" id="password" name="password" required />
+        </div>
+
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   FullWidth="true"
+                   Class="mt-2">
+            Войти
+        </MudButton>
+    </form>
+</MudPaper>
+
+<style>
+    input.mud-input {
+        padding: 0.75rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 100%;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+
+    label {
+        font-weight: 500;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+</style>
+
+@code {
+    private bool _hasError;
+
+    /// <inheritdoc />
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        _hasError = query["error"] == "1";
+    }
+}

@@ -25,6 +25,9 @@
     &lt;TestId&gt;xUnit::F45BC608-3D10-4976-8CE9-C2C49D62E73B::net8.0::BlackCandle.Tests.Application.Pipelines.PortfolioAnalysis.LogStepTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4a92d49a_002Dd58c_002D42e2_002Da433_002D2c5616e9cd31/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;BlackCandle.Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="D:\projects\mine\BlackCandle\src\BlackCandle.Tests" Presentation="&amp;lt;BlackCandle.Tests&amp;gt;" /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	

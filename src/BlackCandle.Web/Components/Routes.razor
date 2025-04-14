@@ -1,0 +1,23 @@
+﻿@using BlackCandle.Web.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(MainLayout).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                <Authorizing>
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+                    <p>Проверка доступа...</p>
+                </Authorizing>
+                <NotAuthorized>
+                    <MudAlert Severity="Severity.Error" Class="mt-3">
+                        🔐 У вас нет доступа к этой странице.
+                    </MudAlert>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <MudText Typo="Typo.h6">😵 Страница не найдена.</MudText>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
