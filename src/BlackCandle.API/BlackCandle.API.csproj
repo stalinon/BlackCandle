@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MudBlazor" Version="8.5.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
@@ -15,6 +16,7 @@
         <ProjectReference Include="..\BlackCandle.Domain\BlackCandle.Domain.csproj"/>
         <ProjectReference Include="..\BlackCandle.Infrastructure\BlackCandle.Infrastructure.csproj"/>
         <ProjectReference Include="..\BlackCandle.Telegram\BlackCandle.Telegram.csproj"/>
+        <ProjectReference Include="..\BlackCandle.Web\BlackCandle.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>
