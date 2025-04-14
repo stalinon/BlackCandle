@@ -26,9 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
-      <_ContentIncludedByDefault Remove="Pages\LoginHandler.cshtml" />
+      <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>

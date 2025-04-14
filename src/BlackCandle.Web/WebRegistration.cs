@@ -1,8 +1,13 @@
+using BlackCandle.Web.Components;
 using BlackCandle.Web.Services;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+using MudBlazor.Services;
 
 namespace BlackCandle.Web;
 
@@ -16,18 +21,21 @@ public static class WebRegistration
     /// </summary>
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
+        services.AddRazorComponents()
+            .AddInteractiveServerComponents();
+        services.AddMudServices();
+        services.AddRazorPages();
         services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "AdminAuthScheme";
+                options.DefaultScheme = AuthRoutes.AuthScheme;
             })
-            .AddCookie("AdminAuthScheme", options =>
+            .AddCookie(AuthRoutes.AuthScheme, options =>
             {
-                options.Cookie.Name = "BlackCandleAuth";
+                options.Cookie.Name = AuthRoutes.AuthScheme;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Strict;
-                options.LoginPath = "/login";
-                options.AccessDeniedPath = "/denied";
+                options.LoginPath = AuthRoutes.LoginPage;
             });
 
         services.AddAuthorization();
@@ -35,5 +43,27 @@ public static class WebRegistration
         services.AddScoped<AuthenticationStateProvider, BlazorCookieAuthProvider>();
 
         return services;
+    }
+
+    /// <summary>
+    ///     Зарегистрировать
+    /// </summary>
+    public static IApplicationBuilder UseWebServices(this WebApplication app)
+    {
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error", createScopeForErrors: true);
+        }
+
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseAntiforgery();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode();
+        app.MapRazorPages();
+
+        return app;
     }
 }
