@@ -1,0 +1,21 @@
+@using BlackCandle.Domain.Entities
+
+<MudTable Items="Assets">
+    <HeaderContent>
+        <MudTh>Тикер</MudTh>
+        <MudTh>Количество</MudTh>
+        <MudTh>Средняя цена</MudTh>
+        <MudTh>Общая стоимость</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <PortfolioRow Asset="context" />
+    </RowTemplate>
+</MudTable>
+
+@code {
+    /// <summary>
+    ///     Активы
+    /// </summary>
+    [Parameter]
+    public List<PortfolioAsset> Assets { get; set; } = [];
+}
