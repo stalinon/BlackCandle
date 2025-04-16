@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Entities;
@@ -32,7 +33,9 @@ public sealed class RunPortfolioAnalysisUseCaseTests
         contextMock.SetupGet(x => x.PipelineRuns).Returns(_repository.Object);
         _repository.Setup(x => x.AddAsync(It.IsAny<PipelineExecutionRecord>())).Returns(Task.CompletedTask);
 
-        _sut = new RunPortfolioAnalysisUseCase(_pipeline.Object, contextMock.Object);
+        var factory = new Mock<IPipelineFactory>();
+        factory.Setup(f => f.Create<PortfolioAnalysisPipeline, PortfolioAnalysisContext>()).Returns(_pipeline.Object);
+        _sut = new RunPortfolioAnalysisUseCase(factory.Object, contextMock.Object);
     }
 
     /// <summary>

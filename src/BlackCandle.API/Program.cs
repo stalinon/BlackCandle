@@ -1,9 +1,6 @@
 using BlackCandle.API.Configuration;
 using BlackCandle.API.Middleware;
 using BlackCandle.Web;
-using BlackCandle.Web.Components;
-
-using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

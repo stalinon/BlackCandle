@@ -16,6 +16,8 @@ internal static class PortfolioAnalysisRegistration
     /// </summary>
     public static IServiceCollection RegisterPortfolioAnalysis(this IServiceCollection services)
     {
+        services.AddSignalGeneration();
+
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, DiscoverNewTickersStep>();
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, LoadPortfolioStep>();
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, FetchMarketDataStep>();
@@ -24,9 +26,6 @@ internal static class PortfolioAnalysisRegistration
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, EvaluateTechnicalScoresStep>();
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, GenerateSignalsStep>();
         services.AddScoped<IPipelineStep<PortfolioAnalysisContext>, LogStep>();
-        services.AddScoped<PortfolioAnalysisPipeline>();
-
-        services.AddSignalGeneration();
 
         return services;
     }

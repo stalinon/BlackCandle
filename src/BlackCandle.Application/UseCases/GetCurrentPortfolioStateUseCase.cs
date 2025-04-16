@@ -9,15 +9,27 @@ namespace BlackCandle.Application.UseCases;
 /// <summary>
 ///     Возвращает текущее состояние портфеля с брокерского счёта
 /// </summary>
-internal sealed class GetCurrentPortfolioStateUseCase(IDataStorageContext dataStorage)
-    : IUseCase<IReadOnlyCollection<PortfolioAsset>>
+public class GetCurrentPortfolioStateUseCase : IUseCase<IReadOnlyCollection<PortfolioAsset>>
 {
+    private readonly IDataStorageContext _dataStorage = null!;
+
+    /// <inheritdoc cref="GetCurrentPortfolioStateUseCase"/>
+    public GetCurrentPortfolioStateUseCase(IDataStorageContext dataStorage)
+    {
+        _dataStorage = dataStorage;
+    }
+
+    /// <inheritdoc cref="GetCurrentPortfolioStateUseCase"/>
+    protected GetCurrentPortfolioStateUseCase()
+    {
+    }
+
     /// <inheritdoc />
-    public async Task<OperationResult<IReadOnlyCollection<PortfolioAsset>>> ExecuteAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<OperationResult<IReadOnlyCollection<PortfolioAsset>>> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            var portfolio = await dataStorage.PortfolioAssets.GetAllAsync();
+            var portfolio = await _dataStorage.PortfolioAssets.GetAllAsync();
             if (portfolio.Count == 0)
             {
                 throw new NotFoundException(nameof(PortfolioAsset));

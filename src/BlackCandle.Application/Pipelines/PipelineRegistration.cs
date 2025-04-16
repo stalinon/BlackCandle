@@ -1,3 +1,4 @@
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 
@@ -15,6 +16,7 @@ public static class PipelineRegistration
     /// </summary>
     public static IServiceCollection RegisterPipelines(this IServiceCollection services)
     {
+        services.AddSingleton<IPipelineFactory, PipelineFactory>();
         services.RegisterPortfolioAnalysis();
         services.RegisterAutoTradeExecution();
         return services;

@@ -1,3 +1,4 @@
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Enums;
@@ -28,7 +29,9 @@ public sealed class PreviewTradeExecutionUseCaseTests
         _pipeline.SetupGet(p => p.Context)
             .Returns(new AutoTradeExecutionContext());
 
-        _sut = new PreviewTradeExecutionUseCase(_pipeline.Object);
+        var factory = new Mock<IPipelineFactory>();
+        factory.Setup(f => f.Create<AutoTradeExecutionPipeline, AutoTradeExecutionContext>()).Returns(_pipeline.Object);
+        _sut = new PreviewTradeExecutionUseCase(factory.Object);
     }
 
     /// <summary>

@@ -49,6 +49,13 @@ internal sealed class RedisRepository<TDomain, TStorage> : MappedRepository<TDom
     }
 
     /// <inheritdoc />
+    protected override TStorage? GetStorageById(string id)
+    {
+        var raw = _db.StringGet(Key(id));
+        return raw.HasValue ? JsonSerializer.Deserialize<TStorage>(raw!, _jsonOptions) : default;
+    }
+
+    /// <inheritdoc />
     protected override async Task<TStorage?> GetStorageByIdAsync(string id)
     {
         var raw = await _db.StringGetAsync(Key(id));

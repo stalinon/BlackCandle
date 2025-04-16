@@ -1,7 +1,3 @@
-using System.Reflection;
-
-using BlackCandle.Application.Pipelines;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.UseCases;
@@ -16,31 +12,11 @@ public static class UseCaseRegistration
     /// </summary>
     public static IServiceCollection AddUseCases(this IServiceCollection services)
     {
-        var assembly = Assembly.GetAssembly(typeof(UseCaseRegistration))!;
-
-        var interfaceTypes = new[]
-        {
-            typeof(Abstractions.IUseCase<>),
-            typeof(Abstractions.IUseCase<,>),
-        };
-
-        foreach (var type in assembly.GetTypes())
-        {
-            if (type is not { IsAbstract: false, IsInterface: false })
-            {
-                continue;
-            }
-
-            var interfaces = type.GetInterfaces()
-                .Where(i =>
-                    i.IsGenericType &&
-                    interfaceTypes.Contains(i.GetGenericTypeDefinition()));
-
-            foreach (var i in interfaces)
-            {
-                services.AddScoped(i, type);
-            }
-        }
+        services.AddScoped<RunPortfolioAnalysisUseCase>();
+        services.AddScoped<RunAutoTradeExecutionUseCase>();
+        services.AddScoped<GetCurrentPortfolioStateUseCase>();
+        services.AddScoped<GetLastAnalysisResultUseCase>();
+        services.AddScoped<PreviewTradeExecutionUseCase>();
 
         return services;
     }

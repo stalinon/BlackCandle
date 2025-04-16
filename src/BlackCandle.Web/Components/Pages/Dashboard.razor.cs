@@ -1,4 +1,7 @@
-using BlackCandle.Application.UseCases.Abstractions;
+using BlackCandle.Application.Interfaces.Pipelines;
+using BlackCandle.Application.Pipelines.AutoTradeExecution;
+using BlackCandle.Application.Pipelines.PortfolioAnalysis;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Entities;
 
 using Microsoft.AspNetCore.Components;
@@ -16,25 +19,19 @@ public partial class Dashboard : ComponentBase
     ///     Юзкейс для получения портфолио
     /// </summary>
     [Inject]
-    private IUseCase<IReadOnlyCollection<PortfolioAsset>> GetPortfolioUseCase { get; set; } = default!;
+    public GetCurrentPortfolioStateUseCase GetPortfolioUseCase { get; set; } = default!;
 
     /// <summary>
-    ///     Юзкейс для запуска анализа
+    ///     Фабрика пайплайнов
     /// </summary>
     [Inject]
-    private IUseCase<string> RunAnalysisUseCase { get; set; } = default!;
-
-    /// <summary>
-    ///     Запуск торговли
-    /// </summary>
-    [Inject]
-    private IUseCase<string> RunTradeUseCase { get; set; } = default!;
+    public IPipelineFactory PipelineFactory { get; set; } = default!;
 
     /// <summary>
     ///     Снакбар
     /// </summary>
     [Inject]
-    private ISnackbar Snackbar { get; set; } = default!;
+    public ISnackbar Snackbar { get; set; } = default!;
 
     /// <summary>
     ///     Активы в портфеле
@@ -83,15 +80,16 @@ public partial class Dashboard : ComponentBase
         IsRunningAnalysis = true;
         StateHasChanged();
 
-        var result = await RunAnalysisUseCase.ExecuteAsync();
+        var pipeline = PipelineFactory.Create<PortfolioAnalysisPipeline, PortfolioAnalysisContext>();
 
-        if (result.IsSuccess)
+        try
         {
+            await pipeline.RunAsync();
             Snackbar.Add("Анализ успешно выполнен", Severity.Success);
         }
-        else
+        catch (Exception ex)
         {
-            Snackbar.Add($"Ошибка анализа: {result.Error}", Severity.Error);
+            Snackbar.Add($"Ошибка анализа: {ex.Message}", Severity.Error);
         }
 
         IsRunningAnalysis = false;
@@ -103,15 +101,17 @@ public partial class Dashboard : ComponentBase
         IsRunningTrade = true;
         StateHasChanged();
 
-        var result = await RunTradeUseCase.ExecuteAsync();
+        var pipeline = PipelineFactory.Create<AutoTradeExecutionPipeline, AutoTradeExecutionContext>();
 
-        if (result.IsSuccess)
+        try
         {
+            await pipeline.RunAsync();
             Snackbar.Add("Автотрейдинг успешно завершён", Severity.Success);
         }
-        else
+        catch (Exception ex)
         {
-            Snackbar.Add($"Ошибка автотрейдинга: {result.Error}", Severity.Error);
+            Snackbar.Add($"Ошибка анализа: {ex.Message}", Severity.Error);
+            Snackbar.Add($"Ошибка автотрейдинга: {ex.Message}", Severity.Error);
         }
 
         IsRunningTrade = false;

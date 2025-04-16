@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Application.Pipelines.PortfolioAnalysis;
 using BlackCandle.Application.UseCases.Abstractions;
@@ -10,19 +11,34 @@ namespace BlackCandle.Application.UseCases;
 /// <summary>
 ///     Use-case для анализа портфеля
 /// </summary>
-internal sealed class RunPortfolioAnalysisUseCase(PortfolioAnalysisPipeline pipeline, IDataStorageContext dataStorage) : IUseCase<string>
+public class RunPortfolioAnalysisUseCase : IUseCase<string>
 {
+    private readonly PortfolioAnalysisPipeline _pipeline = null!;
+    private readonly IDataStorageContext _dataStorage = null!;
+
+    /// <inheritdoc cref="RunPortfolioAnalysisUseCase" />
+    public RunPortfolioAnalysisUseCase(IPipelineFactory factory, IDataStorageContext dataStorage)
+    {
+        _pipeline = factory.Create<PortfolioAnalysisPipeline, PortfolioAnalysisContext>();
+        _dataStorage = dataStorage;
+    }
+
+    /// <inheritdoc cref="RunPortfolioAnalysisUseCase" />
+    protected RunPortfolioAnalysisUseCase()
+    {
+    }
+
     /// <inheritdoc />
-    public async Task<OperationResult<string>> ExecuteAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<OperationResult<string>> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var tracker = new PipelineExecutionTracker<PortfolioAnalysisContext>();
-        tracker.Attach(pipeline, wasScheduled: false);
+        tracker.Attach(_pipeline, wasScheduled: false);
 
-        await pipeline.RunAsync(cancellationToken);
+        await _pipeline.RunAsync(cancellationToken);
 
-        await dataStorage.PipelineRuns.AddAsync(tracker.GetRecord());
+        await _dataStorage.PipelineRuns.AddAsync(tracker.GetRecord());
 
-        return pipeline.Status == PipelineStatus.Completed
+        return _pipeline.Status == PipelineStatus.Completed
             ? OperationResult<string>.Success("Портфель успешно проанализирован")
             : OperationResult<string>.Failure("Не удалось проанализировать портфель");
     }

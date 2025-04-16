@@ -1,6 +1,7 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
-using BlackCandle.Application.Pipelines.AutoTradeExecution;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.Pipelines.PortfolioAnalysis;
 
@@ -10,14 +11,14 @@ namespace BlackCandle.Application.Pipelines.PortfolioAnalysis;
 public class PortfolioAnalysisPipeline : Pipeline<PortfolioAnalysisContext>
 {
     /// <inheritdoc cref="PortfolioAnalysisPipeline" />
-    public PortfolioAnalysisPipeline()
+    public PortfolioAnalysisPipeline(
+        IServiceScope scope,
+        ILoggerService logger)
+        : base(scope, logger)
     { }
 
     /// <inheritdoc cref="PortfolioAnalysisPipeline" />
-    public PortfolioAnalysisPipeline(
-        IEnumerable<IPipelineStep<PortfolioAnalysisContext>> steps,
-        ILoggerService logger)
-        : base(steps, logger)
+    protected PortfolioAnalysisPipeline()
     { }
 
     /// <inheritdoc />

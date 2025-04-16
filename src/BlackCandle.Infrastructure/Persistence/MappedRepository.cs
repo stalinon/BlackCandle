@@ -31,6 +31,13 @@ public abstract class MappedRepository<TDomain, TStorage> : IRepository<TDomain>
     }
 
     /// <inheritdoc />
+    public TDomain? GetById(string id)
+    {
+        var model = GetStorageById(id);
+        return model is null ? default : MapToDomain(model);
+    }
+
+    /// <inheritdoc />
     public async Task<TDomain?> GetByIdAsync(string id)
     {
         var model = await GetStorageByIdAsync(id);
@@ -52,6 +59,9 @@ public abstract class MappedRepository<TDomain, TStorage> : IRepository<TDomain>
 
     /// <inheritdoc cref="GetAllAsync(BlackCandle.Domain.Interfaces.IFilter{TDomain}?)" />
     protected abstract Task<List<TStorage>> GetStorageAsync(IFilter<TDomain>? filter);
+
+    /// <inheritdoc cref="GetById" />
+    protected abstract TStorage? GetStorageById(string id);
 
     /// <inheritdoc cref="GetByIdAsync" />
     protected abstract Task<TStorage?> GetStorageByIdAsync(string id);

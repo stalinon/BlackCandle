@@ -10,6 +10,11 @@ public interface IBotSettingsService
     /// <summary>
     ///     Получить настройки бота
     /// </summary>
+    BotSettings Get();
+
+    /// <summary>
+    ///     Получить настройки бота
+    /// </summary>
     Task<BotSettings> GetAsync();
 
     /// <summary>

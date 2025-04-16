@@ -23,6 +23,11 @@ public interface IRepository<T>
     /// <summary>
     ///     Получить сущность по идентификатору
     /// </summary>
+    T? GetById(string id);
+
+    /// <summary>
+    ///     Получить сущность по идентификатору
+    /// </summary>
     Task<T?> GetByIdAsync(string id);
 
     /// <summary>
