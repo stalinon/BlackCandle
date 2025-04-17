@@ -23,7 +23,7 @@ internal static class TinkoffInvestApiRegistration
         {
             using var scope = sp.CreateScope();
             var botSettingsService = scope.ServiceProvider.GetRequiredService<IBotSettingsService>();
-            var tinkoffConfig = botSettingsService.GetAsync().GetAwaiter().GetResult().ToTinkoffConfig();
+            var tinkoffConfig = botSettingsService.Get().ToTinkoffConfig();
             settings.AccessToken = tinkoffConfig.ApiKey;
             settings.Sandbox = tinkoffConfig.UseSandbox;
         });

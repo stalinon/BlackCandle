@@ -1,4 +1,5 @@
 using BlackCandle.API.Controllers;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Application.UseCases.Abstractions;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.ValueObjects;
@@ -24,8 +25,8 @@ namespace BlackCandle.Tests.API.Controllers;
 /// </remarks>
 public sealed class AnalysisControllerTests
 {
-    private readonly Mock<IUseCase<IReadOnlyCollection<TradeSignal>>> _getSignalsMock = new();
-    private readonly Mock<IUseCase<string>> _runAnalysisMock = new();
+    private readonly Mock<GetLastAnalysisResultUseCase> _getSignalsMock = new();
+    private readonly Mock<RunPortfolioAnalysisUseCase> _runAnalysisMock = new();
 
     private readonly AnalysisController _controller;
 

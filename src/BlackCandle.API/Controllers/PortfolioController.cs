@@ -1,4 +1,4 @@
-using BlackCandle.Application.UseCases.Abstractions;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.ValueObjects;
 
@@ -11,7 +11,7 @@ namespace BlackCandle.API.Controllers;
 /// </summary>
 [Route("api/portfolio")]
 public sealed class PortfolioController(
-    IUseCase<IReadOnlyCollection<PortfolioAsset>> getPortfolioUseCase)
+    GetCurrentPortfolioStateUseCase getPortfolioUseCase)
     : BaseController
 {
     /// <summary>

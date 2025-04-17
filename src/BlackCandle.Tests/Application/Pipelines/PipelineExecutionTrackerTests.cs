@@ -6,6 +6,10 @@ using BlackCandle.Infrastructure.Logging;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using Moq;
+
 namespace BlackCandle.Tests.Application.Pipelines;
 
 /// <remarks>
@@ -130,12 +134,23 @@ public sealed class PipelineExecutionTrackerTests
     private sealed class TestPipeline : Pipeline<TestContext>
     {
         public TestPipeline(string stepName = "Step1", bool throws = false)
-            : base(new List<IPipelineStep<TestContext>>(), new Logger())
+            : base(MockScope([new FakeStep(stepName, throws)]), new Logger())
         {
             AddStep(new FakeStep(stepName, throws));
         }
 
         public override string Name => "TestPipeline";
+
+        private static IServiceScope MockScope(IEnumerable<IPipelineStep<TestContext>> steps)
+        {
+            var scope = new Mock<IServiceScope>();
+            var serviceProvider = new Mock<IServiceProvider>();
+            scope.Setup(s => s.ServiceProvider).Returns(serviceProvider.Object);
+            serviceProvider.Setup(s => s.GetService(typeof(IEnumerable<IPipelineStep<TestContext>>)))
+                .Returns(steps);
+
+            return scope.Object;
+        }
     }
 
     private sealed class FakeStep : IPipelineStep<TestContext>

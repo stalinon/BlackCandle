@@ -36,9 +36,15 @@ internal sealed class InMemoryRepository<T> : IRepository<T>
     }
 
     /// <inheritdoc />
+    public T? GetById(string id)
+    {
+        return _storage.GetValueOrDefault(id);
+    }
+
+    /// <inheritdoc />
     public Task<T?> GetByIdAsync(string id)
     {
-        return Task.FromResult(_storage.GetValueOrDefault(id));
+        return Task.FromResult(GetById(id));
     }
 
     /// <inheritdoc />

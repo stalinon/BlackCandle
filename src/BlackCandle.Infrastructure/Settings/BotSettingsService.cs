@@ -16,6 +16,20 @@ public sealed class BotSettingsService(IDataStorageContext context, ISecretsProt
     /// <summary>
     ///     Получить настройки
     /// </summary>
+    public BotSettings Get()
+    {
+        var settings = context.BotSettings.GetById(DefaultId);
+        if (settings is null)
+        {
+            throw new BotNotConfiguredException();
+        }
+
+        return Decrypt(settings);
+    }
+
+    /// <summary>
+    ///     Получить настройки
+    /// </summary>
     public async Task<BotSettings> GetAsync()
     {
         var settings = await context.BotSettings.GetByIdAsync(DefaultId);

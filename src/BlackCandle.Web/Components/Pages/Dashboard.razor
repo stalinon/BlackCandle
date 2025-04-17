@@ -3,23 +3,42 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="d-flex flex-column align-center mt-8">
     <MudPaper Elevation="4" Class="pa-6" Style="width: 100%;">
-        <MudText Typo="Typo.h5" GutterBottom="true">
-            Текущее состояние портфеля
-        </MudText>
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.h5">Текущее состояние портфеля</MudText>
 
-        @if (IsLoading)
-        {
+            <MudStack Spacing="1">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="RunAnalysis"
+                           Disabled="@IsRunningAnalysis"
+                           StartIcon="@Icons.Material.Filled.Analytics">
+                    @(IsRunningAnalysis ? "Анализ..." : "Запустить анализ")
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           OnClick="RunAutoTrade"
+                           Disabled="@IsRunningTrade"
+                           StartIcon="@Icons.Material.Filled.PlayArrow">
+                    @(IsRunningTrade ? "Автотрейдинг..." : "Запустить автотрейдинг")
+                </MudButton>
+            </MudStack>
+
+            @if (IsLoading)
+            {
             <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-        }
-        else if (PortfolioAssets.Count == 0)
-        {
+            }
+            else if (PortfolioAssets.Count == 0)
+            {
             <MudAlert Severity="Severity.Info" Dense="true">
                 Портфель пуст. Даже биржевые крысы ушли.
             </MudAlert>
-        }
-        else
-        {
+            }
+            else
+            {
             <PortfolioTable Assets="PortfolioAssets" />
-        }
+            }
+        </MudStack>
     </MudPaper>
 </MudContainer>
+

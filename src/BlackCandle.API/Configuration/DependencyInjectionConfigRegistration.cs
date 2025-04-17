@@ -1,8 +1,6 @@
-using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Application.UseCases;
 using BlackCandle.Infrastructure;
-using BlackCandle.Infrastructure.Persistence.InMemory;
 using BlackCandle.Telegram;
 
 namespace BlackCandle.API.Configuration;
@@ -17,10 +15,10 @@ public static class DependencyInjectionConfigRegistration
     /// </summary>
     public static IServiceCollection AddProjectServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.RegisterPipelines();
-        services.AddUseCases();
         services.AddInfrastructure(configuration);
         services.AddTelegram(configuration);
+        services.RegisterPipelines();
+        services.AddUseCases();
 
         return services;
     }

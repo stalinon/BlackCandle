@@ -3,6 +3,8 @@ using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Domain.Enums;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
 
 namespace BlackCandle.Tests.Application.Pipelines;
@@ -129,9 +131,19 @@ public sealed class PipelineTests
     private class TestContext;
 
     private sealed class TestPipeline(IEnumerable<IPipelineStep<TestContext>> steps, ILoggerService logger)
-        : Pipeline<TestContext>(steps, logger)
+        : Pipeline<TestContext>(CreateScope(steps), logger)
     {
         public override string Name => "TestPipeline";
+
+        private static IServiceScope CreateScope(IEnumerable<IPipelineStep<TestContext>> steps)
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(IEnumerable<IPipelineStep<TestContext>>))).Returns(steps);
+            var scope = new Mock<IServiceScope>();
+            scope.SetupGet(s => s.ServiceProvider).Returns(serviceProvider.Object);
+
+            return scope.Object;
+        }
     }
 
     private sealed class TestStepPipeline : IPipelineStep<TestContext>

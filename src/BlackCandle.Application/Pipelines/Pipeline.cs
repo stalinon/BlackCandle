@@ -1,13 +1,16 @@
+using BlackCandle.Application.Helpers;
 using BlackCandle.Application.Interfaces.Infrastructure;
 using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Domain.Enums;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlackCandle.Application.Pipelines;
 
 /// <summary>
 ///     Пайплайн
 /// </summary>
-public abstract class Pipeline<TContext>
+public abstract class Pipeline<TContext> : IDisposable
     where TContext : new()
 {
     private readonly List<IPipelineStep<TContext>> _steps = new();
@@ -18,9 +21,10 @@ public abstract class Pipeline<TContext>
     { }
 
     /// <inheritdoc cref="Pipeline{TContext}" />
-    protected Pipeline(IEnumerable<IPipelineStep<TContext>> steps, ILoggerService logger)
+    protected Pipeline(IServiceScope scope, ILoggerService logger)
     {
-        _steps = steps.ToList();
+        Scope = scope;
+        _steps = Scope.GetPipelineSteps<TContext>().ToList();
         _logger = logger;
 
         // ReSharper disable once VirtualMemberCallInConstructor
@@ -60,6 +64,11 @@ public abstract class Pipeline<TContext>
     public abstract string Name { get; }
 
     /// <summary>
+    ///     Скоуп
+    /// </summary>
+    private IServiceScope Scope { get; set; } = default!;
+
+    /// <summary>
     ///     Запуск пайплайна
     /// </summary>
     public virtual async Task RunAsync(CancellationToken cancellationToken = default)
@@ -95,6 +104,12 @@ public abstract class Pipeline<TContext>
 
         UpdatePipelineStatus(PipelineStatus.Completed, Context);
         _logger.LogInfo($"Завершен пайплайн: {Name}");
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Scope.Dispose();
     }
 
     /// <summary>

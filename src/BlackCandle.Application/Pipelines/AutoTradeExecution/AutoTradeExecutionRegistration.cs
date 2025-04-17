@@ -22,7 +22,6 @@ internal static class AutoTradeExecutionRegistration
         services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, PlaceOrdersStep>();
         services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, UpdatePortfolioStep>();
         services.AddScoped<IPipelineStep<AutoTradeExecutionContext>, LogExecutedTradesStep>();
-        services.AddScoped<AutoTradeExecutionPipeline>();
 
         return services;
     }

@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Entities;
@@ -30,7 +31,10 @@ public sealed class RunAutoTradeExecutionUseCaseTests
         var mockPipelines = new Mock<IRepository<PipelineExecutionRecord>>();
         mock.SetupGet(e => e.PipelineRuns).Returns(mockPipelines.Object);
         mockPipelines.Setup(e => e.AddAsync(It.IsAny<PipelineExecutionRecord>())).Returns(Task.CompletedTask);
-        _sut = new RunAutoTradeExecutionUseCase(_pipeline.Object, mock.Object);
+
+        var factory = new Mock<IPipelineFactory>();
+        factory.Setup(f => f.Create<AutoTradeExecutionPipeline, AutoTradeExecutionContext>()).Returns(_pipeline.Object);
+        _sut = new RunAutoTradeExecutionUseCase(factory.Object, mock.Object);
     }
 
     /// <summary>

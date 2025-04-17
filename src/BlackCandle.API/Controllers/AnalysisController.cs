@@ -1,4 +1,4 @@
-using BlackCandle.Application.UseCases.Abstractions;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.ValueObjects;
 
@@ -11,8 +11,8 @@ namespace BlackCandle.API.Controllers;
 /// </summary>
 [Route("api/analysis")]
 public sealed class AnalysisController(
-    IUseCase<IReadOnlyCollection<TradeSignal>> getSignals,
-    IUseCase<string> runAnalysis)
+    GetLastAnalysisResultUseCase getSignals,
+    RunPortfolioAnalysisUseCase runAnalysis)
     : BaseController
 {
     /// <summary>

@@ -1,4 +1,5 @@
 using BlackCandle.API.Controllers;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Application.UseCases.Abstractions;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.ValueObjects;
@@ -22,7 +23,7 @@ namespace BlackCandle.Tests.API.Controllers;
 /// </remarks>
 public sealed class PortfolioControllerTests
 {
-    private readonly Mock<IUseCase<IReadOnlyCollection<PortfolioAsset>>> _useCaseMock = new();
+    private readonly Mock<GetCurrentPortfolioStateUseCase> _useCaseMock = new();
 
     private readonly PortfolioController _controller;
 

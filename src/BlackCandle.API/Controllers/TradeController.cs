@@ -1,4 +1,4 @@
-using BlackCandle.Application.UseCases.Abstractions;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Domain.ValueObjects;
 
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +10,8 @@ namespace BlackCandle.API.Controllers;
 /// </summary>
 [Route("api/trade")]
 public sealed class TradeController(
-    IUseCase<IReadOnlyCollection<OrderPreview>> previewUseCase,
-    IUseCase<string> runTradeUseCase)
+    PreviewTradeExecutionUseCase previewUseCase,
+    RunAutoTradeExecutionUseCase runTradeUseCase)
     : BaseController
 {
     /// <summary>

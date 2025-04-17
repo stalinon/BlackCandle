@@ -1,4 +1,5 @@
 using BlackCandle.API.Controllers;
+using BlackCandle.Application.UseCases;
 using BlackCandle.Application.UseCases.Abstractions;
 using BlackCandle.Domain.Entities;
 using BlackCandle.Domain.Enums;
@@ -25,8 +26,8 @@ namespace BlackCandle.Tests.API.Controllers;
 /// </remarks>
 public sealed class TradeControllerTests
 {
-    private readonly Mock<IUseCase<IReadOnlyCollection<OrderPreview>>> _previewMock = new();
-    private readonly Mock<IUseCase<string>> _runTradeMock = new();
+    private readonly Mock<PreviewTradeExecutionUseCase> _previewMock = new();
+    private readonly Mock<RunAutoTradeExecutionUseCase> _runTradeMock = new();
 
     private readonly TradeController _controller;
 

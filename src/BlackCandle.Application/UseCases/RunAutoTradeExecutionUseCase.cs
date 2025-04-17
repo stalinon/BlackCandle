@@ -1,4 +1,5 @@
 using BlackCandle.Application.Interfaces.Infrastructure;
+using BlackCandle.Application.Interfaces.Pipelines;
 using BlackCandle.Application.Pipelines;
 using BlackCandle.Application.Pipelines.AutoTradeExecution;
 using BlackCandle.Application.UseCases.Abstractions;
@@ -10,19 +11,34 @@ namespace BlackCandle.Application.UseCases;
 /// <summary>
 ///     Use-case для запуска автотрейдера
 /// </summary>
-internal sealed class RunAutoTradeExecutionUseCase(AutoTradeExecutionPipeline pipeline, IDataStorageContext dataStorage) : IUseCase<string>
+public class RunAutoTradeExecutionUseCase : IUseCase<string>
 {
+    private readonly AutoTradeExecutionPipeline _pipeline = null!;
+    private readonly IDataStorageContext _dataStorage = null!;
+
+    /// <inheritdoc cref="RunAutoTradeExecutionUseCase"/>
+    public RunAutoTradeExecutionUseCase(IPipelineFactory factory, IDataStorageContext dataStorage)
+    {
+        _pipeline = factory.Create<AutoTradeExecutionPipeline, AutoTradeExecutionContext>();
+        _dataStorage = dataStorage;
+    }
+
+    /// <inheritdoc cref="RunAutoTradeExecutionUseCase"/>
+    protected RunAutoTradeExecutionUseCase()
+    {
+    }
+
     /// <inheritdoc />
-    public async Task<OperationResult<string>> ExecuteAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<OperationResult<string>> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var tracker = new PipelineExecutionTracker<AutoTradeExecutionContext>();
-        tracker.Attach(pipeline, wasScheduled: false);
+        tracker.Attach(_pipeline, wasScheduled: false);
 
-        await pipeline.RunAsync(cancellationToken);
+        await _pipeline.RunAsync(cancellationToken);
 
-        await dataStorage.PipelineRuns.AddAsync(tracker.GetRecord());
+        await _dataStorage.PipelineRuns.AddAsync(tracker.GetRecord());
 
-        return pipeline.Status == PipelineStatus.Completed
+        return _pipeline.Status == PipelineStatus.Completed
             ? OperationResult<string>.Success("Торговля успешно закончена")
             : OperationResult<string>.Failure("Возникла ошибка при попытке провести торги");
     }

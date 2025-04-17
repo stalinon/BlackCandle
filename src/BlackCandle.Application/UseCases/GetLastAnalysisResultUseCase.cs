@@ -6,17 +6,29 @@ using BlackCandle.Domain.ValueObjects;
 namespace BlackCandle.Application.UseCases;
 
 /// <summary>
-/// Возвращает текущие сигналы анализа портфеля
+///     Возвращает текущие сигналы анализа портфеля
 /// </summary>
-internal sealed class GetLastAnalysisResultUseCase(IDataStorageContext storage)
-    : IUseCase<IReadOnlyCollection<TradeSignal>>
+public class GetLastAnalysisResultUseCase : IUseCase<IReadOnlyCollection<TradeSignal>>
 {
+    private readonly IDataStorageContext _storage = null!;
+
+    /// <inheritdoc cref="GetLastAnalysisResultUseCase" />
+    public GetLastAnalysisResultUseCase(IDataStorageContext storage)
+    {
+        _storage = storage;
+    }
+
+    /// <inheritdoc cref="GetLastAnalysisResultUseCase" />
+    protected GetLastAnalysisResultUseCase()
+    {
+    }
+
     /// <inheritdoc />
-    public async Task<OperationResult<IReadOnlyCollection<TradeSignal>>> ExecuteAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<OperationResult<IReadOnlyCollection<TradeSignal>>> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            var signals = await storage.TradeSignals.GetAllAsync();
+            var signals = await _storage.TradeSignals.GetAllAsync();
 
             return signals.Any()
                 ? OperationResult<IReadOnlyCollection<TradeSignal>>.Success(signals)
